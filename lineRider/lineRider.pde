@@ -2,8 +2,8 @@
 //fields
 LineRiderGame game;
 Rider guy;
-Vehicle bike;
-Track track; 
+Vehicle bike; 
+Track t = new Track();
 class LineRiderGame{
   Rider guy;
   float startX, startY;
@@ -22,10 +22,16 @@ class LineRiderGame{
   }
 }
 
+
+
 void setup(){
   size(1000, 800);
+  t.add(400.0);
+  t.add(400.0);
+  t.add(600.0);
+  t.add(400.0);
 }
 
 void draw(){
-  
+ t.display();
 }

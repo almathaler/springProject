@@ -1,41 +1,26 @@
+import java.util.*;
+import java.io.*;
 class Track{
-   ArrayList<TrackSegment> track = new ArrayList<TrackSegment>();
+   ArrayList<Float> track = new ArrayList<Float>();
+   //Track will be an arraylist of floats ordered {(x1),(y1), (x2),(y2)...}
+   //if one point is equal to the last, then it is connected
    
-   public Track(TrackSegment n){//for testing purposes
-      track.add(n); 
+   public Track(){//for testing purposes
+      track = new ArrayList<Float>();
+   }
+   
+   public void add(Float n){
+     track.add(n);
    }
   
-  class TrackSegment{//embedded class of TrackSegments, which ultimately make up the track
-  
-    float startX, startY, endX, endY, slope, theta;
-    boolean isAttached;
-    
-    public TrackSegment(float X1, float Y1, float X2, float Y2){
-      startX = X1;
-      startY = Y1;
-      endX = X2;
-      endY = Y2;
-      slope = (endY - startY) / (endX - startX);
-      theta = atan(slope);
-    }
     
     public void display(){
-      line(startX, startY, endX, endY);
+      for (int i = 0; i < track.size(); i += 4){
+         line(track.get(i), track.get(i + 1), track.get(i + 2), track.get(i + 3)); 
+      }
     }
     
    
     
     
-  }
-   void setup(){
-      size(400, 400);
-      TrackSegment m = new TrackSegment(50, 200, 350, 200);
-       Track b = new Track(m);
-    }
-    
-    void draw(){
-       for (int i = 0; i < track.size(); i++){
-          track.get(i).display(); 
-       }
-    }
 }
