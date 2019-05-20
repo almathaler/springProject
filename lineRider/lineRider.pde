@@ -17,8 +17,11 @@ class LineRiderGame{
     this.startY = startY;
     //assuming gravity will be 9.81
     //should this be calculated from the first platform or from the ground?
-    float GPE = 9.81 * 50.0 * (height - startY); 
+    float GPE = 9.81 * 50.0 * (height - startY); // this always has to be calculated using (height-y), because that's the height off the bottom
     guy = new Rider(50.0, 9.81, GPE, GPE, 0, startX, startY, 0, 0);
+  }
+  void drop(Rider guy){
+    guy.firstFall(); //firstFall is in the Rider class, will be what makes velY = velYo + (9.81)(t);
   }
 }
 
