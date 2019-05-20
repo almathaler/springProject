@@ -9,13 +9,15 @@ class Track{
       track = new ArrayList<Float>();
    }
    
-   public void add(Float n){
+   public void add(Float n, Float m){
      track.add(n);
+     track.add(m);
    }
+   
   
     
     public void display(){
-      for (int i = 0; i < track.size(); i += 4){
+      for (int i = 0; i < track.size() - 3; i += 4){
          line(track.get(i), track.get(i + 1), track.get(i + 2), track.get(i + 3)); 
       }
     }
