@@ -26,12 +26,12 @@ class LineRiderGame{
 
 void setup(){
   size(1000, 800);
-  t.add(400.0);
-  t.add(400.0);
-  t.add(600.0);
-  t.add(400.0);
 }
 
 void draw(){
  t.display();
+}
+
+void mouseClicked(){
+   t.add(mouseX + 0.0, mouseY + 0.0); 
 }
