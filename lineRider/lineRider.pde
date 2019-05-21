@@ -32,6 +32,22 @@ void draw(){
  t.display();
 }
 
+public boolean isTouching(Float a, Float b){
+  for (int i = 0; i < t.track.size() - 3; i+= 4){
+    Float x1 = t.track.get(i);
+    Float y1 = t.track.get(i + 1);
+    Float x2 = t.track.get(i + 2);
+    Float y2 = t.track.get(i + 2);
+    Float slope = (y2 - y1) / (x2 - x1);
+    if (((x1 <= a && x2 >= a) || (x1 >= a && x2 <= a)) && ((y1 <= b && y2 >= b) || (y1 >= b & y2 <= b))){
+      if ((y1 - b) == slope * (x1 - a)){
+         return true; 
+      }
+    }
+  }
+  return false;
+}
+
 void mouseClicked(){
    t.add(mouseX + 0.0, mouseY + 0.0); 
 }
