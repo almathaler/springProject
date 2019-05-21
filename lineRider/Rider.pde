@@ -4,7 +4,9 @@ class Rider{
   float velY, velX; //velocity
   float velYo, velXo;
   boolean onTrack = false; //when this is false, affectVelY and use gravity
-  Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY){
+  Track t;
+  //added track field to rider so it can check whether or not it's on
+  Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
    this.gravityVal = gravityVal;
    this.eTotal = eTotal;
@@ -12,18 +14,33 @@ class Rider{
    this.KE = KE;
    this.x = x;
    this.y = y;
+   this.t = t;
    this.velYo = velY; //as in, at first when u make the rider his velocity will by 0
    this.velXo = velX; //everytime u update velocity, store the old val in original. or actually j keep original if direction is the same
    //if slope is the same (on the same line), keep using velYo and velXo to cahnge veocity. once the slope changes
    //current velocities become intial ones
   }
   //
+  //when u update velocity:
   //
-  void firstFall(){ //when game is starting
+  //velX = velXo + (cos(theta)*F)/m * (System.currentTimeMillis() / 1000);
+  //velY = velYo + (sin(theta)*F)/m * (System.currentTimeMillis() / 1000);
+  //F is calculated based on slope (theta) of that segment of the track. It's mgsinTheta, add to velX and velY if it's
+  //downhill and subtract to x add to y (since if going up, velY should be (-)) for incline
+  //once you're on a new piece of track, make velYo and velXo velY and velX
+  //
+  void firstFall(){ //when game is starting, you don't need to do anything to velX. but i guess we can just have
+                    //one fall function called fall() which does same thing to velY and keeps x just the same... well that's every fall
+                    //i guess we can just have on fall(0 function and then one affectVelocities function 
    while (!onTrack){
+    //since it's first fall, velyo is just 0. but keep this for consistency?
     velY = velYo + (gravityVal)*(System.currentTimeMillis() / 1000); //not adding to a value, recalculating every time
+    checkIfOnTrack();
    }
+   velYo = velY; //store velocity once it hits the track as velYo
   }
+  //
+  //after it hits the track,
   //
   //
   void move(){
@@ -39,14 +56,15 @@ class Rider{
     ellipseMode(CORNERS); //so now, make upper left corner and bottom right as x, y -- that's like where the front wheel will be
     float wid = 50;
     float hei = 50;
-    ellipse(x-50, y-50, x, y);
+    ellipse(x-wid, y-hei, x, y);
   }
   //
   //
   //needs a way to 
   //a) have a track be a field of a rider
   //b) access every coordinate in the arrayList --> can j be done by using t.track.get() ...
-  void checkIfOnTrack(Track t){
+  void checkIfOnTrack(){
+    //doesn't work rn cuz the classes haven't been merged. but track si the AL of points
     for (int i = 0; i<t.track.size() - 3; i+= 4){
      Float x1 = t.track.get(i);
      Float y1 = t.track.get(i+1);
