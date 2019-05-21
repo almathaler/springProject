@@ -32,7 +32,7 @@ void draw(){
  t.display();
 }
 
-public boolean isTouching(Float a, Float b){
+public boolean isPartOf(Float a, Float b){
   for (int i = 0; i < t.track.size() - 3; i+= 4){
     Float x1 = t.track.get(i);
     Float y1 = t.track.get(i + 1);

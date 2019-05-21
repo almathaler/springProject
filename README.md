@@ -7,3 +7,4 @@ May 19
 
 May 20
 + created the tool the user will use to draw the track
++ created isPartOf() method for checking if a coordinate intersects with the track
