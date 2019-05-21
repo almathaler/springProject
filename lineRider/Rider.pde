@@ -50,7 +50,13 @@ class Rider{
    //calculate the slope from that
    //arctan(slope) = theta
    //from theta, if it's negative that means you need to add to Vx and Vy, if it's positive you are subtracting
-   //from vX and adding to vY (which upon hittin an incline should turn negative. where will we write that?
+   //from vX and adding to vY (which upon hittin an incline should turn negative. where will we write that? here
+   //just do if theta > 0, well first off if you're coming from a horizontal, turn vX into vY and vX componnents based on the slope
+   //of the new hill. if it's one slope into another, calculate the downwards force of the ball, then Fy, then to calculate
+   //it's velocity up (Fy from the downhill is what powers it up), Fyfromdownhill - Fyfrominclineit'sdealingwith = Fycurrent, Fyc/m = a
+   //and j add that to the velocity. but ig what i mean is how does it know to set the upwards velocity at 0 for a split second?
+   //that's not what happens IRL
+   //have a direction int? just 1 or -1? and if the new slope is upwards, direction is -1
   }
   //
   //after it hits the track,
