@@ -1,7 +1,7 @@
 //Final project!
 //fields
 LineRiderGame game;
-Rider guy;
+Rider guy; //won't these all be in LineRiderGame?
 Vehicle bike;
 Track track; 
 class LineRiderGame{
