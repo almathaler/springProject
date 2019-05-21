@@ -14,11 +14,11 @@ class Rider{
    this.KE = KE;
    this.x = x;
    this.y = y;
-   this.t = t;
+   this.t = t; //the track
    this.velYo = velY; //as in, at first when u make the rider his velocity will by 0
    this.velXo = velX; //everytime u update velocity, store the old val in original. or actually j keep original if direction is the same
    //if slope is the same (on the same line), keep using velYo and velXo to cahnge veocity. once the slope changes
-   //current velocities become intial ones
+   //current velocities become original ones
   }
   //
   //when u update velocity:
@@ -29,15 +29,28 @@ class Rider{
   //downhill and subtract to x add to y (since if going up, velY should be (-)) for incline
   //once you're on a new piece of track, make velYo and velXo velY and velX
   //
-  void firstFall(){ //when game is starting, you don't need to do anything to velX. but i guess we can just have
+  void fall(){ //when game is starting, you don't need to do anything to velX. but i guess we can just have
                     //one fall function called fall() which does same thing to velY and keeps x just the same... well that's every fall
                     //i guess we can just have on fall(0 function and then one affectVelocities function 
    while (!onTrack){
     //since it's first fall, velyo is just 0. but keep this for consistency?
     velY = velYo + (gravityVal)*(System.currentTimeMillis() / 1000); //not adding to a value, recalculating every time
+    //keep x speed the same
     checkIfOnTrack();
+    //death
+    //how to check this?
    }
    velYo = velY; //store velocity once it hits the track as velYo
+   affectVelocities(); //this method will do a while(onTrack), once that ends fall() is called again. If you fall off the screen, over
+  }
+  //
+  //
+  void affectVelocities(){
+   //check which part of track we are on
+   //calculate the slope from that
+   //arctan(slope) = theta
+   //from theta, if it's negative that means you need to add to Vx and Vy, if it's positive you are subtracting
+   //from vX and adding to vY (which upon hittin an incline should turn negative. where will we write that?
   }
   //
   //after it hits the track,
