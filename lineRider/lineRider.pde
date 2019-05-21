@@ -31,7 +31,9 @@ void setup(){
 void draw(){
  t.display();
 }
-
+//i feel like this should be part of the 
+//rider class, it will take in a Track as a paramtere
+//and just do all this inside of the rider class 
 public boolean isPartOf(Float a, Float b){
   for (int i = 0; i < t.track.size() - 3; i+= 4){
     Float x1 = t.track.get(i);
