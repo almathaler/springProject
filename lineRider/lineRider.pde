@@ -29,7 +29,8 @@ void setup(){
 }
 
 void draw(){
- t.display();
+  background(255);
+   t.display();
 }
 //i feel like this should be part of the 
 //rider class, it will take in a Track as a paramtere

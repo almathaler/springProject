@@ -18,11 +18,11 @@ class Track{
     
     public void display(){
       for (int i = 0; i < track.size(); i += 4){
-        /*if (i == track.size() - 2){           //for implementing a feature where the user can see the line that they are drawing before confirming it
+        if (i == track.size() - 2){           //for implementing a feature where the user can see the line that they are drawing before confirming it
           pushMatrix();
           line(track.get(i), track.get(i + 1), mouseX, mouseY);
           popMatrix();
-        } else */
+        } else
         if (i < track.size() - 3){
          line(track.get(i), track.get(i + 1), track.get(i + 2), track.get(i + 3)); 
         }
