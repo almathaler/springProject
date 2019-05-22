@@ -18,3 +18,8 @@ May 21:
 + from downhill to uphill, there should just be a direction variable (either 1 or -1), and
 + when the slope that the rider isOn (isOnTrack()) is positive, update Vy as Vy = Vy * direction. 
 + or do that all the time and only modify direction occasionally.
++ Alma home:
++ I wrote the AffectVel() method but realized a few things:
++ +there should be an internal timer within the method so that for every segment of the track, for which slope differs
++ from the old slope, velocity can be acurately affected (vf = vi + at --> rn t is just sys.currentTimeMilli())
++ +I need to commit more frequently so i remember the things i did
