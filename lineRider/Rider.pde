@@ -88,6 +88,7 @@ class Rider{
       }
      currentSeg = checkIfOnTrack();
     }
+    fall();
   }
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
