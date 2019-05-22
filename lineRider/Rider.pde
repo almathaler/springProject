@@ -63,6 +63,7 @@ class Rider{
         velX = velXo;
         velY = velYo; // now that we have a new theta, use the other slope's velocities as original
       }
+      //NOTE: sin(theta) will be negative if this slope is downwards
       Float force = mass * gravityVal * sin(theta); //since for downhill theta will be (-), does this cancel out? yea 
      //from theta, if it's negative that means you need to add to Vx and Vy, if it's positive you are subtracting
       if (theta > 0){
@@ -78,8 +79,9 @@ class Rider{
        //velYo = velY;
        //velXo = velX;
       }else{
+        //but i think that that is okay, because velY will be mulitplied by sintheta which is also negative. but for x need to multiple by neg one
         direction = 1; //cuz going down as in towards the heighest coords
-        velX = velXo + (cos(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta);
+        velX = velXo + (cos(theta) * -1 * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta);
         velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta);
         //velYo = velY; since you keep the time from mulitple calls, don't touch this until u switch sloeps
         //velXo = velX;
@@ -100,9 +102,10 @@ class Rider{
   //
   //
   void move(){
-    x += velX*(1/60.0); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
+    //are these ok timings? should update proportional to current frame rate
+    x += velX*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                         //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
-    y += velY * (1/60.0);
+    y += velY * (System.currentTimeMillis() - startTimeTheta);
     //keep move JUST LIKE THIS!!! all thecomplicated methods change velocity. or should we haqve a check velocity first?
   }
   //
@@ -120,6 +123,9 @@ class Rider{
   //a) have a track be a field of a rider
   //b) access every coordinate in the arrayList --> can j be done by using t.track.get() ...
   //return index of first coord of section of line u r on
+  
+  // return index, also affect onTrack boolean
+  //
   int checkIfOnTrack(){
     //doesn't work rn cuz the classes haven't been merged. but track si the AL of points
     for (int i = 0; i<t.track.size() - 3; i+= 4){
@@ -128,7 +134,9 @@ class Rider{
      Float x2 = t.track.get(i+2);
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
+     //if between the points
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
+       //and on the line 
       if ((y1 - y) == slope * (x1 - x)){
          onTrack = true; 
          return i;
