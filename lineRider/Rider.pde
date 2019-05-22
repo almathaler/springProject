@@ -4,6 +4,7 @@ class Rider{
   float velY, velX; //velocity
   float velYo, velXo;
   boolean onTrack = false; //when this is false, affectVelY and use gravity
+  int direction = 1;
   Track t;
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
@@ -41,15 +42,37 @@ class Rider{
     //how to check this?
    }
    velYo = velY; //store velocity once it hits the track as velYo
+   velXo = velX;
    affectVelocities(); //this method will do a while(onTrack), once that ends fall() is called again. If you fall off the screen, over
   }
   //
   //
   void affectVelocities(){
-   //check which part of track we are on
-   //calculate the slope from that
-   //arctan(slope) = theta
-   //from theta, if it's negative that means you need to add to Vx and Vy, if it's positive you are subtracting
+    int currentSeg = checkIfOnTrack();
+    while (onTrack){
+     //calculate the slope
+      Float slope = (t.track.get(i + 2) - t.track.get(i + 1)) / (t.track.get(i + 3) - t.track.get(i)); //
+     //arctan(slope) = theta
+      Float theta = atan(slope);
+      Float force = mass * gravityVal * sin(theta); //since for downhill theta will be (-), does this cancel out? yea 
+     //from theta, if it's negative that means you need to add to Vx and Vy, if it's positive you are subtracting
+      if (theta > 0){
+       //if direction is positive that means ur going down. if theta is greater than 0, then you're going up and need to change direction 
+       if ( direction > 0){ //as in, you've been going down (so adding to teh velocities)
+         direction = -1;
+         velYo = velYo * direction; //make that now upwards velocity, not sure how accurate this is
+       }
+       //force is parallel to incline, so theta is used for both calculations
+       velX = velXo - (cos(theta) * force)/mass * (System.currentTimeMillis() / 1000); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
+       velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000);
+      }else{
+        direction = 1; //cuz going down as in towards the heighest coords
+        velX = velXo + (cos(theta) * force)/mass * (System.currentTimeMillis() / 1000);
+        velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000);
+      }
+     currentSeg = checkIfOnTrack();
+    }
+   
    //from vX and adding to vY (which upon hittin an incline should turn negative. where will we write that? here
    //just do if theta > 0, well first off if you're coming from a horizontal, turn vX into vY and vX componnents based on the slope
    //of the new hill. if it's one slope into another, calculate the downwards force of the ball, then Fy, then to calculate
@@ -75,14 +98,15 @@ class Rider{
     ellipseMode(CORNERS); //so now, make upper left corner and bottom right as x, y -- that's like where the front wheel will be
     float wid = 50;
     float hei = 50;
-    ellipse(x-wid, y-hei, x, y);
+    ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
   }
   //
   //
   //needs a way to 
   //a) have a track be a field of a rider
   //b) access every coordinate in the arrayList --> can j be done by using t.track.get() ...
-  void checkIfOnTrack(){
+  //return index of first coord of section of line u r on
+  int checkIfOnTrack(){
     //doesn't work rn cuz the classes haven't been merged. but track si the AL of points
     for (int i = 0; i<t.track.size() - 3; i+= 4){
      Float x1 = t.track.get(i);
@@ -93,10 +117,12 @@ class Rider{
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
       if ((y1 - y) == slope * (x1 - x)){
          onTrack = true; 
+         return i;
       }
      }
     }
     onTrack = false;
+    return -1;
  }
   /*
   public boolean isPartOf(Float a, Float b){
