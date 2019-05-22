@@ -6,6 +6,8 @@ class Rider{
   boolean onTrack = false; //when this is false, affectVelY and use gravity
   int direction = 1;
   Track t;
+  float startTimeTheta; //*
+  float theta; //*
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
@@ -46,14 +48,21 @@ class Rider{
    affectVelocities(); //this method will do a while(onTrack), once that ends fall() is called again. If you fall off the screen, over
   }
   //
+  //make a new timer every time this is called? yes bc that's the point of velYo and velXo 
+  //
   //
   void affectVelocities(){
     int currentSeg = checkIfOnTrack();
+    //float startTime = System.currentTimeMillis() / 1000;
+    //actually no, if this is called every frame, we know that the time has just been 1/60 s
     while (onTrack){
-     //calculate the slope
-      Float slope = (t.track.get(i + 2) - t.track.get(i + 1)) / (t.track.get(i + 3) - t.track.get(i)); //
-     //arctan(slope) = theta
-      Float theta = atan(slope);
+     //calculate the slope, and if it's not the same as you've been on, change and take a new time
+      if (calcTheta(currentSeg) != theta){
+        theta = calcTheta(currentSeg);
+        startTimeTheta = System.currentTimeMillis() / 1000;
+        velX = velXo;
+        velY = velYo; // now that we have a new theta, use the other slope's velocities as original
+      }
       Float force = mass * gravityVal * sin(theta); //since for downhill theta will be (-), does this cancel out? yea 
      //from theta, if it's negative that means you need to add to Vx and Vy, if it's positive you are subtracting
       if (theta > 0){
@@ -61,26 +70,31 @@ class Rider{
        if ( direction > 0){ //as in, you've been going down (so adding to teh velocities)
          direction = -1;
          velYo = velYo * direction; //make that now upwards velocity, not sure how accurate this is
+         //so now if you add velYo * time to current y, y will decrease and you'll go up!
        }
        //force is parallel to incline, so theta is used for both calculations
-       velX = velXo - (cos(theta) * force)/mass * (System.currentTimeMillis() / 1000); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
-       velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000);
+       velX = velXo - (cos(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
+       velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta); //velY should be negative, add to it to be more pos
+       //velYo = velY;
+       //velXo = velX;
       }else{
         direction = 1; //cuz going down as in towards the heighest coords
-        velX = velXo + (cos(theta) * force)/mass * (System.currentTimeMillis() / 1000);
-        velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000);
+        velX = velXo + (cos(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta);
+        velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta);
+        //velYo = velY; since you keep the time from mulitple calls, don't touch this until u switch sloeps
+        //velXo = velX;
       }
      currentSeg = checkIfOnTrack();
     }
-   
-   //from vX and adding to vY (which upon hittin an incline should turn negative. where will we write that? here
-   //just do if theta > 0, well first off if you're coming from a horizontal, turn vX into vY and vX componnents based on the slope
-   //of the new hill. if it's one slope into another, calculate the downwards force of the ball, then Fy, then to calculate
-   //it's velocity up (Fy from the downhill is what powers it up), Fyfromdownhill - Fyfrominclineit'sdealingwith = Fycurrent, Fyc/m = a
-   //and j add that to the velocity. but ig what i mean is how does it know to set the upwards velocity at 0 for a split second?
-   //that's not what happens IRL
-   //have a direction int? just 1 or -1? and if the new slope is upwards, direction is -1
   }
+  //takes in coord, returns slope AS THETA
+  float calcTheta(int i) { //take in the coord of the current line
+    Float slope = (t.track.get(i + 2) - t.track.get(i + 1)) / (t.track.get(i + 3) - t.track.get(i)); //
+    //arctan(slope) = theta
+    Float theta = atan(slope);
+    return theta;
+  }
+  
   //
   //after it hits the track,
   //
