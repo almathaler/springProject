@@ -1,9 +1,11 @@
 //Final project!
 //fields
-LineRiderGame game;
+//LineRiderGame game;
 Rider guy;
 Vehicle bike; 
 Track t = new Track();
+Boolean doneWithTrack = false;
+LineRiderGame game = new LineRiderGame(100, 100);
 class LineRiderGame{
   Rider guy;
   float startX, startY;
@@ -18,8 +20,16 @@ class LineRiderGame{
     //assuming gravity will be 9.81
     //should this be calculated from the first platform or from the ground?
     float GPE = 9.81 * 50.0 * (height - startY); 
-    guy = new Rider(50.0, 9.81, GPE, GPE, 0, startX, startY, 0, 0);
+    guy = new Rider(50.0, 9.81, GPE + 0.0, GPE + 0.0, 0.0, startX, startY, 0.0, 0.0, t);
   }
+}
+
+void keyPressed(){
+   if (key ==  CODED){
+     if (keyCode == ENTER){// if the track is finished, this will become true. Helps so that the rider doesn't fall until track is done. basically starts the game
+        doneWithTrack = true; 
+     }
+   }
 }
 
 
@@ -30,7 +40,14 @@ void setup(){
 
 void draw(){
   background(255);
-   t.display();
+  game.guy.display();
+ // t.display();
+  if (doneWithTrack){
+    game.guy.fall();
+    game.guy.move();
+  } else {
+    t.display();
+  }
 }
 //i feel like this should be part of the 
 //rider class, it will take in a Track as a paramtere
@@ -52,5 +69,7 @@ public boolean isPartOf(Float a, Float b){
 }
 
 void mouseClicked(){
-   t.add(mouseX + 0.0, mouseY + 0.0); 
+  if (!doneWithTrack){
+     t.add(mouseX + 0.0, mouseY + 0.0); 
+  }
 }
