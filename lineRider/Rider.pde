@@ -1,5 +1,7 @@
 class Rider{
-  int timeCounter = 0;
+  //int currentSeg = checkIfOnTrack();
+  //float velocity;
+  int timeCounter = 0;//updated every time draw is called, adds one every second
   float mass, gravityVal, eTotal, GPE, KE; //used to calculate effect on Vs, also if character should die
   float x, y; //position
   float velY, velX; //velocity
@@ -45,12 +47,13 @@ class Rider{
     System.out.println(checkIfOnTrack() + "");
     //death
     //how to check this?
-    timeCounter++;
-   } else {
+    //timeCounter++;
+   }/* else {
    velYo = velY; //store velocity once it hits the track as velYo
    velXo = velX;
    affectVelocities(); //this method will do a while(onTrack), once that ends fall() is called again. If you fall off the screen, over
    }
+   */
   }
   //
   //make a new timer every time this is called? yes bc that's the point of velYo and velXo 
@@ -60,13 +63,15 @@ class Rider{
     int currentSeg = checkIfOnTrack();
     //float startTime = System.currentTimeMillis() / 1000;
     //actually no, if this is called every frame, we know that the time has just been 1/60 s
-    while (onTrack){
+    
+    //while (onTrack){
      //calculate the slope, and if it's not the same as you've been on, change and take a new time
       if (calcTheta(currentSeg) != theta){
         theta = calcTheta(currentSeg);
-        startTimeTheta = System.currentTimeMillis() / 1000;
-        velX = velXo;
-        velY = velYo; // now that we have a new theta, use the other slope's velocities as original
+        //startTimeTheta = System.currentTimeMillis() / 1000;
+        timeCounter = 0;
+        velXo = velX;
+        velYo = velY; // now that we have a new theta, use the other slope's velocities as original
       }
       //NOTE: sin(theta) will be negative if this slope is downwards
       Float force = mass * gravityVal * sin(theta); //since for downhill theta will be (-), does this cancel out? yea 
@@ -79,22 +84,40 @@ class Rider{
          //so now if you add velYo * time to current y, y will decrease and you'll go up!
        }
        //force is parallel to incline, so theta is used for both calculations
-       velX = velXo - (cos(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
-       velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta); //velY should be negative, add to it to be more pos
+       velX = velXo + (cos(theta) * force)/mass * timeCounter;//(System.currentTimeMillis() / 1000 - startTimeTheta); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
+       velY = velYo + (sin(theta) * force)/mass * timeCounter; //(System.currentTimeMillis() / 1000 - startTimeTheta); //velY should be negative, add to it to be more pos
        //velYo = velY;
        //velXo = velX;
       }else{
         //but i think that that is okay, because velY will be mulitplied by sintheta which is also negative. but for x need to multiple by neg one
         direction = 1; //cuz going down as in towards the heighest coords
-        velX = velXo + (cos(theta) * -1 * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta);
-        velY = velYo + (sin(theta) * force)/mass * (System.currentTimeMillis() / 1000 - startTimeTheta);
+        velX = velXo + (cos(theta)  * -1 * force)/mass * timeCounter;//(System.currentTimeMillis() / 1000 - startTimeTheta);
+        velY = velYo + (sin(theta) * force)/mass * timeCounter; //(System.currentTimeMillis() / 1000 - startTimeTheta);
         //velYo = velY; since you keep the time from mulitple calls, don't touch this until u switch sloeps
         //velXo = velX;
       }
      currentSeg = checkIfOnTrack();
-    }
-    fall();
+    //}
+    //fall();
   }
+  
+  
+  
+  //maybe new affectVelocities?
+  /*
+  void affectVelocities2(){
+    int currentSeg = checkIfOnTrack();
+    if (calcTheta(currentSeg) != theta){
+        theta = calcTheta(currentSeg);
+        timeCounter = 0;
+        velXo = velX;
+        velYo = velY; // now that we have a new theta, use the other slope's velocities as original
+     }
+     Float force = mass * gravityVal * sin(theta);
+     velocity = 
+     
+  }
+  */
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
     Float slope = (t.track.get(i + 2) - t.track.get(i + 1)) / (t.track.get(i + 3) - t.track.get(i)); //
@@ -113,6 +136,7 @@ class Rider{
                         //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
     y += velY;// * (System.currentTimeMillis() - startTimeTheta);
     //keep move JUST LIKE THIS!!! all thecomplicated methods change velocity. or should we haqve a check velocity first?
+    timeCounter++;
   }
   //
   //
