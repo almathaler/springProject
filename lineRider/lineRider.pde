@@ -50,11 +50,11 @@ void draw(){
        game.guy.timeCounter = 0;
        started = true;
     }
-    if (!game.guy.onTrack){
-      game.guy.fall();
-    } else {
-      game.guy.affectVelocities();
-    }
+    //if (!game.guy.onTrack){
+    //  game.guy.fall();
+    //} else {
+    //  game.guy.affectVelocities();
+    //}
     game.guy.move();
   } 
     t.display();
@@ -85,6 +85,6 @@ void mouseClicked(){
   }
   */
   
-  t.add(100.0, 200.0);
-  t.add(300.0, 400.0);
+  t.add(90.0, 200.0);
+  t.add(475.0, 345.0);
 }

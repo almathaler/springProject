@@ -61,7 +61,11 @@ class Rider{
   //
   //
   void affectVelocities(){
-    int currentSeg = checkIfOnTrack();
+    System.out.println("check on track of affectVel");
+    int currentSeg = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
+    if (currentSeg == -1){ //check, but why does this return -1 if must be true for affectVel??
+      fall();
+    }
     //float startTime = System.currentTimeMillis() / 1000;
     //actually no, if this is called every frame, we know that the time has just been 1/60 s
     
@@ -124,9 +128,9 @@ class Rider{
   float calcTheta(int i) { //take in the coord of the current line
     Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
     //arctan(slope) = theta
-    System.out.println("slope calculated in calcTheta: " + slope);
+    //System.out.println("slope calculated in calcTheta: " + slope);
     Float theta = atan(slope);
-    System.out.println("theta calculated in calcTheta: " + theta);
+    //System.out.println("theta calculated in calcTheta: " + theta);
     return theta;
   }
   
@@ -135,6 +139,11 @@ class Rider{
   //
   //
   void move(){
+    if (onTrack){
+      affectVelocities();
+    }else{
+      fall();
+    }
     //are these ok timings? should update proportional to current frame rate
     x += velX;//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                         //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
@@ -146,6 +155,11 @@ class Rider{
   //
   void display(){
     //keep x and y right at the bottom. so make 
+    if (onTrack){
+      fill(255, 0, 0);
+    }else{
+      fill(0, 255, 0);
+    }
     ellipseMode(CORNERS); //so now, make upper left corner and bottom right as x, y -- that's like where the front wheel will be
     float wid = 50;
     float hei = 50;
@@ -169,15 +183,18 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      //if between the points
-     //if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
+     if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
        //and on the line 
-      if ((y1 - y) - (slope * (x1 - x)) < 1000){
+      if ((y1 - y) - (slope * (x1 - x)) < 10){
          onTrack = true; 
+         System.out.println("on track, segment: " + i);
          return i;
       }
      //}
     }
+  }
     onTrack = false;
+    System.out.println("NOT on track, segment: ");
     return -1;
  }
   /*
