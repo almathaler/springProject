@@ -79,12 +79,9 @@ public boolean isPartOf(Float a, Float b){
 }
 
 void mouseClicked(){
-  /*
+  
   if (!doneWithTrack){
      t.add(mouseX + 0.0, mouseY + 0.0); 
   }
-  */
   
-  t.add(90.0, 200.0);
-  t.add(475.0, 345.0);
 }

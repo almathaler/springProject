@@ -14,7 +14,7 @@ class Rider{
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
-   this.gravityVal = gravityVal / 10;
+   this.gravityVal = gravityVal;
    this.eTotal = eTotal;
    this.GPE = GPE;
    this.KE = KE;
@@ -42,22 +42,10 @@ class Rider{
    if (!onTrack){
     //since it's first fall, velyo is just 0. but keep this for consistency?
     velY = velYo + (gravityVal)*(timeCounter / 60); //not adding to a value, recalculating every time
-    //System.out.println(System.currentTimeMillis() % 1000000 - startTimeTheta % 1000000);
     //keep x speed the same
     checkIfOnTrack();
-    //System.out.println(checkIfOnTrack() + "");
-    //death
-    //how to check this?
-    //timeCounter++;
-   }/* else {
-   velYo = velY; //store velocity once it hits the track as velYo
-   velXo = velX;
-   affectVelocities(); //this method will do a while(onTrack), once that ends fall() is called again. If you fall off the screen, over
    }
-   */
   }
-  //
-  //make a new timer every time this is called? yes bc that's the point of velYo and velXo 
   //
   //made this a boolean so that it can end after fall() if fall() is called
   boolean affectVelocities(){
@@ -112,25 +100,6 @@ class Rider{
     //fall();
     return true;
   }
-  
-  
-  
-  
-  //maybe new affectVelocities?
-  /*
-  void affectVelocities2(){
-    int currentSeg = checkIfOnTrack();
-    if (calcTheta(currentSeg) != theta){
-        theta = calcTheta(currentSeg);
-        timeCounter = 0;
-        velXo = velX;
-        velYo = velY; // now that we have a new theta, use the other slope's velocities as original
-     }
-     Float force = mass * gravityVal * sin(theta);
-     velocity = 
-     
-  }
-  */
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
     Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
@@ -152,9 +121,9 @@ class Rider{
       fall();
     }
     //are these ok timings? should update proportional to current frame rate
-    x += velX;//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
+    x += velX * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                         //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
-    y += velY;// * (System.currentTimeMillis() - startTimeTheta);
+    y += velY * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
     //keep move JUST LIKE THIS!!! all thecomplicated methods change velocity. or should we haqve a check velocity first?
     timeCounter++;
   }
@@ -172,13 +141,6 @@ class Rider{
     float hei = 50;
     ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
   }
-  //
-  //
-  //needs a way to 
-  //a) have a track be a field of a rider
-  //b) access every coordinate in the arrayList --> can j be done by using t.track.get() ...
-  //return index of first coord of section of line u r on
-  
   // return index, also affect onTrack boolean
   //
   int checkIfOnTrack(){
@@ -194,7 +156,7 @@ class Rider{
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
        System.out.print("between the 2 points \t" );
        //and on the line 
-      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 10){ 
+      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){ 
          onTrack = true; 
          System.out.println("on track, segment: " + i); //.3766   -3.766
          return i;
@@ -206,21 +168,4 @@ class Rider{
     System.out.println("NOT on track, segment: ");
     return -1;
  }
-  /*
-  public boolean isPartOf(Float a, Float b){
-  for (int i = 0; i < t.track.size() - 3; i+= 4){
-    Float x1 = t.track.get(i);
-    Float y1 = t.track.get(i + 1);
-    Float x2 = t.track.get(i + 2);
-    Float y2 = t.track.get(i + 3);
-    Float slope = (y2 - y1) / (x2 - x1);
-    if (((x1 <= a && x2 >= a) || (x1 >= a && x2 <= a)) && ((y1 <= b && y2 >= b) || (y1 >= b & y2 <= b))){
-      if ((y1 - b) == slope * (x1 - a)){
-         return true; 
-      }
-    }
-  }
-  return false;
-}
-  */
 }
