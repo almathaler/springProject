@@ -38,13 +38,14 @@ class Rider{
   void fall(){ //when game is starting, you don't need to do anything to velX. but i guess we can just have
                     //one fall function called fall() which does same thing to velY and keeps x just the same... well that's every fall
                     //i guess we can just have on fall(0 function and then one affectVelocities function 
-   /*while*/ if (!onTrack){
+   //while //Must be an if statement because it is called in draw every time
+   if (!onTrack){
     //since it's first fall, velyo is just 0. but keep this for consistency?
     velY = velYo + (gravityVal)*(timeCounter / 60); //not adding to a value, recalculating every time
     //System.out.println(System.currentTimeMillis() % 1000000 - startTimeTheta % 1000000);
     //keep x speed the same
     checkIfOnTrack();
-    System.out.println(checkIfOnTrack() + "");
+    //System.out.println(checkIfOnTrack() + "");
     //death
     //how to check this?
     //timeCounter++;
@@ -68,6 +69,7 @@ class Rider{
      //calculate the slope, and if it's not the same as you've been on, change and take a new time
       if (calcTheta(currentSeg) != theta){
         theta = calcTheta(currentSeg);
+        System.out.println(degrees(theta));
         //startTimeTheta = System.currentTimeMillis() / 1000;
         timeCounter = 0;
         velXo = velX;
@@ -84,15 +86,15 @@ class Rider{
          //so now if you add velYo * time to current y, y will decrease and you'll go up!
        }
        //force is parallel to incline, so theta is used for both calculations
-       velX = velXo + (cos(theta) * force)/mass * timeCounter / 60;//(System.currentTimeMillis() / 1000 - startTimeTheta); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
-       velY = velYo + (sin(theta) * force)/mass * timeCounter / 60; //(System.currentTimeMillis() / 1000 - startTimeTheta); //velY should be negative, add to it to be more pos
+       velX = velXo + (cos(HALF_PI - theta) * force)/mass * timeCounter / 60;//(System.currentTimeMillis() / 1000 - startTimeTheta); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
+       velY = velYo + (sin(HALF_PI - theta) * force)/mass * timeCounter / 60; //(System.currentTimeMillis() / 1000 - startTimeTheta); //velY should be negative, add to it to be more pos
        //velYo = velY;
        //velXo = velX;
       }else{
         //but i think that that is okay, because velY will be mulitplied by sintheta which is also negative. but for x need to multiple by neg one
         direction = 1; //cuz going down as in towards the heighest coords
-        velX = velXo + (cos(theta)  * -1 * force)/mass * timeCounter / 60;//(System.currentTimeMillis() / 1000 - startTimeTheta);
-        velY = velYo + (sin(theta) * -1 *force)/mass * timeCounter / 60; //(System.currentTimeMillis() / 1000 - startTimeTheta);
+        velX = velXo + (cos(HALF_PI - theta)  * -1 * force)/mass * timeCounter / 60;//(System.currentTimeMillis() / 1000 - startTimeTheta);
+        velY = velYo + (sin(HALF_PI - theta) * -1 *force)/mass * timeCounter / 60; //(System.currentTimeMillis() / 1000 - startTimeTheta);
         //velYo = velY; since you keep the time from mulitple calls, don't touch this until u switch sloeps
         //velXo = velX;
       }
