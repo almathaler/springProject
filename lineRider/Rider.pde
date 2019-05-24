@@ -122,9 +122,11 @@ class Rider{
   */
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
-    Float slope = (t.track.get(i + 2) - t.track.get(i + 1)) / (t.track.get(i + 3) - t.track.get(i)); //
+    Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
     //arctan(slope) = theta
+    System.out.println("slope calculated in calcTheta: " + slope);
     Float theta = atan(slope);
+    System.out.println("theta calculated in calcTheta: " + theta);
     return theta;
   }
   
