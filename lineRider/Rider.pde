@@ -14,7 +14,7 @@ class Rider{
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
-   this.gravityVal = gravityVal / 20;
+   this.gravityVal = gravityVal / 10;
    this.eTotal = eTotal;
    this.GPE = GPE;
    this.KE = KE;
@@ -40,7 +40,7 @@ class Rider{
                     //i guess we can just have on fall(0 function and then one affectVelocities function 
    /*while*/ if (!onTrack){
     //since it's first fall, velyo is just 0. but keep this for consistency?
-    velY = velYo + (gravityVal)*(timeCounter); //not adding to a value, recalculating every time
+    velY = velYo + (gravityVal)*(timeCounter / 60); //not adding to a value, recalculating every time
     //System.out.println(System.currentTimeMillis() % 1000000 - startTimeTheta % 1000000);
     //keep x speed the same
     checkIfOnTrack();
@@ -84,15 +84,15 @@ class Rider{
          //so now if you add velYo * time to current y, y will decrease and you'll go up!
        }
        //force is parallel to incline, so theta is used for both calculations
-       velX = velXo + (cos(theta) * force)/mass * timeCounter;//(System.currentTimeMillis() / 1000 - startTimeTheta); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
-       velY = velYo + (sin(theta) * force)/mass * timeCounter; //(System.currentTimeMillis() / 1000 - startTimeTheta); //velY should be negative, add to it to be more pos
+       velX = velXo + (cos(theta) * force)/mass * timeCounter / 60;//(System.currentTimeMillis() / 1000 - startTimeTheta); //RED FLAGG!!!!! SHOULD HAVE COUNTER WITHIN ALGORITHIM
+       velY = velYo + (sin(theta) * force)/mass * timeCounter / 60; //(System.currentTimeMillis() / 1000 - startTimeTheta); //velY should be negative, add to it to be more pos
        //velYo = velY;
        //velXo = velX;
       }else{
         //but i think that that is okay, because velY will be mulitplied by sintheta which is also negative. but for x need to multiple by neg one
         direction = 1; //cuz going down as in towards the heighest coords
-        velX = velXo + (cos(theta)  * -1 * force)/mass * timeCounter;//(System.currentTimeMillis() / 1000 - startTimeTheta);
-        velY = velYo + (sin(theta) * force)/mass * timeCounter; //(System.currentTimeMillis() / 1000 - startTimeTheta);
+        velX = velXo + (cos(theta)  * -1 * force)/mass * timeCounter / 60;//(System.currentTimeMillis() / 1000 - startTimeTheta);
+        velY = velYo + (sin(theta) * -1 *force)/mass * timeCounter / 60; //(System.currentTimeMillis() / 1000 - startTimeTheta);
         //velYo = velY; since you keep the time from mulitple calls, don't touch this until u switch sloeps
         //velXo = velX;
       }
@@ -165,13 +165,13 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      //if between the points
-     if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
+     //if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
        //and on the line 
-      if ((y1 - y) - (slope * (x1 - x)) < 10){
+      if ((y1 - y) - (slope * (x1 - x)) < 1000){
          onTrack = true; 
          return i;
       }
-     }
+     //}
     }
     onTrack = false;
     return -1;
