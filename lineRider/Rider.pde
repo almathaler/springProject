@@ -1,4 +1,5 @@
 class Rider{
+  int timeCounter = 0;
   float mass, gravityVal, eTotal, GPE, KE; //used to calculate effect on Vs, also if character should die
   float x, y; //position
   float velY, velX; //velocity
@@ -11,7 +12,7 @@ class Rider{
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
-   this.gravityVal = gravityVal;
+   this.gravityVal = gravityVal / 10;
    this.eTotal = eTotal;
    this.GPE = GPE;
    this.KE = KE;
@@ -37,15 +38,18 @@ class Rider{
                     //i guess we can just have on fall(0 function and then one affectVelocities function 
    /*while*/ if (!onTrack){
     //since it's first fall, velyo is just 0. but keep this for consistency?
-    velY = velYo + (gravityVal)*(System.currentTimeMillis() / 1000); //not adding to a value, recalculating every time
+    velY = velYo + (gravityVal)*(timeCounter); //not adding to a value, recalculating every time
+    //System.out.println(System.currentTimeMillis() % 1000000 - startTimeTheta % 1000000);
     //keep x speed the same
     checkIfOnTrack();
     //death
     //how to check this?
-   }
+    timeCounter++;
+   } else {
    velYo = velY; //store velocity once it hits the track as velYo
    velXo = velX;
    affectVelocities(); //this method will do a while(onTrack), once that ends fall() is called again. If you fall off the screen, over
+   }
   }
   //
   //make a new timer every time this is called? yes bc that's the point of velYo and velXo 
@@ -104,9 +108,9 @@ class Rider{
   //
   void move(){
     //are these ok timings? should update proportional to current frame rate
-    x += velX*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
+    x += velX;//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                         //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
-    y += velY * (System.currentTimeMillis() - startTimeTheta);
+    y += velY;// * (System.currentTimeMillis() - startTimeTheta);
     //keep move JUST LIKE THIS!!! all thecomplicated methods change velocity. or should we haqve a check velocity first?
   }
   //
