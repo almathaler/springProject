@@ -12,7 +12,7 @@ class Rider{
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
-   this.gravityVal = gravityVal / 10;
+   this.gravityVal = gravityVal / 20;
    this.eTotal = eTotal;
    this.GPE = GPE;
    this.KE = KE;
@@ -42,6 +42,7 @@ class Rider{
     //System.out.println(System.currentTimeMillis() % 1000000 - startTimeTheta % 1000000);
     //keep x speed the same
     checkIfOnTrack();
+    System.out.println(checkIfOnTrack() + "");
     //death
     //how to check this?
     timeCounter++;
@@ -142,7 +143,7 @@ class Rider{
      //if between the points
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
        //and on the line 
-      if ((y1 - y) == slope * (x1 - x)){
+      if ((y1 - y) - (slope * (x1 - x)) < 10){
          onTrack = true; 
          return i;
       }

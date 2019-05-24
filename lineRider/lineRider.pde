@@ -1,10 +1,12 @@
 //Final project!
+//Final project!
 //fields
 //LineRiderGame game;
 Rider guy;
 Vehicle bike; 
 Track t = new Track();
 Boolean doneWithTrack = false;
+Boolean started = false;
 LineRiderGame game = new LineRiderGame(100, 100);
 class LineRiderGame{
   Rider guy;
@@ -28,6 +30,7 @@ void keyPressed(){
    if (key ==  CODED){
      if (keyCode == SHIFT){// if the track is finished, this will become true. Helps so that the rider doesn't fall until track is done. basically starts the game
         doneWithTrack = true; 
+        System.out.println();
      }
    }
 }
@@ -43,14 +46,18 @@ void draw(){
   game.guy.display();
  // t.display();
   if (doneWithTrack){
-    System.out.println("" + game.guy.onTrack);
+    if (!started){
+       game.guy.timeCounter = 0;
+       started = true;
+    }
     if (!game.guy.onTrack){
       game.guy.fall();
+    } else {
+      game.guy.affectVelocities();
     }
     game.guy.move();
-  } else {
+  } 
     t.display();
-  }
 }
 //i feel like this should be part of the 
 //rider class, it will take in a Track as a paramtere
