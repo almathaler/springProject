@@ -26,7 +26,7 @@ class LineRiderGame{
 
 void keyPressed(){
    if (key ==  CODED){
-     if (keyCode == ENTER){// if the track is finished, this will become true. Helps so that the rider doesn't fall until track is done. basically starts the game
+     if (keyCode == SHIFT){// if the track is finished, this will become true. Helps so that the rider doesn't fall until track is done. basically starts the game
         doneWithTrack = true; 
      }
    }
@@ -43,7 +43,10 @@ void draw(){
   game.guy.display();
  // t.display();
   if (doneWithTrack){
-    game.guy.fall();
+    System.out.println("" + game.guy.onTrack);
+    if (!game.guy.onTrack){
+      game.guy.fall();
+    }
     game.guy.move();
   } else {
     t.display();
