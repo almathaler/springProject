@@ -49,6 +49,7 @@ class Rider{
       theta = calcTheta(currentSeg);
       timeCounter = 0;
       velXo = velX;
+      velYo = velY;
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
         velYo = 0; //or just increasing by the wrong amount?
       }
@@ -74,7 +75,7 @@ class Rider{
          velYo = velYo * direction; //make that now upwards velocity, not sure how accurate this is
          //so now if you add velYo * time to current y, y will decrease and you'll go up!
          }
-         if ((velX == 0.0 && velY > 0.0)|| (velY == 0.0 && velX > 0.0)){ //if one has started going in reverse and the other hasn't
+         if (((velX == 0.0 && velY > 0.0)|| (velY == 0.0 && velX > 0.0)) && haveFallen){ //if one has started going in reverse and the other hasn't
            //make them both set to go in reverse
            System.out.println("MAKE BOTH ZERO");
            velXo = 0.0;
