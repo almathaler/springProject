@@ -2,7 +2,7 @@ class Rider{
   //int currentSeg = checkIfOnTrack();
   //float velocity;
   int timeCounter = 0;//updated every time draw is called, adds one every second
-  float mass, gravityVal, eTotal, GPE, KE; //used to calculate effect on Vs, also if character should die
+  float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x, y; //position
   float velY, velX; //velocity
   float velYo, velXo;
@@ -12,12 +12,9 @@ class Rider{
   float startTimeTheta; //*
   float theta = 0; //* initializng this variable so null won't equal null in first if in affectVel
   //added track field to rider so it can check whether or not it's on
-  Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
+  Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
    this.gravityVal = gravityVal;
-   this.eTotal = eTotal;
-   this.GPE = GPE;
-   this.KE = KE;
    this.x = x;
    this.y = y;
    this.t = t; //the track

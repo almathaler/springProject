@@ -21,8 +21,8 @@ class LineRiderGame{
     this.startY = startY;
     //assuming gravity will be 9.81
     //should this be calculated from the first platform or from the ground?
-    float GPE = 9.81 * 50.0 * (height - startY); 
-    guy = new Rider(50.0, 9.81, GPE + 0.0, GPE + 0.0, 0.0, startX, startY, 0.0, 0.0, t);
+    //float GPE = 9.81 * 50.0 * (height - startY); 
+    guy = new Rider(50.0, 9.81, startX, startY, 0.0, 0.0, t);
   }
 }
 
