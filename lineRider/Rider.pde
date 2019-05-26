@@ -26,6 +26,7 @@ class Rider{
   }
   
   void fall(){ 
+    System.out.println("FALLING");
    //while //Must be an if statement because it is called in draw every time
    if (!onTrack){
     //since it's first fall, velyo is just 0. but keep this for consistency?
@@ -48,8 +49,8 @@ class Rider{
       theta = calcTheta(currentSeg);
       timeCounter = 0;
       velXo = velX;
-      if (haveFallen){
-        velYo = 0;
+      if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
+        velYo = 0; //or just increasing by the wrong amount?
       }
        // now that we have a new theta, use the other slope's velocities as original
       //this is just a change to see from falling how the downward velocity will stop
@@ -72,6 +73,12 @@ class Rider{
          direction = -1;
          velYo = velYo * direction; //make that now upwards velocity, not sure how accurate this is
          //so now if you add velYo * time to current y, y will decrease and you'll go up!
+         }
+         if ((velX == 0.0 && velY > 0.0)|| (velY == 0.0 && velX > 0.0)){ //if one has started going in reverse and the other hasn't
+           //make them both set to go in reverse
+           System.out.println("MAKE BOTH ZERO");
+           velXo = 0.0;
+           velYo = 0.0;
          }
         //but i think that that is okay, because velY will be mulitplied by sintheta which is also negative. but for x need to multiple by neg one
         //cuz going down as in towards the heighest coords
