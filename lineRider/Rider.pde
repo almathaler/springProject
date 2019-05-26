@@ -1,6 +1,7 @@
 class Rider{
   //int currentSeg = checkIfOnTrack();
   //float velocity;
+  boolean haveFallen = false;
   int timeCounter = 0;//updated every time draw is called, adds one every second
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x, y; //position
@@ -23,18 +24,8 @@ class Rider{
    //if slope is the same (on the same line), keep using velYo and velXo to cahnge veocity. once the slope changes
    //current velocities become original ones
   }
-  //
-  //when u update velocity:
-  //
-  //velX = velXo + (cos(theta)*F)/m * (System.currentTimeMillis() / 1000);
-  //velY = velYo + (sin(theta)*F)/m * (System.currentTimeMillis() / 1000);
-  //F is calculated based on slope (theta) of that segment of the track. It's mgsinTheta, add to velX and velY if it's
-  //downhill and subtract to x add to y (since if going up, velY should be (-)) for incline
-  //once you're on a new piece of track, make velYo and velXo velY and velX
-  //
-  void fall(){ //when game is starting, you don't need to do anything to velX. but i guess we can just have
-                    //one fall function called fall() which does same thing to velY and keeps x just the same... well that's every fall
-                    //i guess we can just have on fall(0 function and then one affectVelocities function 
+  
+  void fall(){ 
    //while //Must be an if statement because it is called in draw every time
    if (!onTrack){
     //since it's first fall, velyo is just 0. but keep this for consistency?
@@ -42,35 +33,32 @@ class Rider{
     //keep x speed the same
     checkIfOnTrack();
    }
+   haveFallen = true;
   }
   //
   //made this a boolean so that it can end after fall() if fall() is called
   boolean affectVelocities(){
-    System.out.println("check on track of affectVel");
     int currentSeg = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
     if (currentSeg == -1){ //check, but why does this return -1 if must be true for affectVel??
-      fall(); 
+      //fall(); 
       return false;
     }
-    //float startTime = System.currentTimeMillis() / 1000;
-    //actually no, if this is called every frame, we know that the time has just been 1/60 s
-    
-    //while (onTrack){
-     //calculate the slope, and if it's not the same as you've been on, change and take a new time
-      if (calcTheta(currentSeg) != theta){
-        theta = calcTheta(currentSeg);
-        System.out.println(degrees(theta));
-        //startTimeTheta = System.currentTimeMillis() / 1000;
-        timeCounter = 0;
-        velXo = velX;
-        velYo = 0; // now that we have a new theta, use the other slope's velocities as original
-        //this is just a change to see from falling how the downward velocity will stop
+   //calculate the slope, and if it's not the same as you've been on, change and take a new time
+    if (calcTheta(currentSeg) != theta){
+      theta = calcTheta(currentSeg);
+      timeCounter = 0;
+      velXo = velX;
+      if (haveFallen){
+        velYo = 0;
       }
+       // now that we have a new theta, use the other slope's velocities as original
+      //this is just a change to see from falling how the downward velocity will stop
+      System.out.println("different slope, now velXo: " + velXo + "\t velYo: " + velYo);
+    }
       //NOTE: sin(theta) will be negative if this slope is downwards
-      Float force = mass * gravityVal * sin(theta); //since for downhill theta will be (-), does this cancel out? yea 
-     //from theta, if it's negative that means you need to add to Vx and Vy, if it's positive you are subtracting
+      Float force = mass * gravityVal * sin(theta); //NOTE: bc of weird coords, theta is (+) for downhills
       if (theta > 0){
-       //if direction is positive that means ur going down. actually, slope is calculated based on coords
+       //if direction is positive that 3 ur going down. actually, slope is calculated based on coords
        //so theta has to be less than 0 to indicate an incline
        direction = 1; 
        //force is parallel to incline, so theta is used for both calculations
@@ -87,23 +75,24 @@ class Rider{
          }
         //but i think that that is okay, because velY will be mulitplied by sintheta which is also negative. but for x need to multiple by neg one
         //cuz going down as in towards the heighest coords
-        velX = velXo + (cos(theta)  * -1 * force)/mass * timeCounter / 60;//(System.currentTimeMillis() / 1000 - startTimeTheta);
-        velY = velYo + (sin(theta) * -1 *force)/mass * timeCounter / 60; //(System.currentTimeMillis() / 1000 - startTimeTheta);
+        velX = velXo - (cos(theta + PI)*force)/mass * timeCounter / 60;//(System.currentTimeMillis() / 1000 - startTimeTheta);
+        velY = velYo + (sin(theta)*force)/mass * timeCounter / 60; //(System.currentTimeMillis() / 1000 - startTimeTheta);
         //velYo = velY; since you keep the time from mulitple calls, don't touch this until u switch sloeps
         //velXo = velX;
       }
-     currentSeg = checkIfOnTrack();
+    //currentSeg = checkIfOnTrack(); -- needed this j when it was a while loop
     //}
     //fall();
+    haveFallen = false;
     return true;
   }
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
     Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
     //arctan(slope) = theta
-    System.out.println("slope calculated in calcTheta: " + slope);
+    //System.out.println("slope calculated in calcTheta: " + slope);
     Float theta = atan(slope);
-    System.out.println("theta calculated in calcTheta: " + theta);
+    //System.out.println("theta calculated in calcTheta: " + theta);
     return theta;
   }
   
@@ -117,6 +106,7 @@ class Rider{
     }else{
       fall();
     }
+    System.out.println("velX: " + velX + "\t velY: " + velY);
     //are these ok timings? should update proportional to current frame rate
     x += velX * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                         //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
@@ -148,21 +138,18 @@ class Rider{
      Float x2 = t.track.get(i+2);
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
-     System.out.print("x and y are: " + x + ", " + y + ", " + "\t");
+     //System.out.print("x and y are: " + x + ", " + y + ", " + "\t");
      //if between the points
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-       System.out.print("between the 2 points \t" );
        //and on the line 
       if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){ 
          onTrack = true; 
-         System.out.println("on track, segment: " + i); //.3766   -3.766
          return i;
       }
      //}
     }
   }
     onTrack = false;
-    System.out.println("NOT on track, segment: ");
     return -1;
  }
 }
