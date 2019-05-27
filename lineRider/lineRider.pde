@@ -7,6 +7,7 @@ Vehicle bike;
 Track t = new Track();
 Boolean doneWithTrack = false;
 Boolean started = false;
+Boolean stopped = false;
 LineRiderGame game = new LineRiderGame(100, 100);
 class LineRiderGame{
   Rider guy;
@@ -22,7 +23,7 @@ class LineRiderGame{
     //assuming gravity will be 9.81
     //should this be calculated from the first platform or from the ground?
     //float GPE = 9.81 * 50.0 * (height - startY); 
-    guy = new Rider(50.0, 9.81, startX, startY, 0.0, 0.0, t);
+    guy = new Rider(50, 9.81, startX, startY, 0.0, 0.0, t);
   }
 }
 
@@ -32,6 +33,12 @@ void keyPressed(){
         doneWithTrack = true; 
         System.out.println();
      }
+   }
+   if (key == 's'){
+    stopped = true; 
+   }
+   if (key == 'e'){
+    stopped = false; 
    }
    if (key == '1'){
      t.type = 1;
@@ -54,7 +61,7 @@ void draw(){
   background(255);
   game.guy.display();
  // t.display();
-  if (doneWithTrack){
+  if (doneWithTrack && !stopped){
     if (!started){
        game.guy.timeCounter = 0;
        started = true;
@@ -85,7 +92,7 @@ public boolean isPartOf(Float a, Float b){
 
 void mouseClicked(){
   
-  if (!doneWithTrack){
+  if (!doneWithTrack || stopped){
      t.add(mouseX + 0.0, mouseY + 0.0); 
   }
   

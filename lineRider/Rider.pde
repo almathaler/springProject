@@ -99,8 +99,8 @@ class Rider{
       fill(0, 255, 0);
     }
     ellipseMode(CORNERS); //so now, make upper left corner and bottom right as x, y -- that's like where the front wheel will be
-    float wid = 50;
-    float hei = 50;
+    float wid = mass;
+    float hei = mass;
     ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
   }
   // return index, also affect onTrack boolean
