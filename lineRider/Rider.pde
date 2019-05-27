@@ -64,8 +64,11 @@ class Rider{
   }
   
   void move(){
-    System.out.println("Direction: " + direction);
-    System.out.println("vel: " + vel);
+    if (timeCounter % 6 == 0){
+      System.out.println("Direction: " + direction);
+      System.out.println("vel: " + vel);
+      System.out.println("current seg of track: " + trackOn);
+    }
     if (onTrack){
       affectVelocities();
     }else{
@@ -107,9 +110,8 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 15){ 
+      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){ 
          onTrack = true; 
-         System.out.println("on piece of track: " + i);
          return i;
       }
     }
