@@ -12,6 +12,7 @@ class Rider{
   float startTimeTheta; //*
   float theta = 0; //* initializng this variable so null won't equal null in first if in affectVel
   //added track field to rider so it can check whether or not it's on
+  Vehicle v;
   Rider(float mass, float gravityVal, float eTotal, float GPE, float KE, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
    this.gravityVal = gravityVal / 10;
@@ -25,6 +26,7 @@ class Rider{
    this.velXo = velX; //everytime u update velocity, store the old val in original. or actually j keep original if direction is the same
    //if slope is the same (on the same line), keep using velYo and velXo to cahnge veocity. once the slope changes
    //current velocities become original ones
+   v = new Vehicle(x, y, t, mass, gravityVal);
   }
   //
   //when u update velocity:
@@ -171,7 +173,8 @@ class Rider{
     float wid = 50;
     float hei = 50;
     ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
-  }
+    v.display();
+}
   //
   //
   //needs a way to 

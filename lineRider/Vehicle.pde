@@ -19,9 +19,9 @@ class Vehicle{
      this.mass = mass;
      this.gravityVal = gravityVal;
      w1x = x - 25;
-     w1y = y + 100;
+     w1y = y + 10;
      w2x = x + 25;
-     w2y = y + 100;
+     w2y = y + 10;
   }
   
   void display(){
@@ -35,4 +35,6 @@ class Vehicle{
       
       
   }
+  
+
 }
