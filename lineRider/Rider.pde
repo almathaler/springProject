@@ -58,9 +58,12 @@ class Rider{
   }
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
-    Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
-    Float theta = atan(slope);
-    return theta;
+    if (i + 3 < t.track.size() && i != -1){
+       Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
+      Float theta = atan(slope);
+      return theta;
+    }
+    return 0.0;
   }
 
   void move(){
@@ -88,16 +91,31 @@ class Rider{
   //
   //
   void display(){
+    //int holder = trackOn;
+    trackOn = checkIfOnTrack();
     //keep x and y right at the bottom. so make
     if (onTrack){
       fill(255, 0, 0);
     }else{
       fill(0, 255, 0);
     }
+    pushMatrix();
+    translate(x, y);
+     rotate(calcTheta(trackOn));
+     rect(0-50, 0, 50, 12.5);
+     ellipse(0, 0, 25, 25);
+     //rotate(calcTheta(trackOn));
+     
+     //translate(-x, -y);
+     //rotate(-calcTheta(trackOn));
+    popMatrix();
+      
+    /*
     ellipseMode(CORNERS); //so now, make upper left corner and bottom right as x, y -- that's like where the front wheel will be
     float wid = 50;
     float hei = 50;
     ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
+    */
   }
   // return index, also affect onTrack boolean
   //
@@ -110,7 +128,7 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
+      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 10){
          onTrack = true;
          return i;
       }
