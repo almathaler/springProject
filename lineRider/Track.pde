@@ -74,7 +74,7 @@ class Track{
       }
      strokeWeight(1); //so balll isn't heavy
      stroke(0, 0, 0); //set back to black
-     System.out.println("types: " + types);
+     //System.out.println("types: " + types);
     }
     
    

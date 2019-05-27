@@ -37,7 +37,10 @@ class Rider{
   //
   //made this a boolean so that it can end after fall() if fall() is called
   boolean affectVelocities(){
-    int trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
+    trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
+    if (timeCounter % 6 == 0){
+     System.out.println(" affectVel's trackOn: " + trackOn); 
+    }
     if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
       return false;
     }
@@ -52,7 +55,7 @@ class Rider{
     }
     //NOTE: sin(theta) will be negative if this slope is downwards
     Float force = mass * gravityVal * sin(direction); //NOTE: bc of weird coords, theta is (+) for downhills
-    vel = velo + force / mass * timeCounter;
+    vel = velo + force / mass * timeCounter/6.0;
     haveFallen = false;
     return true;
   }
@@ -72,6 +75,7 @@ class Rider{
     if (onTrack){
       affectVelocities();
     }else{
+      System.out.println("falling");
       fall();
     }
     if (haveFallen){
