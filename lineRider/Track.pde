@@ -36,11 +36,15 @@ class Track{
            return true; 
           }
         }
+        /*
         if (i >= 4){
             if (Math.abs(track.get(i) - track.get(i - 2)) <= 10 && Math.abs(track.get(i + 1) - track.get(i - 1)) <= 10){//if connected at the back? maybe this is unnecessary
                return true; 
             }
         }
+        */
+        //have to comment this out, bc game can't consider the last piece connected to another or else the getSlope gives out of bounds since
+        //onTrack variable assigned to something out of range
       }
      
      
