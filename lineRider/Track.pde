@@ -16,6 +16,9 @@ class Track{
    
    
    public boolean isConnected(int i){ // the purpose of this method is to take the index of the first value for a piece of the track and determine if it is connected to another part
+      if (i < 0){
+        return false;
+      }
       if (i == 0 && track.size() > 4){
           if (Math.abs(track.get(2) - track.get(4)) <= 10 && Math.abs(track.get(3) - track.get(5)) <= 10){//if connected at the front
             return true;

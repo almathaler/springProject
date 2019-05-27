@@ -1,0 +1,15 @@
+when you make the velY negative, it won't adhere
+to the track and it will bounce tho the velX is correct
+
+perhpas instead we can use momentum and impulse
+
+mv = ft
+
+calculate the momentum on impact, and then we also know force of the incline
+so calculate the time until the object is brought to zero, then velocity
+y starts going back down the incline (is positive again)
+
+once we know the time, we can find the acceleration (what to keep adding to 
+velYo) by using vf = vit + .5at^2 ? is that too hacky a way?
+
+
