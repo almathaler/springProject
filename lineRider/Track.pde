@@ -21,6 +21,17 @@ class Track{
      track.add(m);
    }
    
+   public float getMu(int type){
+     switch(type){
+       case 1:
+         return 0.0;
+       case 2:
+         return 0.20;
+       case 3:
+         return 0.40;
+     }
+     return 0.0;
+   }
    
    public boolean isConnected(int i){ // the purpose of this method is to take the index of the first value for a piece of the track and determine if it is connected to another part
       if (i < 0){
