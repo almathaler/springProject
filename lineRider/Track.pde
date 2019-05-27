@@ -51,24 +51,30 @@ class Track{
     public void display(){
       strokeWeight(4);
       for (int i = 0; i < track.size(); i += 4){
-        if (i == track.size() - 2){           //for implementing a feature where the user can see the line that they are drawing before confirming it
-          //pushMatrix();
-          switch(type){
+        switch(types.get(i/4)){ //get the corresponding color
            case 1: 
              stroke(0, 0, 0); //black
+             break;
            case 2:
              stroke(255, 141, 0); //orange
+             break;
            case 3:
              stroke(255, 0, 0); //red
-            
+             break;
           }
+        if (i == track.size() - 2){           //for implementing a feature where the user can see the line that they are drawing before confirming it
+          //pushMatrix();
           line(track.get(i), track.get(i + 1), mouseX, mouseY);
           //popMatrix();
         } else
         if (i < track.size() - 3){
+         
          line(track.get(i), track.get(i + 1), track.get(i + 2), track.get(i + 3)); 
         }
       }
+     strokeWeight(1); //so balll isn't heavy
+     stroke(0, 0, 0); //set back to black
+     System.out.println("types: " + types);
     }
     
    

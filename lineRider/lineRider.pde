@@ -32,14 +32,15 @@ void keyPressed(){
         doneWithTrack = true; 
         System.out.println();
      }
-     switch(key){
-       case '1':
-         t.type = 1;
-       case '2':
-         t.type = 2;
-       case '3':
-         t.type = 3;
-     }
+   }
+   if (key == '1'){
+     t.type = 1;
+   }
+   if (key == '2'){
+     t.type = 2;
+   }
+   if (key == '3'){
+     t.type = 3;
    }
 }
 
@@ -61,6 +62,7 @@ void draw(){
     game.guy.move();
   } 
     t.display();
+    
 }
 //i feel like this should be part of the 
 //rider class, it will take in a Track as a paramtere
