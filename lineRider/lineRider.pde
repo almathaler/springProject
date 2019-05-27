@@ -32,6 +32,14 @@ void keyPressed(){
         doneWithTrack = true; 
         System.out.println();
      }
+     switch(key){
+       case '1':
+         t.type = 1;
+       case '2':
+         t.type = 2;
+       case '3':
+         t.type = 3;
+     }
    }
 }
 

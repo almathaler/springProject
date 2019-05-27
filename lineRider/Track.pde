@@ -1,7 +1,11 @@
 import java.util.*;
 import java.io.*;
 class Track{
+   int type = 1;
+   //type 1, 2 and 3 to determine friction values. 1 is normal 2 is added friction and 3 is a lot of friction
    ArrayList<Float> track = new ArrayList<Float>();
+   ArrayList<Integer> types = new ArrayList<Integer>(); //will contain the types of the corresponding sections
+                                                        //indexing: i of types = i*4 of track
    //Track will be an arraylist of floats ordered {(x1),(y1), (x2),(y2)...}
    //if one point is equal to the last, then it is connected
    
@@ -10,6 +14,9 @@ class Track{
    }
    
    public void add(Float n, Float m){
+     if (track.size() % 4 == 0){ //if you are about to start a new segment
+       types.add(type); //take down the type of that segment
+     }
      track.add(n);
      track.add(m);
    }
@@ -42,9 +49,19 @@ class Track{
   
     
     public void display(){
+      strokeWeight(4);
       for (int i = 0; i < track.size(); i += 4){
         if (i == track.size() - 2){           //for implementing a feature where the user can see the line that they are drawing before confirming it
           //pushMatrix();
+          switch(type){
+           case 1: 
+             stroke(0, 0, 0); //black
+           case 2:
+             stroke(255, 141, 0); //orange
+           case 3:
+             stroke(255, 0, 0); //red
+            
+          }
           line(track.get(i), track.get(i + 1), mouseX, mouseY);
           //popMatrix();
         } else
