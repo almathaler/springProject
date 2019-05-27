@@ -37,6 +37,7 @@ class Rider{
   //
   //made this a boolean so that it can end after fall() if fall() is called
   boolean affectVelocities(){
+    //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
     trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
     if (timeCounter % 6 == 0){
      System.out.println(" affectVel's trackOn: " + trackOn); 
@@ -55,7 +56,20 @@ class Rider{
     }
     //NOTE: sin(theta) will be negative if this slope is downwards
     Float force = mass * gravityVal * sin(direction); //NOTE: bc of weird coords, theta is (+) for downhills
+    if (timeCounter % 6 == 0){
+     System.out.println("force: " + force); 
+    }
+    //take into account friction
+    Float friction = mass * gravityVal * cos(direction) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
+    if (force < 0){
+      force+=friction; //if it's downwards force, friction is upwards
+    }else{
+      force-=friction; //vice versa
+    }
     vel = velo + force / mass * timeCounter/6.0;
+    if (timeCounter % 6 == 0){
+     System.out.println("friction: " + friction + " net force: " + force + " velocity: " + vel); 
+    }
     haveFallen = false;
     return true;
   }
