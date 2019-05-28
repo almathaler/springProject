@@ -101,9 +101,12 @@ class Rider{
     }
     pushMatrix();
     translate(x, y);
-     rotate(calcTheta(trackOn));
-     rect(0-50, 0, 50, 12.5);
-     ellipse(0, 0, 25, 25);
+     ellipseMode(CORNERS);
+     rotate(calcTheta(trackOn))
+     float wid = 25.0;
+     float hei = 25.0
+     rect(0-50, 12.5, 50, 12.5);
+     ellipse(-wid/2, -hei, wid/2, 0);
      //rotate(calcTheta(trackOn));
      
      //translate(-x, -y);
@@ -128,7 +131,7 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 10){
+      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 5) || (Math.abs((y1 - y + 50 * cos(calcTheta(i)))) < 5)){
          onTrack = true;
          return i;
       }
