@@ -99,12 +99,12 @@ class Rider{
     }else{
       fill(0, 255, 0);
     }
+    float wid = 25.0;
+     float hei = 25.0
     pushMatrix();
     translate(x, y);
      ellipseMode(CORNERS);
      rotate(calcTheta(trackOn))
-     float wid = 25.0;
-     float hei = 25.0
      rect(0-50, 12.5, 50, 12.5);
      ellipse(-wid/2, -hei, wid/2, 0);
      //rotate(calcTheta(trackOn));
