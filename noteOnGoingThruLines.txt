@@ -1,0 +1,2 @@
+maybe it's because framerate inconsistency> would this be solved by using 
+system.currentTimeMilli? we need to make that change anyways
