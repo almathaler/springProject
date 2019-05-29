@@ -8,6 +8,7 @@ class Rider{
   float direction;
   boolean haveFallen;
   int trackOn = -1;
+  float theta = 0.0;
   Track t;
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
@@ -100,12 +101,17 @@ class Rider{
       fill(0, 255, 0);
     }
     float wid = 25.0;
-     float hei = 25.0
+     float hei = 25.0;
     pushMatrix();
     translate(x, y);
      ellipseMode(CORNERS);
-     rotate(calcTheta(trackOn))
-     rect(0-50, 12.5, 50, 12.5);
+     if (haveFallen){
+       theta += vel * 0.0001;
+       rotate(theta); 
+     } else {
+       rotate(calcTheta(trackOn));
+     }
+     rect(0-50, -12.5, 50, 12.5);
      ellipse(-wid/2, -hei, wid/2, 0);
      //rotate(calcTheta(trackOn));
      
@@ -123,6 +129,7 @@ class Rider{
   // return index, also affect onTrack boolean
   //
   int checkIfOnTrack(){
+    ArrayList<Integer> indicies = new ArrayList<Integer>();
 
     for (int i = 0; i<t.track.size() - 3; i+= 4){
      Float x1 = t.track.get(i);
@@ -131,10 +138,13 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 5) || (Math.abs((y1 - y + 50 * cos(calcTheta(i)))) < 5)){
+      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10) || (Math.abs((y1 - y + 50 * cos(calcTheta(i)))) < 10)){
          onTrack = true;
-         return i;
+         indicies.add(i);
       }
+    }
+    if (indicies.size() != 0){
+      return indicies.get(0);
     }
   }
     //if the above fails but there still is a piece connected ... buggy
