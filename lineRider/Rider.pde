@@ -52,6 +52,7 @@ class Rider{
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
     if (calcTheta(trackOn) != direction){
       direction = calcTheta(trackOn);
+      System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
