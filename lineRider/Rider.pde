@@ -8,6 +8,10 @@ class Rider{
   float direction;
   boolean haveFallen;
   int trackOn = -1;
+  //for testing
+  float capturedVel = 0.0;
+  float capturedDirection = 0.0;
+  //
   Track t;
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
@@ -116,6 +120,21 @@ class Rider{
     float wid = mass;
     float hei = mass;
     ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
+    
+    if (timeCounter % 60 == 0 || 
+        timeCounter % 60 == 10 ||
+        timeCounter % 60 == 20 ||
+        timeCounter % 60 == 30 ||
+        timeCounter % 60 == 40 ||
+        timeCounter % 60 == 50){
+      capturedVel = vel;
+      capturedDirection = direction;
+    }
+    textSize(20);
+    fill(255, 18, 169);
+    String s = "vel: " + capturedVel + " direction: " + capturedDirection;
+    text(s, x, y-hei/2.0);
+   
   }
   // return index, also affect onTrack boolean
   //
