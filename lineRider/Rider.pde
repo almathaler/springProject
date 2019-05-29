@@ -2,6 +2,7 @@ class Rider{
   int timeCounter = 0;//updated every time draw is called, adds one every second
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x, y; //position
+  float hx1, hx2, hx3, hy1, hy2, hy3; //will be used for hitbox for the rider
   float vel, velo;
   float fallingVelX, fallingVelY; //only use this for the falls
   boolean onTrack = false; //when this is false, affectVelY and use gravity
@@ -19,6 +20,8 @@ class Rider{
    this.t = t; //the track
    velo = 0.0;
    vel = 0.0;
+   hx1 = x - 50;
+   hy1 = ;
   }
 
   void fall(){
