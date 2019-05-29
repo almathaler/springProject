@@ -93,9 +93,22 @@ class Track{
          ellipse(track.get(i+2), track.get(i+3), 20, 20);
          fill(255, 0, 0);
          textSize(32);
-         float theta = atan((track.get(i+3)-track.get(i+1)) / (track.get(i+2)-track.get(i)));
-         String s = theta + "";
-         text(s, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0); //put the slope at the midpoint
+        float x1 = t.track.get(i);
+        float y1 = t.track.get(i+1);
+        float x2 = t.track.get(i+2);
+        float y2 = t.track.get(i+3);
+        pushMatrix();
+        translate (x1, y1);
+        //reason you push and pop --> bc atan2 finds it from the origin but we need the theta of a line 
+        //so move the origin to on e of the end points to calculate theta
+        Float theta = atan2(x2, y2);
+        popMatrix();
+        String s = theta + " : atan2";
+        text(s, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0); //put the slope at the midpoint
+        theta = atan((y2 - y1) / (x2 - x1));
+        s = theta + " : atan";
+        text(s, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0 - 20); //put the slope at the midpoint
+        
         }
       }
      strokeWeight(1); //so balll isn't heavy

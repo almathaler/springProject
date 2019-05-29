@@ -53,6 +53,7 @@ class Rider{
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
     if (calcTheta(trackOn) != theta){
       theta = calcTheta(trackOn); //shld be theta
+      direction = theta;
       ////System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
@@ -85,8 +86,10 @@ class Rider{
     }else{
       force-=friction; //vice versa
     }
+    System.out.println("net force: " + force);
     vel = velo + force / mass * timeCounter/6.0;
     if (vel < 0){
+     System.out.println("changing direction");
      vel *= -1;
      direction *= -1; //keep velocity positive, just change direction
     }
@@ -114,17 +117,22 @@ class Rider{
 
   void move(){
     if (timeCounter % 6 == 0){
-      ////System.out.println("Direction: " + direction);
-      ////System.out.println("vel: " + vel);
-      ////System.out.println("current seg of track: " + trackOn);
+      System.out.println("Direction: " + direction);
+      System.out.println("vel: " + vel);
+      System.out.println("current seg of track: " + trackOn);
+      if (!onTrack){
+        System.out.println("falling");
+      }
     }
     if (onTrack){
       affectVelocities();
     }else{
-      ////System.out.println("falling");
       fall();
     }
     if (haveFallen){
+      if (onTrack){
+       System.out.println("\n still falling tho on track"); 
+      }
       x += fallingVelX * (1.0 / 60.0);
       y += fallingVelY * (1.0 / 60.0);
     }else{
@@ -135,6 +143,7 @@ class Rider{
       y += vel *  sin(direction) * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
     }
     timeCounter++; //make this zero every time direction changes
+    //checkIfOnTrack(); //change
   }
   //
   //
