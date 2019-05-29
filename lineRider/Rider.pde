@@ -6,6 +6,7 @@ class Rider{
   float fallingVelX, fallingVelY; //only use this for the falls
   boolean onTrack = false; //when this is false, affectVelY and use gravity
   float direction;
+  float theta;
   boolean haveFallen;
   int trackOn = -1;
   //for testing
@@ -44,57 +45,83 @@ class Rider{
     //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
     trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
     if (timeCounter % 6 == 0){
-     System.out.println(" affectVel's trackOn: " + trackOn); 
+     //////System.out.println(" affectVel's trackOn: " + trackOn); 
     }
     if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
       return false;
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
-    if (calcTheta(trackOn) != direction){
-      direction = calcTheta(trackOn);
-      System.out.println("NEW DIRECTION: " + direction);
+    if (calcTheta(trackOn) != theta){
+      theta = calcTheta(trackOn); //shld be theta
+      ////System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
         velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
       }
     }
+    System.out.println("on segment: " + trackOn);
+    int intersecting = checkIfIntersecting();
+    if (intersecting != -1){
+      System.out.println("intersecting segment: " + intersecting);
+    }
     //NOTE: sin(theta) will be negative if this slope is downwards
-    Float force = mass * gravityVal * sin(direction); //NOTE: bc of weird coords, theta is (+) for downhills
+    //shld be theta
+    Float force = mass * gravityVal * sin(theta); //NOTE: bc of weird coords, theta is (+) for downhills
     if (timeCounter % 6 == 0){
-     System.out.println("force: " + force); 
+     //System.out.println("force: " + force); 
     }
     //take into account friction
-    Float friction = mass * gravityVal * cos(direction) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
-    if (force < 0){
+    //shld be theta
+    Float friction = mass * gravityVal * cos(theta) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
+    //shld be based on direction of ball's movement
+    //for instance on a \ when going from the bottom to the top, direction is between PI/2 and 3PI/2 and so
+    //both friction and force are pulling the bball back down (actually it's the exact same
+    //as the other case, but if vel > 0 then add friction and force and if it's less than 0 then it's going
+    // in the right direction as the force so force-=friction. if the direction is between 3PI/2 and PI/2 then go into
+    //the catch that is for vel < 0 (friction is with force) and vel > 0 (friction is against force, pulling it right up again)
+    if (direction < 0){
       force+=friction; //if it's downwards force, friction is upwards
     }else{
       force-=friction; //vice versa
     }
     vel = velo + force / mass * timeCounter/6.0;
+    if (vel < 0){
+     vel *= -1;
+     direction *= -1; //keep velocity positive, just change direction
+    }
     if (timeCounter % 6 == 0){
-     System.out.println("friction: " + friction + " net force: " + force + " velocity: " + vel); 
+     ////System.out.println("friction: " + friction + " net force: " + force + " velocity: " + vel); 
     }
     haveFallen = false;
     return true;
   }
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
-    Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
-    Float theta = atan(slope);
+    //Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
+    float x1 = t.track.get(i);
+    float y1 = t.track.get(i+1);
+    float x2 = t.track.get(i+2);
+    float y2 = t.track.get(i+3);
+    pushMatrix();
+    translate (x1, y1);
+    //reason you push and pop --> bc atan2 finds it from the origin but we need the theta of a line 
+    //so move the origin to on e of the end points to calculate theta
+    Float theta = atan2(x2, y2);
+    popMatrix();
     return theta;
   }
 
   void move(){
     if (timeCounter % 6 == 0){
-      System.out.println("Direction: " + direction);
-      System.out.println("vel: " + vel);
-      System.out.println("current seg of track: " + trackOn);
+      ////System.out.println("Direction: " + direction);
+      ////System.out.println("vel: " + vel);
+      ////System.out.println("current seg of track: " + trackOn);
     }
     if (onTrack){
       affectVelocities();
     }else{
-      System.out.println("falling");
+      ////System.out.println("falling");
       fall();
     }
     if (haveFallen){
@@ -102,6 +129,7 @@ class Rider{
       y += fallingVelY * (1.0 / 60.0);
     }else{
       //are these ok timings? should update proportional to current frame rate
+      //direction is fine
       x += vel * cos(direction) * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
@@ -163,7 +191,7 @@ class Rider{
     return -1;
  }
  
-  //check if distance between line and center is within 5 pixels of radius of circle  
+ //check if distance between line and center is within 5 pixels of radius of circle  
  int checkIfIntersecting(){
    for (int i = 0; i<t.track.size()-3; i+=4){
      float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i));

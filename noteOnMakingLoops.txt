@@ -1,0 +1,17 @@
+probably we can use rotate bc right now the problem is this:
+
+  \(4)
+\_/
+
+once the ball gets to the 4th segment, the issue is that it read it not as
+a set of finite points but as a slope only. and the slope of the line tells the 
+ball to follow its direction (because it is a vector), so the line will actually go
+like this:
+
+\_/\ 
+
+which it shouldn't be doing. how can we fix this?
+
+IDEAS:
+use atan2
+
