@@ -28,7 +28,7 @@ class Rider{
        fallingVelX = vel * cos(direction);
        fallingVelY = vel * sin(direction); //don't use vel, use these falling ones
      }
-    direction = PI;
+    direction = PI / 2.0;
     fallingVelY += (gravityVal) * (1.0 / 60.0); //increase Y
     trackOn = checkIfOnTrack();
    }

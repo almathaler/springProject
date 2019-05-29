@@ -83,8 +83,12 @@ class Track{
           //popMatrix();
         } else
         if (i < track.size() - 3){
-         
          line(track.get(i), track.get(i + 1), track.get(i + 2), track.get(i + 3)); 
+         //for testing
+         textSize(12);
+         float theta = atan((track.get(i+3)-track.get(i+1)) / (track.get(i+2)-track.get(i)));
+         String s = theta + "";
+         text(s, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0); //put the slope at the midpoint
         }
       }
      strokeWeight(1); //so balll isn't heavy
