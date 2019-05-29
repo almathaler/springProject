@@ -94,6 +94,11 @@ class Rider{
   void display(){
     //int holder = trackOn;
     trackOn = checkIfOnTrack();
+    if (trackOn == -1){
+       onTrack = false; 
+    } else {
+       onTrack = true; 
+    }
     //keep x and y right at the bottom. so make
     if (onTrack){
       fill(255, 0, 0);
@@ -107,10 +112,12 @@ class Rider{
      ellipseMode(CORNERS);
      if (haveFallen){
        theta += vel * 0.0001;
-       rotate(theta); 
+       //rotate(theta); 
      } else {
-       rotate(calcTheta(trackOn));
+       theta = calcTheta(trackOn);
+       //rotate(calcTheta(trackOn));
      }
+     rotate(theta);
      rect(0-50, -12.5, 50, 12.5);
      ellipse(-wid/2, -hei, wid/2, 0);
      //rotate(calcTheta(trackOn));
@@ -138,7 +145,7 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10) || (Math.abs((y1 - y + 50 * cos(calcTheta(i)))) < 10)){
+      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10) || (Math.abs((y1 - y + 50 * cos(direction))) < 10)){
          onTrack = true;
          indicies.add(i);
       }
