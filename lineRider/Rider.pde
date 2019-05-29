@@ -162,4 +162,20 @@ class Rider{
     onTrack = false;
     return -1;
  }
+  //check if distance between line and center is within 5 pixels of radius of circle  
+ float checkIfIntersecting(){
+   for (int i = 0; i<t.track.size()-3; i+=4){
+     float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i));
+     float A = slope;
+     float B = -1;
+     //actually these should be points of the line
+     float C = (slope * -1 * t.track.get(i)) + t.track.get(i+1)-(mass / 2);//points of the player //THESE AREN'T THE CENTER OF THE CIRCLE! CALC CENTER now it is
+     float d;
+     d = A * x + B * (y-(mass/2)) + C;
+     if (d<0){
+      d *= -1; 
+     }
+     //more
+   }
+ }
 }
