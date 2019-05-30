@@ -2,7 +2,8 @@ class Rider{
   int timeCounter = 0;//updated every time draw is called, adds one every second
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x, y; //position
-  float hx1, hx2, hx3, hy1, hy2, hy3; //will be used for hitbox for the rider
+  //float hx1, hx2, hx3, hx4 , hy1, hy2, hy3, hy4; //will be used for hitbox for the rider
+  float[][] hitBox;//hitBox for rider to detect when it is touching something
   float vel, velo;
   float fallingVelX, fallingVelY; //only use this for the falls
   boolean onTrack = false; //when this is false, affectVelY and use gravity
@@ -20,8 +21,7 @@ class Rider{
    this.t = t; //the track
    velo = 0.0;
    vel = 0.0;
-   hx1 = x - 50;
-   hy1 = ;
+  // hitBox = {[x - 50, y], [x - 50, y - 12.5], [x, y - 25], [x + 12.5, y - 12.5]}; //bottom back corner, top back corner, top, front and then x, y is the final
   }
 
   void fall(){
@@ -47,6 +47,21 @@ class Rider{
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
     if (calcTheta(trackOn) != direction){
+      
+      float diffTheta = direction - calcTheta(trackOn);
+      //updating points of hitBox as this is the only part where it does not change w x and y
+      //each must be adjusted according to its own specific equation/position
+      hitBox[0][0] += 50 - (50 *cos(diffTheta));
+      hitBox[0][1] -= 50 * sin(diffTheta);
+      hitBox[1][0] += (50 - (50 *cos(diffTheta))) - 51.5388 * cos (diffTheta + radians(14.7));
+      hitBox[1][1] -= 51.388 * sin(diffTheta + radians(14.7));
+      hitBox[2][0] += 25 * cos(radians(90) - diffTheta);
+      hitBox[2][1] -= (25 - 25 * sin(radians(90) - diffTheta));
+      hitBox[3][0] += 12.5 * sqrt(2) * cos(radians(45) - diffTheta);
+      hitBox[3][1] -= 12.5 + 12.5 * sqrt(2) * sin(radians(45) - diffTheta);
+      
+      
+      
       direction = calcTheta(trackOn);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
@@ -84,11 +99,25 @@ class Rider{
     if (haveFallen){
       x += fallingVelX * (1.0 / 60.0);
       y += fallingVelY * (1.0 / 60.0);
+      
+      for (int i = 0; i < hitBox.length; i++){
+         hitBox[i][0] += fallingVelX * (1.0 / 60.0);
+         hitBox[i][1] += fallingVelY * (1.0 / 60.0);
+      }
+      
     }else{
       //are these ok timings? should update proportional to current frame rate
+      
       x += vel * cos(direction) * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
+      
+      
+      for (int i = 0; i < hitBox.length; i++){// updating the hitbox coordinates with 
+        hitBox[i][0] += vel * cos(direction) * (1.0 / 60.0);
+        hitBox[i][1] += vel *  sin(direction) * (1.0 / 60.0);
+      }
+      
     }
     timeCounter++; //make this zero every time direction changes
   }
@@ -147,8 +176,24 @@ class Rider{
      Float x2 = t.track.get(i+2);
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
+     
+     
+     for (int i = 0; i < hitBox.length; i++){
+       float hx1 = hitBox[i][0];
+       float hy1 = hitBox[i][1];/*
+       float hx2 = hitBox[i + 1][0];
+       float hy2 = hitBox[i + 1][1];
+       float hSlope = (hy1 - hy2) / (hx1 - hx2);*/
+       if (((x1 <= hx1 && x2 >= hx1) || (x1 >= hx1 && x2 <= hx1)) && ((y1 <= hy1 && y2 >= hy1) || (y1 >= hy1 & y2 <= hy1))){
+        if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 10)){
+         onTrack = true;
+         indicies.add(i);
+        }
+      }
+     }
+     
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10) || (Math.abs((y1 - y + 50 * cos(direction))) < 10)){
+      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10)){
          onTrack = true;
          indicies.add(i);
       }
@@ -157,6 +202,7 @@ class Rider{
       return indicies.get(0);
     }
   }
+  
     //if the above fails but there still is a piece connected ... buggy
     if (t.isConnected(trackOn)){ //if the piece the rider is on rn has another next to it
       onTrack = true;
