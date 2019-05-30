@@ -111,7 +111,7 @@ class Rider{
     //translate (x1, y1);
     //reason you push and pop --> bc atan2 finds it from the origin but we need the theta of a line 
     //so move the origin to on e of the end points to calculate theta
-    Float theta = atan2(x2-x1, y2-y1);
+    Float theta = atan2(y2-y1, x2-x1);
     //popMatrix();
     return theta;
   }
