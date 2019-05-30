@@ -102,7 +102,7 @@ class Track{
         //reason you push and pop --> bc atan2 finds it from the origin but we need the theta of a line 
         //so move the origin to on e of the end points to calculate theta
         Float theta = atan2(y2-y1, x2-x1);
-        line(0, 0, x2-x1, y2-y1);
+        //line(0, 0, x2-x1, y2-y1);
         //popMatrix();
         String s = theta + " : atan2";
         text(s, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0); //put the slope at the midpoint

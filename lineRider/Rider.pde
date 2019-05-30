@@ -53,12 +53,13 @@ class Rider{
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
     if (calcTheta(trackOn) != theta){
       theta = calcTheta(trackOn); //shld be theta
+      //why does ball go down slope that is upwards? thru th eline? 
       direction = theta;
       ////System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
-        velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
+        velo = fallingVelX; //if you've fallen, for now assume impact is fixed and velY is over, only use velX
       }
     }
     System.out.println("on segment: " + trackOn);
@@ -81,17 +82,24 @@ class Rider{
     //as the other case, but if vel > 0 then add friction and force and if it's less than 0 then it's going
     // in the right direction as the force so force-=friction. if the direction is between 3PI/2 and PI/2 then go into
     //the catch that is for vel < 0 (friction is with force) and vel > 0 (friction is against force, pulling it right up again)
-    if (direction < 0){
-      force+=friction; //if it's downwards force, friction is upwards
+    //fix this to back what it used to be
+    if (direction > 0 && direction < PI){ //HERE
+      force-=friction; //if it's you're going down, friction is upwards
     }else{
-      force-=friction; //vice versa
+      force+=friction; //vice versa
     }
     System.out.println("net force: " + force);
-    vel = velo + force / mass * timeCounter/6.0;
+    //a change
+    if (direction > 0 && direction < PI ){
+      vel = velo + force / mass * timeCounter/6.0;
+    }else{
+      vel = velo - force / mass * timeCounter/6.0;
+    }
     if (vel < 0){
      System.out.println("changing direction");
-     vel *= -1;
-     direction *= -1; //keep velocity positive, just change direction
+     velo = -1 * vel;
+     direction += PI; //keep velocity positive, just change direction
+     direction %= 2*PI; //don't let it get to lik 5Pi
     }
     if (timeCounter % 6 == 0){
      ////System.out.println("friction: " + friction + " net force: " + force + " velocity: " + vel); 
@@ -186,17 +194,17 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
+      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 10){
          onTrack = true;
          return i;
       }
     }
   }
     //if the above fails but there still is a piece connected ... buggy
-    if (t.isConnected(trackOn)){ //if the piece the rider is on rn has another next to it
-      onTrack = true;
-      return (trackOn + 4);
-    }
+    //if (t.isConnected(trackOn)){ //if the piece the rider is on rn has another next to it
+    //  onTrack = true;
+    //  return (trackOn + 4);
+    //}
     onTrack = false;
     return -1;
  }
