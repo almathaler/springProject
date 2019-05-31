@@ -69,7 +69,7 @@ void draw(){
   background(255);
   game.guy.display();
  // t.display();
-  if (doneWithTrack && !stopped && !restart && !clear){
+  if (doneWithTrack && !stopped){
     if (!started){
        game.guy.timeCounter = 0;
        started = true;

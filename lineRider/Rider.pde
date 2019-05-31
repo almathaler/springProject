@@ -1,4 +1,6 @@
 class Rider{
+  //NOTE: BALL CAN ROLL UP /, BC IT'S THETA IS APPROPRIATE
+  //NOW MAKE CASE WHERE BALL'S GOING BACK, SO IT CAN ROLL UP \
   int timeCounter = 0;//updated every time draw is called, adds one every second
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x, y; //position
@@ -12,6 +14,7 @@ class Rider{
   //for testing
   float capturedVel = 0.0;
   float capturedDirection = 0.0;
+  int segIntersecting;
   //
   Track t;
   //added track field to rider so it can check whether or not it's on
@@ -44,17 +47,18 @@ class Rider{
   boolean affectVelocities(){
     //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
     trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
-    if (timeCounter % 6 == 0){
-     //////System.out.println(" affectVel's trackOn: " + trackOn); 
-    }
     if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
       return false;
     }
-   //calculate the slope, and if it's not the same as you've been on, change and take a new time
+   //calculate the slope so that it's always between 0 and PI, if it's between PI/2 and PI make direction opposite
     if (calcTheta(trackOn) != theta){
       theta = calcTheta(trackOn); //shld be theta
       //why does ball go down slope that is upwards? thru th eline? 
-      direction = theta;
+      if (theta > PI/2 && theta < PI){
+       direction =  theta + PI; 
+      }else{
+       direction = theta;
+      }
       ////System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
@@ -85,19 +89,19 @@ class Rider{
     //fix this to back what it used to be
     if (direction > 0 && direction < PI){ //HERE
       force-=friction; //if it's you're going down, friction is upwards
-    }else{
+    }else{ //else if direction is between PI and 2PI
       force+=friction; //vice versa
     }
     System.out.println("net force: " + force);
     //a change
-    if (direction > 0 && direction < PI ){
+    if (direction > 0 && direction < PI ){ //if you're rolling down, add force (cuz it's going w velocity)
       vel = velo + force / mass * timeCounter/6.0;
-    }else{
+    }else{ // if you're rolling up (between PI and 2PI, tho will always be between 3PI/3 and PI)
       vel = velo - force / mass * timeCounter/6.0;
     }
     if (vel < 0){
      System.out.println("changing direction");
-     velo = -1 * vel;
+     velo = -1 * vel; //make it positive againin future eqtns
      direction += PI; //keep velocity positive, just change direction
      direction %= 2*PI; //don't let it get to lik 5Pi
     }
@@ -115,11 +119,14 @@ class Rider{
     float x2 = t.track.get(i+2);
     float y2 = t.track.get(i+3);
     //translate point2 to where it would be if x1 and y1 were at the origin
-    //pushMatrix();
-    //translate (x1, y1);
-    //reason you push and pop --> bc atan2 finds it from the origin but we need the theta of a line 
-    //so move the origin to on e of the end points to calculate theta
-    Float theta = atan2(y2-y1, x2-x1);
+    float theta;
+    
+    if (y2 < y1){ //if point2 is above point1, we want force to be between 0 and PI so calc as if point2 were the origin
+      theta = atan2(y1-y2, x1-x2);
+    }else{
+      theta = atan2(y2-y1, x2-x1);
+    }
+    
     //popMatrix();
     return theta;
   }
@@ -226,10 +233,10 @@ class Rider{
      //now d is correctly initialized
      if (d >= (mass/2 - 5) && d <= (mass/2 + 5)){
       if ( i != trackOn){
-       return i; 
+       segIntersecting = i; //
       }
      }
    }
-   return -1;
+   segIntersecting = -1;
  }
 }
