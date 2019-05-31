@@ -50,12 +50,10 @@ class Rider{
       return false;
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
-    if (calcTheta(trackOn) != direction){
-      direction = calcTheta(trackOn);
-      if (t.track.get(trackOn + 3) < t.track.get(trackOn + 1) && 
-          t.track.get(trackOn + 2) < t.track.get(trackOn)){ //if point2 is clsoer to origin than point1
-        direction += PI;
-      }
+   float theta = calcTheta(trackOn);
+    if (theta != direction){
+      direction = theta;
+      //
       System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
@@ -64,15 +62,15 @@ class Rider{
       }
     }
     //NOTE: sin(theta) will be negative if this slope is downwards
-    Float force = mass * gravityVal * sin(direction); //NOTE: bc of weird coords, theta is (+) for downhills
+    Float force = mass * gravityVal * sin(theta); //NOTE: bc of weird coords, theta is (+) for downhills
     if (timeCounter % 6 == 0){
      System.out.println("force: " + force); 
     }
     //take into account friction
-    Float friction = mass * gravityVal * cos(direction) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
-    if (force < 0){
+    Float friction = mass * gravityVal * cos(theta) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
+    if (vel < 0 && direction == theta){ //if ball is rolling against the force 
       force+=friction; //if it's downwards force, friction is upwards
-    }else{
+    }else{ //here the ball must be rolling with the force, so you subtract friction
       force-=friction; //vice versa
     }
     vel = velo + force / mass * timeCounter/6.0;
@@ -86,6 +84,10 @@ class Rider{
   float calcTheta(int i) { //take in the coord of the current line
     Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
     Float theta = atan(slope);
+    if (t.track.get(trackOn + 3) < t.track.get(trackOn + 1) && 
+        t.track.get(trackOn + 2) < t.track.get(trackOn)){ //if point2 is clsoer to origin than point1
+        theta += PI;
+    }
     return theta;
   }
 

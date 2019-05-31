@@ -42,10 +42,11 @@ void keyPressed(){
    if (key == 'e'){
     stopped = false; 
    }
-   if (key == 'q'){
-    restart = false; 
+   if (key == 'q'){ //put at top of game
+    //restart = false; 
+    setup();
    }
-   if (key == 'c'){
+   if (key == 'c'){ //clear and put at top
     clear = false; 
    }
    if (key == '1'){
@@ -63,6 +64,13 @@ void keyPressed(){
 
 void setup(){
   size(1000, 800);
+  t = new Track();
+  doneWithTrack = false;
+  started = false;
+  stopped = false;
+  restart = false;
+  clear = false;
+  game = new LineRiderGame(100, 100);
 }
 
 void draw(){
