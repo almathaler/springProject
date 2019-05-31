@@ -52,6 +52,10 @@ class Rider{
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
     if (calcTheta(trackOn) != direction){
       direction = calcTheta(trackOn);
+      if (t.track.get(trackOn + 3) < t.track.get(trackOn + 1) && 
+          t.track.get(trackOn + 2) < t.track.get(trackOn)){ //if point2 is clsoer to origin than point1
+        direction += PI;
+      }
       System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
