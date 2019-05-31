@@ -8,6 +8,8 @@ Track t = new Track();
 Boolean doneWithTrack = false;
 Boolean started = false;
 Boolean stopped = false;
+Boolean restart = false;
+Boolean clear = false;
 LineRiderGame game = new LineRiderGame(100, 100);
 class LineRiderGame{
   Rider guy;
@@ -40,6 +42,12 @@ void keyPressed(){
    if (key == 'e'){
     stopped = false; 
    }
+   if (key == 'q'){
+    restart = false; 
+   }
+   if (key == 'c'){
+    clear = false; 
+   }
    if (key == '1'){
      t.type = 1;
    }
@@ -61,13 +69,29 @@ void draw(){
   background(255);
   game.guy.display();
  // t.display();
-  if (doneWithTrack && !stopped){
+  if (doneWithTrack && !stopped && !restart && !clear){
     if (!started){
        game.guy.timeCounter = 0;
        started = true;
     }
     game.guy.move();
-  } 
+  }
+  /*
+  if (doneWithTrack && restart){
+    game.guy = new Rider(50, 9.81, game.startX, game.startY, 0.0, 0.0, t); //reassign so it's back at 0 and everytinig is 0
+    started = true; //so that in next pass that will happen
+    restart = false; //once u did this, make it so next time guy will j drop and restart
+  }
+  if (clear){
+   t = new Track();
+   game.guy = new Rider(50, 9.81, game.startX, game.startY, 0.0, 0.0, t);
+   doneWithTrack = false;
+   started = false;
+   stopped = false;
+   restart = false;
+   clear = false;
+  }
+  */ //testing
     t.display();
     
 }

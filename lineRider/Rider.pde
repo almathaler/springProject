@@ -8,6 +8,10 @@ class Rider{
   float direction;
   boolean haveFallen;
   int trackOn = -1;
+  //for testing
+  float capturedVel = 0.0;
+  float capturedDirection = 0.0;
+  //
   Track t;
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
@@ -28,7 +32,7 @@ class Rider{
        fallingVelX = vel * cos(direction);
        fallingVelY = vel * sin(direction); //don't use vel, use these falling ones
      }
-    direction = PI;
+    direction = PI / 2.0;
     fallingVelY += (gravityVal) * (1.0 / 60.0); //increase Y
     trackOn = checkIfOnTrack();
    }
@@ -48,6 +52,7 @@ class Rider{
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
     if (calcTheta(trackOn) != direction){
       direction = calcTheta(trackOn);
+      System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
@@ -116,6 +121,21 @@ class Rider{
     float wid = mass;
     float hei = mass;
     ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
+    
+    if (timeCounter % 60 == 0 || 
+        timeCounter % 60 == 10 ||
+        timeCounter % 60 == 20 ||
+        timeCounter % 60 == 30 ||
+        timeCounter % 60 == 40 ||
+        timeCounter % 60 == 50){
+      capturedVel = vel;
+      capturedDirection = direction;
+    }
+    textSize(20);
+    fill(255, 18, 169);
+    String s = "vel: " + capturedVel + " direction: " + capturedDirection;
+    text(s, x, y-hei/2.0);
+   
   }
   // return index, also affect onTrack boolean
   //
@@ -141,5 +161,29 @@ class Rider{
     }
     onTrack = false;
     return -1;
+ }
+ 
+  //check if distance between line and center is within 5 pixels of radius of circle  
+ int checkIfIntersecting(){
+   for (int i = 0; i<t.track.size()-3; i+=4){
+     float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i));
+     float A = slope;
+     float B = -1;
+     //actually these should be points of the line
+     float C = (slope * -1 * t.track.get(i)) + t.track.get(i+1);
+     float d;                          //
+     d = A * x + B * (y-(mass/2)) + C; //y - (mass/2) as the coords x and y are the bottom mcenter of the ellipse
+     if (d<0){
+      d *= -1; 
+     }
+     d /= Math.sqrt(A * A + B * B);
+     //now d is correctly initialized
+     if (d >= (mass/2 - 5) && d <= (mass/2 + 5)){
+      if ( i != trackOn){
+       return i; 
+      }
+     }
+   }
+   return -1;
  }
 }
