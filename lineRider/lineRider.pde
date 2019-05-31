@@ -54,24 +54,7 @@ void draw(){
   } 
     t.display();
 }
-//i feel like this should be part of the 
-//rider class, it will take in a Track as a paramtere
-//and just do all this inside of the rider class 
-public boolean isPartOf(Float a, Float b){
-  for (int i = 0; i < t.track.size() - 3; i+= 4){
-    Float x1 = t.track.get(i);
-    Float y1 = t.track.get(i + 1);
-    Float x2 = t.track.get(i + 2);
-    Float y2 = t.track.get(i + 2);
-    Float slope = (y2 - y1) / (x2 - x1);
-    if (((x1 <= a && x2 >= a) || (x1 >= a && x2 <= a)) && ((y1 <= b && y2 >= b) || (y1 >= b & y2 <= b))){
-      if ((y1 - b) == slope * (x1 - a)){
-         return true; 
-      }
-    }
-  }
-  return false;
-}
+
 
 void mouseClicked(){
   
