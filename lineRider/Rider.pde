@@ -3,6 +3,7 @@ class Rider{
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x = 100; //position
   float y = 100;
+  int translateMode = 0; //decides where the rider is drawn from. will usually be 0 (for x and y), but will change sometimes for hitBox integration
   //float hx1, hx2, hx3, hx4 , hy1, hy2, hy3, hy4; //will be used for hitbox for the rider
   float[][] hitBox = {{x - 50, y}, {x - 50, y - 12.5}, {x, y - 25}, {x + 12.5, y - 12.5}}; //bottom back corner, top back corner, top, front and then x, y is the final;//hitBox for rider to detect when it is touching something
   float vel, velo;
@@ -33,6 +34,9 @@ class Rider{
        fallingVelX = vel * cos(direction);
        fallingVelY = vel * sin(direction); //don't use vel, use these falling ones
      }
+     
+     //adjustHitBox();
+      
     direction = PI;
     fallingVelY += (gravityVal) * (1.0 / 60.0); //increase Y
     trackOn = checkIfOnTrack();
@@ -47,8 +51,8 @@ class Rider{
       return false;
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
-    if (calcTheta(trackOn) != direction){/*
-      
+    if (calcTheta(trackOn) != direction){
+      /*
       float diffTheta = calcTheta(trackOn);
       //updating points of hitBox as this is the only part where it does not change w x and y
       //each must be adjusted according to its own specific equation/position
@@ -58,12 +62,12 @@ class Rider{
       hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
       hitBox[2][0] = x + 25 * sin(diffTheta);
       hitBox[2][1] = y - 25 * cos(diffTheta);
-      hitBox[3][0] = x + 12.5 * sqrt(2) * sin(diffTheta + 0.2449787);
-      hitBox[3][1] = y + 12.5 * sqrt(2) * cos(diffTheta + 0.2449787);
+      hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
+      hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
       */
       
-      
       direction = calcTheta(trackOn);
+      adjustHitBox();
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
@@ -102,12 +106,12 @@ class Rider{
       x += fallingVelX * (1.0 / 60.0);
       y += fallingVelY * (1.0 / 60.0);
       
-      /*
+      
       for (int i = 0; i < hitBox.length; i++){
          hitBox[i][0] += fallingVelX * (1.0 / 60.0);
          hitBox[i][1] += fallingVelY * (1.0 / 60.0);
       }
-      */
+      
     }else{
       //are these ok timings? should update proportional to current frame rate
       
@@ -115,30 +119,19 @@ class Rider{
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
       
-      /*
+      
       for (int i = 0; i < hitBox.length; i++){// updating the hitbox coordinates with 
         hitBox[i][0] += vel * cos(direction) * (1.0 / 60.0);
         hitBox[i][1] += vel *  sin(direction) * (1.0 / 60.0);
       }
-      */
+      
       
     }
     timeCounter++; //make this zero every time direction changes
   }
   //
   //
-  void display(){/*
-    float diffTheta = theta;
-    //int holder = trackOn;
-    trackOn = checkIfOnTrack();
-    hitBox[0][0] = x - (50 *cos(diffTheta));
-      hitBox[0][1] = y - (50 * sin(diffTheta));
-      hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
-      hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
-      hitBox[2][0] = x + 25 * sin(diffTheta);
-      hitBox[2][1] = y - 25 * cos(diffTheta);
-      hitBox[3][0] = x + 12.5 * sqrt(2) * sin(diffTheta + 0.2449787);
-      hitBox[3][1] = y + 12.5 * sqrt(2) * cos(diffTheta + 0.2449787);*/
+  void display(){
     ellipseMode(CENTER);
     for (int i = 0; i < hitBox.length; i++){
        ellipse(hitBox[i][0], hitBox[i][1], 2, 2); 
@@ -164,17 +157,6 @@ class Rider{
        theta = calcTheta(trackOn);
        //rotate(calcTheta(trackOn));
      }
-      float diffTheta = theta;
-      //updating points of hitBox as this is the only part where it does not change w x and y
-      //each must be adjusted according to its own specific equation/position
-      hitBox[0][0] = x - (50 *cos(diffTheta));
-      hitBox[0][1] = y - (50 * sin(diffTheta));
-      hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
-      hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
-      hitBox[2][0] = x + 25 * sin(diffTheta);
-      hitBox[2][1] = y - 25 * cos(diffTheta);
-      hitBox[3][0] = x + 12.5 * sqrt(2) * sin(diffTheta + 0.2449787);
-      hitBox[3][1] = y + 12.5 * sqrt(2) * cos(diffTheta + 0.2449787);
     pushMatrix();
     translate(x, y);
      rotate(theta);
@@ -213,7 +195,7 @@ class Rider{
        float hy2 = hitBox[i + 1][1];
        float hSlope = (hy1 - hy2) / (hx1 - hx2);*/
        if (((x1 <= hx1 && x2 >= hx1) || (x1 >= hx1 && x2 <= hx1)) && ((y1 <= hy1 && y2 >= hy1) || (y1 >= hy1 & y2 <= hy1))){
-         if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 10)){
+         if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 5)){
            onTrack = true;
            indicies.add(i);
         }
@@ -221,13 +203,15 @@ class Rider{
      }
      
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10)){
+      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 5)){
          onTrack = true;
          indicies.add(i);
       }
     }
-    if (indicies.size() != 0){
-      return indicies.get(0);
+    if (indicies.size() == 2){
+      return indicies.get(1);
+    } else if (indicies.size() == 1){
+     return indicies.get(0); 
     }
   }
   
@@ -238,5 +222,17 @@ class Rider{
     }
     onTrack = false;
     return -1;
+ }
+ 
+ void adjustHitBox(){
+      float diffTheta = direction; 
+      hitBox[0][0] = x - (50 *cos(diffTheta));
+      hitBox[0][1] = y - (50 * sin(diffTheta));
+      hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
+      hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
+      hitBox[2][0] = x + 25 * sin(diffTheta);
+      hitBox[2][1] = y - 25 * cos(diffTheta);
+      hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
+      hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
  }
 }
