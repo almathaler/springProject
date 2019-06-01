@@ -47,7 +47,7 @@ class Rider{
       return false;
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
-    if (calcTheta(trackOn) != direction){
+    if (calcTheta(trackOn) != direction){/*
       
       float diffTheta = calcTheta(trackOn);
       //updating points of hitBox as this is the only part where it does not change w x and y
@@ -60,7 +60,7 @@ class Rider{
       hitBox[2][1] = y - 25 * cos(diffTheta);
       hitBox[3][0] = x + 12.5 * sqrt(2) * sin(diffTheta + 0.2449787);
       hitBox[3][1] = y + 12.5 * sqrt(2) * cos(diffTheta + 0.2449787);
-      
+      */
       
       
       direction = calcTheta(trackOn);
@@ -97,15 +97,17 @@ class Rider{
     }else{
       fall();
     }
+    
     if (haveFallen){
       x += fallingVelX * (1.0 / 60.0);
       y += fallingVelY * (1.0 / 60.0);
       
+      /*
       for (int i = 0; i < hitBox.length; i++){
          hitBox[i][0] += fallingVelX * (1.0 / 60.0);
          hitBox[i][1] += fallingVelY * (1.0 / 60.0);
       }
-      
+      */
     }else{
       //are these ok timings? should update proportional to current frame rate
       
@@ -113,20 +115,30 @@ class Rider{
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
       
-      
+      /*
       for (int i = 0; i < hitBox.length; i++){// updating the hitbox coordinates with 
         hitBox[i][0] += vel * cos(direction) * (1.0 / 60.0);
         hitBox[i][1] += vel *  sin(direction) * (1.0 / 60.0);
       }
+      */
       
     }
     timeCounter++; //make this zero every time direction changes
   }
   //
   //
-  void display(){
+  void display(){/*
+    float diffTheta = theta;
     //int holder = trackOn;
     trackOn = checkIfOnTrack();
+    hitBox[0][0] = x - (50 *cos(diffTheta));
+      hitBox[0][1] = y - (50 * sin(diffTheta));
+      hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
+      hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
+      hitBox[2][0] = x + 25 * sin(diffTheta);
+      hitBox[2][1] = y - 25 * cos(diffTheta);
+      hitBox[3][0] = x + 12.5 * sqrt(2) * sin(diffTheta + 0.2449787);
+      hitBox[3][1] = y + 12.5 * sqrt(2) * cos(diffTheta + 0.2449787);*/
     ellipseMode(CENTER);
     for (int i = 0; i < hitBox.length; i++){
        ellipse(hitBox[i][0], hitBox[i][1], 2, 2); 
@@ -144,8 +156,6 @@ class Rider{
     }
     float wid = 25.0;
      float hei = 25.0;
-    pushMatrix();
-    translate(x, y);
      ellipseMode(CORNERS);
      if (haveFallen){
        theta += vel * 0.0001;
@@ -154,6 +164,19 @@ class Rider{
        theta = calcTheta(trackOn);
        //rotate(calcTheta(trackOn));
      }
+      float diffTheta = theta;
+      //updating points of hitBox as this is the only part where it does not change w x and y
+      //each must be adjusted according to its own specific equation/position
+      hitBox[0][0] = x - (50 *cos(diffTheta));
+      hitBox[0][1] = y - (50 * sin(diffTheta));
+      hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
+      hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
+      hitBox[2][0] = x + 25 * sin(diffTheta);
+      hitBox[2][1] = y - 25 * cos(diffTheta);
+      hitBox[3][0] = x + 12.5 * sqrt(2) * sin(diffTheta + 0.2449787);
+      hitBox[3][1] = y + 12.5 * sqrt(2) * cos(diffTheta + 0.2449787);
+    pushMatrix();
+    translate(x, y);
      rotate(theta);
      rect(0-50, -12.5, 50, 12.5);
      ellipse(-wid/2, -hei, wid/2, 0);
