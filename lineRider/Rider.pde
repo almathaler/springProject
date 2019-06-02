@@ -123,8 +123,9 @@ class Rider{
       y += vel *  sin(direction) * (1.0 / framer);// * (System.currentTimeMillis() - startTimeTheta);
       //this part is supposed to fix when the player passes the connected segment
       //it's ok to call checkIfOnTrack() bc that doesn't modify trackOn just boolean onTrack
-      if (checkIfOnTrack() == -1){ //new x and y takes the player off the track, check if that was the right thing
+      if (checkIfOnTrack() == -1 && trackOn != -1){ //new x and y takes the player off the track, check if that was the right thing
         if (vel > 0 && t.connections.get(trackOn/4) != -1){ //if it is -1 then it should be falling
+          System.out.println("going forwards, falling when it hsouldn't be");
           float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
           float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
           float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
@@ -152,6 +153,7 @@ class Rider{
               System.out.println("new x and y: " + x + ", " + y);
          }
         }else if (vel < 0 && t.backConnections.get(trackOn/4) != -1){
+          System.out.println("going backwards, falling when it shouldn't be");
           float xConnected = t.track.get(t.backConnections.get(trackOn/4) + 2); //the end points of the piece it is back connected
           float yConnected = t.track.get(t.backConnections.get(trackOn/4) + 3); //to
           float oldX = x - vel * cos(direction) * (1.0 / framer);
@@ -170,12 +172,13 @@ class Rider{
             int nextSeg = t.backConnections.get(trackOn/4);
             float directionNext = calcTheta(nextSeg);
             //should be a minus bc you are moving back
-            x = xConnected +(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
-            y = yConnected +(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
+            x = xConnected; //-(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
+            y = yConnected; //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
             System.out.println("new x and y: " + x + ", " + y);
           }
         }
       }
+      checkIfOnTrack(); //
     }
     timeCounter++; //make this zero every time direction changes
   }
@@ -220,7 +223,7 @@ class Rider{
          (xTry - x2) > -1 && (xTry - x1) < 1)&&
         ((yTry - y1) > -1 && (yTry - y2) < 1 ||
          (yTry - y2) > -1 && (yTry - y1) < 1)){
-      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 15){
+      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 20){
         return true;
       }     
     }
