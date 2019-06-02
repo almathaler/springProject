@@ -83,7 +83,7 @@ class Track{
          //chose two points within 10px of each other
         for (int k = 4; k < (track.size() - (i+3)); k +=4){ //go thru every set of points after this one, k is what you add to i
           if (track.get(i + 2) == track.get(i + k) && track.get(i + 3) == track.get(i + (k+1))){//if connected at the front and i != 0
-            connections.add(i/4, (i+k)/4); //add to the connections list at this segment's spot the segment that it si connected to
+            connections.add(i/4, (i+k)); //add to the connections list at this segment's spot the segment that it si connected to
             return true; 
           }
         }

@@ -3,6 +3,7 @@ class Rider{
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x, y; //position
   float vel, velo;
+  int framer = 140; //j a variable for framerate, not actual framerate j if you want to slow thigns down
   float fallingVelX, fallingVelY; //only use this for the falls
   boolean onTrack = false; //when this is false, affectVelY and use gravity
   float direction;
@@ -35,7 +36,7 @@ class Rider{
        fallingVelY = vel * sin(direction); //don't use vel, use these falling ones
      }
     direction = PI / 2.0;
-    fallingVelY += (gravityVal) * (1.0 / 60.0); //increase Y
+    fallingVelY += (gravityVal) * (1.0 / framer); //increase Y
     trackOn = checkIfOnTrack();
    }
    haveFallen = true;
@@ -90,7 +91,8 @@ class Rider{
     }if (vel < 0){
       vel = velo - force / mass * timeCounter/6.0;
     }
-    
+    //here deal w player moving too quickly it can't register hitting another line
+
     haveFallen = false;
     return true;
   }
@@ -109,16 +111,40 @@ class Rider{
       fall();
     }
     if (haveFallen){
-      x += fallingVelX * (1.0 / 60.0); //changed the fram rate for testing to slow donw
-      y += fallingVelY * (1.0 / 60.0);
+      x += fallingVelX * (1.0 / framer); //changed the fram rate for testing to slow donw
+      y += fallingVelY * (1.0 / framer);
     }else{
+      
       //are these ok timings? should update proportional to current frame rate
-      x += vel * cos(direction) * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
+      x += vel * cos(direction) * (1.0 / framer);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
-      y += vel *  sin(direction) * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
+      y += vel *  sin(direction) * (1.0 / framer);// * (System.currentTimeMillis() - startTimeTheta);
+      //this part is supposed to fix when the player passes the connected segment
+      if (trackOn < (t.track.size() -4)){
+        float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
+        float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
+        if (x != xConnected &&
+            y != yConnected &&
+            Math.abs(y - yConnected) < 5 &&
+            Math.abs(x - xConnected) < 5){ //if they're not the same but they are close 
+            System.out.println("\n" + "NEW PART" + "\n x: ");
+            float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
+            float oldY = y - vel * sin(direction) * (1.0/6.0); //same^
+            double dTotal = vel * (1.0/framer); // d = vt //like polar coordinates. j move the player to where it should be
+                                              //on the other segment. hacky cuz it still uses the vel from the previous segment
+            double dToEnd = Math.sqrt(pow((oldX-t.track.get(trackOn+2)), 2) + pow((oldY-t.track.get(trackOn+3)), 2)); //dostance formula
+            double dNextSeg = dTotal - dToEnd;
+            int nextSeg = t.connections.get(trackOn/4);
+            float directionNext = calcTheta(nextSeg); //calculate the next segment's direction
+            x = t.track.get(nextSeg) + (float) dNextSeg * cos(directionNext); //put it on the other track
+            y = t.track.get(nextSeg + 1 ) + (float) dNextSeg * sin(directionNext);
+       }
+      }
     }
     timeCounter++; //make this zero every time direction changes
   }
+  
+  
   //
   //
   void display(){
