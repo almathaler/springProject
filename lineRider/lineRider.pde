@@ -70,7 +70,7 @@ void keyPressed(){
 
 
 void setup(){
-  size(1000, 800);
+  size(1200, 800);
   t = new Track();
   doneWithTrack = false;
   started = false;

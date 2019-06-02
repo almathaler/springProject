@@ -30,6 +30,7 @@ class Rider{
   void fall(){
    if (!onTrack){
      if (!haveFallen){
+       System.out.println("\n FALLING \n");
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
        fallingVelX = vel * cos(direction);
@@ -126,10 +127,10 @@ class Rider{
         //this if statement ensures won't happen when it is ahead ofof the track, only if past in the respective direction
         if (x != xConnected &&
             y != yConnected &&
-            ((direction > 0 && vel < 0 && (x - xConnected) < 0 && (x-xConnected)>-5 && (y - yConnected) < 0 && (y-yConnected)>-5) ||
-             (direction < 0 && vel > 0 && (x - xConnected) > 0 && (x-xConnected)<5 && (y-yConnected) < 0 && (y-yConnected) > -5) ||
-             (direction > 0 && vel > 0 && (x-xConnected)>0 && (x-xConnected)<5 && (y-yConnected)>0 && (y-yConnected)<5) ||
-             (direction < 0 && vel < 0 && (x-xConnected)<0 && (x-xConnected)>-5 && (y-yConnected)>0 && (y-yConnected)<5)
+            ((direction > 0 && vel < 0 && (x - xConnected) < 0 && (x-xConnected)>-7 && (y - yConnected) < 0 && (y-yConnected)>-7) ||
+             (direction < 0 && vel > 0 && (x - xConnected) > 0 && (x-xConnected)<7 && (y-yConnected) < 0 && (y-yConnected) > -7) ||
+             (direction > 0 && vel > 0 && (x-xConnected)>0 && (x-xConnected)<7 && (y-yConnected)>0 && (y-yConnected)<7) ||
+             (direction < 0 && vel < 0 && (x-xConnected)<0 && (x-xConnected)>-7 && (y-yConnected)>0 && (y-yConnected)<7)
             )){ //if they're not the same but they are close 
             System.out.println("\n" + "NEW PART" + "\n");
             float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
@@ -199,18 +200,23 @@ class Rider{
      Float slope = (y2-y1)/(x2-x1);
      //because of the checkOrder() method in track, point2 will always be farther from origin than point1
      //(y1 <= y && y2 >= y)
-     if (((x1 <= x && x2 >= x) || (x2<=x && x1>= x)) && ((y1<=y && y2>=y)||(y2<=y && y1>=y))){
-      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 10){
+     // add little buffers
+     //if (((x1 <= (x-1) && x2 >= (x+1)) || (x2<=(x-1) && x1>= (x+1))) && ((y1<=(y-1) && y2>=(y+1))||(y2<=(y-1) && y1>=(y+1)))){
+     if ( ((x - x1) > -1 && (x - x2) < 1 ||
+           (x - x2) > -1 && (x - x1) < 1)&&
+           ((y - y1) > -1 && (y - y2) < 1 ||
+           (y - y2) > -1 && (y - y1) < 1)){ 
+       if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
          onTrack = true;
          return i;
       }else{
        if (!haveFallen){
-        //System.out.println("rider at: " + x + ", " + y + "is not on the line equation");
+        System.out.println("rider at: " + x + ", " + y + "is not on the line equation");
        }
       }
      }else{
        if (!haveFallen){
-        //System.out.println("rider at: " + x + ", " + y + "is not between the points of this segment: " + x1 + ", " + y1 + " , " + x2 + ", " + y2);
+        System.out.println("rider at: " + x + ", " + y + "is not between the points of this segment: " + x1 + ", " + y1 + " , " + x2 + ", " + y2);
        }
      }
      checking = i;
