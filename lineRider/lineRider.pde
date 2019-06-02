@@ -91,6 +91,7 @@ void draw(){
        started = true;
     }
     game.guy.move();
+    game.guy.framer = frameRate;
   }
   /*
   if (doneWithTrack && restart){

@@ -3,7 +3,7 @@ class Rider{
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x, y; //position
   float vel, velo;
-  int framer = 140; //j a variable for framerate, not actual framerate j if you want to slow thigns down
+  float framer = 140; //j a variable for framerate, not actual framerate j if you want to slow thigns down
   float fallingVelX, fallingVelY; //only use this for the falls
   boolean onTrack = false; //when this is false, affectVelY and use gravity
   float direction;
@@ -31,6 +31,7 @@ class Rider{
    if (!onTrack){
      if (!haveFallen){
        System.out.println("\n FALLING \n");
+       System.out.println("began falling at: " + x + ", " + y);
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
        fallingVelX = vel * cos(direction);
