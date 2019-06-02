@@ -122,31 +122,59 @@ class Rider{
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / framer);// * (System.currentTimeMillis() - startTimeTheta);
       //this part is supposed to fix when the player passes the connected segment
-      if (t.connections.get(trackOn/4) != -1){
-        float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
-        float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
-        float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
-        float oldY = y - vel * sin(direction) * (1.0/6.0); //same^
-        float endPointX = t.track.get(trackOn+2); //these two should be the same as xConnected and yConnected
-        float endPointY = t.track.get(trackOn+3);
-        //modify if statement to check if endPoints are between x and old X
-        //this if statement ensures won't happen when it is ahead ofof the track, only if past in the respective direction
-        if (onLine(oldX, oldY, x, y, xConnected, yConnected)){ //if they're not the same but they are close 
-            System.out.println("\n" + "NEW PART" + "\n");
+      //it's ok to call checkIfOnTrack() bc that doesn't modify trackOn just boolean onTrack
+      if (checkIfOnTrack() == -1){ //new x and y takes the player off the track, check if that was the right thing
+        if (vel > 0 && t.connections.get(trackOn/4) != -1){ //if it is -1 then it should be falling
+          float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
+          float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
+          float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
+          float oldY = y - vel * sin(direction) * (1.0/ framer); //same^
+          //float endPointX = t.track.get(trackOn+2); //these two should be the same as xConnected and yConnected
+          //float endPointY = t.track.get(trackOn+3);
+          //modify if statement to check if endPoints are between x and old X
+          //this if statement ensures won't happen when it is ahead ofof the track, only if past in the respective direction
+          if (onLine(oldX, oldY, x, y, xConnected, yConnected)){ //if they're not the same but they are close 
+              System.out.println("\n" + "NEW PART" + "\n");
+              System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+              //for testing
+              System.out.println("the connection was: " + xConnected +", " + yConnected);
+              System.out.println("the x and y values are: " + x + ", " + y);
+              //
+              double dTotal = vel * (1.0/framer); // d = vt //like polar coordinates. j move the player to where it should be
+                                                //on the other segment. hacky cuz it still uses the vel from the previous segment
+              double dToEnd = Math.sqrt(pow((oldX-xConnected), 2) + pow((oldY-yConnected), 2)); //dostance formula
+              //note, top can replace t.track.get w xConnected and yConnected
+              double dNextSeg = dTotal - dToEnd;
+              int nextSeg = t.connections.get(trackOn/4);
+              float directionNext = calcTheta(nextSeg); //calculate the next segment's direction
+              x = xConnected + (float) dNextSeg * cos(directionNext); //put it on the other track
+              y = yConnected + (float) dNextSeg * sin(directionNext);
+              System.out.println("new x and y: " + x + ", " + y);
+         }
+        }else if (vel < 0 && t.backConnections.get(trackOn/4) != -1){
+          float xConnected = t.track.get(t.backConnections.get(trackOn/4) + 2); //the end points of the piece it is back connected
+          float yConnected = t.track.get(t.backConnections.get(trackOn/4) + 3); //to
+          float oldX = x - vel * cos(direction) * (1.0 / framer);
+          float oldY = y - vel * sin(direction) * (1.0/framer);
+          //check if the player passed the connection
+          if (onLine(oldX, oldY, x, y, xConnected, yConnected)){
+            System.out.println("\n" + "NEW PART -- BACKWARDS" + "\n");
             System.out.println("oldX and oldY: " + oldX + ", " + oldY);
             //for testing
-            System.out.println("the endpoint was: " + endPointX +", " + endPointY);
+            System.out.println("the connnection was: " + xConnected +", " + yConnected);
             System.out.println("the x and y values are: " + x + ", " + y);
             //
-            double dTotal = vel * (1.0/framer); // d = vt //like polar coordinates. j move the player to where it should be
-                                              //on the other segment. hacky cuz it still uses the vel from the previous segment
-            double dToEnd = Math.sqrt(pow((oldX-t.track.get(trackOn+2)), 2) + pow((oldY-t.track.get(trackOn+3)), 2)); //dostance formula
-            double dNextSeg = dTotal - dToEnd;
-            int nextSeg = t.connections.get(trackOn/4);
-            float directionNext = calcTheta(nextSeg); //calculate the next segment's direction
-            x = t.track.get(nextSeg) + (float) dNextSeg * cos(directionNext); //put it on the other track
-            y = t.track.get(nextSeg + 1 ) + (float) dNextSeg * sin(directionNext);
-       }
+            double dTotal = vel * (1.0/framer);
+            double dToConnection = Math.sqrt(pow(oldX - xConnected, 2) + pow(oldY - yConnected, 2));//
+            double dNextSeg = dTotal - dToConnection;
+            int nextSeg = t.backConnections.get(trackOn/4);
+            float directionNext = calcTheta(nextSeg);
+            //should be a minus bc you are moving back
+            x = xConnected +(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
+            y = yConnected +(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
+            System.out.println("new x and y: " + x + ", " + y);
+          }
+        }
       }
     }
     timeCounter++; //make this zero every time direction changes
@@ -192,7 +220,7 @@ class Rider{
          (xTry - x2) > -1 && (xTry - x1) < 1)&&
         ((yTry - y1) > -1 && (yTry - y2) < 1 ||
          (yTry - y2) > -1 && (yTry - y1) < 1)){
-      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 5){
+      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 15){
         return true;
       }     
     }
