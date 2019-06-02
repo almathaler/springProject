@@ -14,6 +14,7 @@ LineRiderGame game = new LineRiderGame(100, 100);
 class LineRiderGame{
   Rider guy;
   float startX, startY;
+  String time;
   //i also made gravity val a field for the rider. but maybe rider should be
   //made by lineRiderGame?
   //i decided to make massChar and energyTotal fields for the Rider
@@ -26,6 +27,10 @@ class LineRiderGame{
     //should this be calculated from the first platform or from the ground?
     //float GPE = 9.81 * 50.0 * (height - startY); 
     guy = new Rider(50, 20, startX, startY, 0.0, 0.0, t);
+  }
+  void display(){
+    time = "" + (millis() /1000.0) ;
+    text(time, 700, 50);
   }
 }
 
@@ -75,6 +80,7 @@ void setup(){
 
 void draw(){
   background(255);
+  game.display();
   game.guy.display();
  // t.display();
   if (doneWithTrack && !stopped && !clear){

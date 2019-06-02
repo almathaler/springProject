@@ -17,8 +17,26 @@ class Track{
      if (track.size() % 4 == 0){ //if you are about to start a new segment
        types.add(type); //take down the type of that segment
      }
+     if (track.size() % 4 == 2){ //as in, if you've got the first points down and are adding a second pair
+       track.add(n);
+       track.add(m);
+       checkOrder(track.size() - 4); //and then reorder the points if needed
+     }
      track.add(n);
      track.add(m);
+   }
+   //sees if the two points of a line are in order of closest to origin, farthest. If not, reorders them
+   void checkOrder(int i){
+     if (t.track.get(i + 3) < t.track.get(i + 1) && 
+        t.track.get(i + 2) < t.track.get(i)){ //if point2 is clsoer to origin than point1
+        float x2 = t.track.get(i);
+        float y2 = t.track.get(i+1);
+        t.track.set(i, t.track.get(i+2));
+        t.track.set(i+1, t.track.get(i+3));
+        t.track.set(i+2, x2);
+        t.track.set(i+3, y2);
+        //if point2 is closer to origin, make that point1 and the other point2
+    }
    }
    
    public float getMu(int type){

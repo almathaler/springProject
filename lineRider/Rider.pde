@@ -51,6 +51,7 @@ class Rider{
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
    float theta = calcTheta(trackOn);
     if (theta != direction){
+      System.out.println("trackOn changed, now it is: " + trackOn + ", at time: " + millis());
       direction = theta;
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
@@ -96,16 +97,7 @@ class Rider{
   float calcTheta(int i) { //take in the coord of the current line
     Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
     Float theta = atan(slope);
-    if (t.track.get(trackOn + 3) < t.track.get(trackOn + 1) && 
-        t.track.get(trackOn + 2) < t.track.get(trackOn)){ //if point2 is clsoer to origin than point1
-        float x2 = t.track.get(trackOn);
-        float y2 = t.track.get(trackOn+1);
-        t.track.set(trackOn, t.track.get(trackOn+2));
-        t.track.set(trackOn+1, t.track.get(trackOn+3));
-        t.track.set(trackOn+2, x2);
-        t.track.set(trackOn+3, y2);
-        calcTheta(i); //if point2 is closer to origin, make that point1 and the other point2
-    }
+     //moved the mismatched points to the track class
     return theta;
   }
 
@@ -167,7 +159,8 @@ class Rider{
      Float x2 = t.track.get(i+2);
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
-     if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
+     //(y1 <= y && y2 >= y)
+     if (((x1 <= x && x2 >= x) && (y1 <= y && y2 >= y)) || ((x1 >= x && x2 <= x) && (y1 >= y & y2 <= y))){
       if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
          onTrack = true;
          return i;
