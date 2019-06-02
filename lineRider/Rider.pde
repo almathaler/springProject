@@ -89,8 +89,10 @@ class Rider{
     
     if (vel >= 0){
       vel = velo + force / mass * timeCounter/6.0;
-    }if (vel < 0){
+    }if (vel < 0 && force > 0){
       vel = velo - force / mass * timeCounter/6.0;
+    }else if (vel < 0 && force <= 0){
+      vel = velo + force / mass * timeCounter/6.0;
     }
     //here deal w player moving too quickly it can't register hitting another line
 
@@ -208,15 +210,19 @@ class Rider{
            (y - y2) > -1 && (y - y1) < 1)){ 
        if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
          onTrack = true;
+         //if it's at the endpoint of this segment, return index of the connected segment
+         if (Math.abs(x-x2) < 1 && Math.abs(y - y2) < 1){
+           return t.connections.get(i/4); //return 
+         }
          return i;
       }else{
        if (!haveFallen){
-        System.out.println("rider at: " + x + ", " + y + "is not on the line equation");
+        //System.out.println("rider at: " + x + ", " + y + "is not on the line equation");
        }
       }
      }else{
        if (!haveFallen){
-        System.out.println("rider at: " + x + ", " + y + "is not between the points of this segment: " + x1 + ", " + y1 + " , " + x2 + ", " + y2);
+        //System.out.println("rider at: " + x + ", " + y + "is not between the points of this segment: " + x1 + ", " + y1 + " , " + x2 + ", " + y2);
        }
      }
      checking = i;

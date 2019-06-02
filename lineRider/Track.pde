@@ -7,8 +7,7 @@ class Track{
    ArrayList<Integer> types = new ArrayList<Integer>(); //will contain the types of the corresponding sections
                                                         //indexing: i of types = i*4 of track
    ArrayList<Integer> connections = new ArrayList<Integer>();
-   //will have all the connections between segments. will have them by segments number 0, 1, 2, 3, 4 so to 
-   //get the first point, just multiply the number by 4
+   //will have all the connections between segments. will have them by segments number 0, 4, 8 
    
    //Track will be an arraylist of floats ordered {(x1),(y1), (x2),(y2)...}
    //if one point is equal to the last, then it is connected
