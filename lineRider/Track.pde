@@ -21,14 +21,17 @@ class Track{
        track.add(n);
        track.add(m);
        checkOrder(track.size() - 4); //and then reorder the points if needed
+     }else{
+       track.add(n);
+       track.add(m);
      }
-     track.add(n);
-     track.add(m);
+     
    }
    //sees if the two points of a line are in order of closest to origin, farthest. If not, reorders them
    void checkOrder(int i){
-     if (t.track.get(i + 3) < t.track.get(i + 1) && 
-        t.track.get(i + 2) < t.track.get(i)){ //if point2 is clsoer to origin than point1
+     double d1 = Math.sqrt(pow(t.track.get(i), 2) + pow(t.track.get(i+1), 2)); //dist to origin
+     double d2 = Math.sqrt(pow(t.track.get(i+2), 2) + pow(t.track.get(i+3), 2));
+     if (d2 < d1){ //if point2 is clsoer to origin than point1
         float x2 = t.track.get(i);
         float y2 = t.track.get(i+1);
         t.track.set(i, t.track.get(i+2));

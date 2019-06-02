@@ -46,6 +46,7 @@ class Rider{
     //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
     trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
     if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
+      System.out.println("direction was: " + direction + ", now no longer on track");
       return false;
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
@@ -108,8 +109,8 @@ class Rider{
       fall();
     }
     if (haveFallen){
-      x += fallingVelX * (1.0 / 60.0);
-      y += fallingVelY * (1.0 / 60.0);
+      x += fallingVelX * (1.0 / 120.0); //changed the fram rate for testing to slow donw
+      y += fallingVelY * (1.0 / 120.0);
     }else{
       //are these ok timings? should update proportional to current frame rate
       x += vel * cos(direction) * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
@@ -152,27 +153,42 @@ class Rider{
   // return index, also affect onTrack boolean
   //
   int checkIfOnTrack(){
-
+    int checking = 0;
     for (int i = 0; i<t.track.size() - 3; i+= 4){
      Float x1 = t.track.get(i);
      Float y1 = t.track.get(i+1);
      Float x2 = t.track.get(i+2);
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
+     //because of the checkOrder() method in track, point2 will always be farther from origin than point1
      //(y1 <= y && y2 >= y)
-     if (((x1 <= x && x2 >= x) && (y1 <= y && y2 >= y)) || ((x1 >= x && x2 <= x) && (y1 >= y & y2 <= y))){
-      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
+     if (((x1 <= x && x2 >= x) || (x2<=x && x1>= x)) && ((y1<=y && y2>=y)||(y2<=y && y1>=y))){
+      if (Math.abs((y1 - y) - (slope * (x1 - x))) < 10){
          onTrack = true;
          return i;
+      }else{
+       if (!haveFallen){
+        System.out.println("rider at: " + x + ", " + y + "is not on the line equation");
+       }
       }
+     }else{
+       if (!haveFallen){
+        System.out.println("rider at: " + x + ", " + y + "is not between the points of this segment: " + x1 + ", " + y1 + " , " + x2 + ", " + y2);
+       }
+     }
+     checking = i;
     }
-  }
     //if the above fails but there still is a piece connected ... buggy
-    if (t.isConnected(trackOn)){ //if the piece the rider is on rn has another next to it
-      onTrack = true;
-      return (trackOn + 4);
-    }
+    //if (t.isConnected(trackOn)){ //if the piece the rider is on rn has another next to it
+    //  onTrack = true;
+    //  return (trackOn + 4);
+    //}
     onTrack = false;
+    if (!haveFallen){
+      System.out.println("at: " + millis() + "no longer on track");
+      System.out.println("checked all segments up to and including: " + checking);
+    }
+    
     return -1;
  }
  
