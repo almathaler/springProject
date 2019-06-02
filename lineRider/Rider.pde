@@ -158,14 +158,26 @@ class Rider{
        //rotate(calcTheta(trackOn));
      }
     pushMatrix();
-    translate(x, y);
-     rotate(theta);
-     rect(0-50, -12.5, 50, 12.5);
-     ellipse(-wid/2, -hei, wid/2, 0);
-     //rotate(calcTheta(trackOn));
+    if (translateMode == 0){
+      translate(x, y);
+      rotate(theta);
+      rect(0-50, -12.5, 50, 12.5);
+      ellipse(-wid/2, -hei, wid/2, 0);
+      //rotate(calcTheta(trackOn));
      
      //translate(-x, -y);
      //rotate(-calcTheta(trackOn));
+    } else if (translateMode == 1){
+      translate(hitBox[0][0], hitBox[0][1]);
+      rotate(theta);
+      rect(0, -12.5, 50, 12.5);
+      x = hitBox[0][0] + 50 * cos(direction);
+      y = hitBox[0][1] + 50 * sin(direction);
+      adjustHitBox();
+      translate(x, y);
+      ellipse(-wid/2, -hei, wid/2, 0);
+      translateMode = 0;
+    }
     popMatrix();
       
     /*
@@ -195,32 +207,38 @@ class Rider{
        float hy2 = hitBox[i + 1][1];
        float hSlope = (hy1 - hy2) / (hx1 - hx2);*/
        if (((x1 <= hx1 && x2 >= hx1) || (x1 >= hx1 && x2 <= hx1)) && ((y1 <= hy1 && y2 >= hy1) || (y1 >= hy1 & y2 <= hy1))){
-         if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 5)){
+         if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 10)){
            onTrack = true;
            indicies.add(i);
+           if (j == 1){
+              translateMode = 1; 
+           }
         }
       }
      }
      
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 5)){
+      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10)){
          onTrack = true;
          indicies.add(i);
       }
     }
+    /*
     if (indicies.size() == 2){
       return indicies.get(1);
-    } else if (indicies.size() == 1){
+    } else */if (indicies.size() != 0){
      return indicies.get(0); 
     }
   }
   
+ 
     //if the above fails but there still is a piece connected ... buggy
     if (t.isConnected(trackOn)){ //if the piece the rider is on rn has another next to it
       onTrack = true;
       return (trackOn + 4);
     }
     onTrack = false;
+    
     return -1;
  }
  

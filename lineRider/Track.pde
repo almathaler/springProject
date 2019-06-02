@@ -29,11 +29,13 @@ class Track{
            return true; 
           }
         }
+        /*
         if (i >= 4 && i + 3 < track.size()){
             if (Math.abs(track.get(i) - track.get(i - 2)) <= 10 && Math.abs(track.get(i + 1) - track.get(i - 1)) <= 10){//if connected at the back? maybe this is unnecessary
                return true; 
             }
         }
+        */
       }
      
      
