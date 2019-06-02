@@ -21,10 +21,17 @@ class Track{
        track.add(n);
        track.add(m);
        checkOrder(track.size() - 4); //and then reorder the points if needed
-     }else{
+     }else{ //adding the first points -- do the check for the line previous
+       if ((track.size() >= 4) && Math.abs(n-track.get(track.size() - 2)) <= 10 && Math.abs(m-track.get(track.size() - 1)) <= 10){
+         n = track.get(track.size() - 2);
+         m = track.get(track.size() - 1);
+         //if n and m are close enough to the other points (as in the ellipses appear on top of each other),
+         //just make them those other points
+       }
        track.add(n);
        track.add(m);
      }
+     
      
    }
    //sees if the two points of a line are in order of closest to origin, farthest. If not, reorders them

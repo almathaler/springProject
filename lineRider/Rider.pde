@@ -109,8 +109,8 @@ class Rider{
       fall();
     }
     if (haveFallen){
-      x += fallingVelX * (1.0 / 120.0); //changed the fram rate for testing to slow donw
-      y += fallingVelY * (1.0 / 120.0);
+      x += fallingVelX * (1.0 / 60.0); //changed the fram rate for testing to slow donw
+      y += fallingVelY * (1.0 / 60.0);
     }else{
       //are these ok timings? should update proportional to current frame rate
       x += vel * cos(direction) * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
