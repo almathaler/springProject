@@ -38,6 +38,7 @@ void keyPressed(){
    if (key ==  CODED){
      if (keyCode == SHIFT){// if the track is finished, this will become true. Helps so that the rider doesn't fall until track is done. basically starts the game
         doneWithTrack = true; 
+        t.finalizeConnections();
         System.out.println();
      }
    }

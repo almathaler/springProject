@@ -6,6 +6,10 @@ class Track{
    ArrayList<Float> track = new ArrayList<Float>();
    ArrayList<Integer> types = new ArrayList<Integer>(); //will contain the types of the corresponding sections
                                                         //indexing: i of types = i*4 of track
+   ArrayList<Integer> connections = new ArrayList<Integer>();
+   //will have all the connections between segments. will have them by segments number 0, 1, 2, 3, 4 so to 
+   //get the first point, just multiply the number by 4
+   
    //Track will be an arraylist of floats ordered {(x1),(y1), (x2),(y2)...}
    //if one point is equal to the last, then it is connected
    
@@ -60,21 +64,30 @@ class Track{
      }
      return 0.0;
    }
+   //builds the connections() array
+   boolean finalizeConnections(){
+    for (int i = 0; i<track.size()-3; i+=4){
+      isConnected(i);
+    }
+    System.out.println("connections: " + connections);
+    return true;
+   }
    
    public boolean isConnected(int i){ // the purpose of this method is to take the index of the first value for a piece of the track and determine if it is connected to another part
       if (i < 0){
         return false;
       }
-      if (i == 0 && track.size() > 4){
-          if (Math.abs(track.get(2) - track.get(4)) <= 10 && Math.abs(track.get(3) - track.get(5)) <= 10){//if connected at the front
-            return true;
-          }
-      } else {
-        if (track.size() > i + 4){
-          if (Math.abs(track.get(i + 2) - track.get(i + 4)) <= 10 && Math.abs(track.get(i + 3) - track.get(i + 5)) <= 10){//if connected at the front and i != 0
-           return true; 
+      //didn't need other if, if i = 0 this will still work
+     if (track.size() > i + 4){ //only checks the pieces added after it
+         //if they are the same points, which will happen if user 
+         //chose two points within 10px of each other
+        for (int k = 4; k < (track.size() - (i+3)); k +=4){ //go thru every set of points after this one, k is what you add to i
+          if (track.get(i + 2) == track.get(i + k) && track.get(i + 3) == track.get(i + (k+1))){//if connected at the front and i != 0
+            connections.add(i/4, (i+k)/4); //add to the connections list at this segment's spot the segment that it si connected to
+            return true; 
           }
         }
+      }
         /*
         if (i >= 4){
             if (Math.abs(track.get(i) - track.get(i - 2)) <= 10 && Math.abs(track.get(i + 1) - track.get(i - 1)) <= 10){//if connected at the back? maybe this is unnecessary
@@ -84,9 +97,7 @@ class Track{
         */
         //have to comment this out, bc game can't consider the last piece connected to another or else the getSlope gives out of bounds since
         //onTrack variable assigned to something out of range
-      }
-     
-     
+     connections.add(i/4, -1); //make it false
      return false;
    }
   
@@ -131,9 +142,5 @@ class Track{
      strokeWeight(1); //so balll isn't heavy
      stroke(0, 0, 0); //set back to black
      //System.out.println("types: " + types);
-    }
-    
-   
-    
-    
+    }   
 }
