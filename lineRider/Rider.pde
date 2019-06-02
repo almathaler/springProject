@@ -11,6 +11,8 @@ class Rider{
   //for testing
   float capturedVel = 0.0;
   float capturedDirection = 0.0;
+  float forceApplied = 0.0;
+  float frictionApplied = 0.0;
   //
   Track t;
   //added track field to rider so it can check whether or not it's on
@@ -43,9 +45,6 @@ class Rider{
   boolean affectVelocities(){
     //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
     trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
-    if (timeCounter % 6 == 0){
-     System.out.println(" affectVel's trackOn: " + trackOn); 
-    }
     if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
       return false;
     }
@@ -53,8 +52,6 @@ class Rider{
    float theta = calcTheta(trackOn);
     if (theta != direction){
       direction = theta;
-      //
-      System.out.println("NEW DIRECTION: " + direction);
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
@@ -63,20 +60,35 @@ class Rider{
     }
     //NOTE: sin(theta) will be negative if this slope is downwards
     Float force = mass * gravityVal * sin(theta); //NOTE: bc of weird coords, theta is (+) for downhills
-    if (timeCounter % 6 == 0){
-     System.out.println("force: " + force); 
-    }
+    
     //take into account friction
     Float friction = mass * gravityVal * cos(theta) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
+
+    //testing
+    //
+    if (timeCounter % 60 == 0 || 
+        timeCounter % 60 == 10 ||
+        timeCounter % 60 == 20 ||
+        timeCounter % 60 == 30 ||
+        timeCounter % 60 == 40 ||
+        timeCounter % 60 == 50){
+      forceApplied = force;
+      frictionApplied = friction;
+    }
+    //
+    //
     if (vel < 0 && direction == theta){ //if ball is rolling against the force 
       force+=friction; //if it's downwards force, friction is upwards
     }else{ //here the ball must be rolling with the force, so you subtract friction
       force-=friction; //vice versa
     }
-    vel = velo + force / mass * timeCounter/6.0;
-    if (timeCounter % 6 == 0){
-     System.out.println("friction: " + friction + " net force: " + force + " velocity: " + vel); 
+    
+    if (vel >= 0){
+      vel = velo + force / mass * timeCounter/6.0;
+    }if (vel < 0){
+      vel = velo - force / mass * timeCounter/6.0;
     }
+    
     haveFallen = false;
     return true;
   }
@@ -86,21 +98,21 @@ class Rider{
     Float theta = atan(slope);
     if (t.track.get(trackOn + 3) < t.track.get(trackOn + 1) && 
         t.track.get(trackOn + 2) < t.track.get(trackOn)){ //if point2 is clsoer to origin than point1
-        theta += PI;
+        float x2 = t.track.get(trackOn);
+        float y2 = t.track.get(trackOn+1);
+        t.track.set(trackOn, t.track.get(trackOn+2));
+        t.track.set(trackOn+1, t.track.get(trackOn+3));
+        t.track.set(trackOn+2, x2);
+        t.track.set(trackOn+3, y2);
+        calcTheta(i); //if point2 is closer to origin, make that point1 and the other point2
     }
     return theta;
   }
 
   void move(){
-    if (timeCounter % 6 == 0){
-      System.out.println("Direction: " + direction);
-      System.out.println("vel: " + vel);
-      System.out.println("current seg of track: " + trackOn);
-    }
     if (onTrack){
       affectVelocities();
     }else{
-      System.out.println("falling");
       fall();
     }
     if (haveFallen){
@@ -141,6 +153,8 @@ class Rider{
     fill(255, 18, 169);
     String s = "vel: " + capturedVel + " direction: " + capturedDirection;
     text(s, x, y-hei/2.0);
+    String f = "force: " + forceApplied + "friction: " + frictionApplied;
+    text(f, x, y-hei/2.0 - 20);
    
   }
   // return index, also affect onTrack boolean

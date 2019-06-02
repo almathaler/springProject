@@ -8,7 +8,7 @@ Track t = new Track();
 Boolean doneWithTrack = false;
 Boolean started = false;
 Boolean stopped = false;
-Boolean restart = false;
+//Boolean restart = false;
 Boolean clear = false;
 LineRiderGame game = new LineRiderGame(100, 100);
 class LineRiderGame{
@@ -25,7 +25,7 @@ class LineRiderGame{
     //assuming gravity will be 9.81
     //should this be calculated from the first platform or from the ground?
     //float GPE = 9.81 * 50.0 * (height - startY); 
-    guy = new Rider(50, 9.81, startX, startY, 0.0, 0.0, t);
+    guy = new Rider(50, 20, startX, startY, 0.0, 0.0, t);
   }
 }
 
@@ -47,7 +47,7 @@ void keyPressed(){
     setup();
    }
    if (key == 'c'){ //clear and put at top
-    clear = false; 
+    //clear = true; 
    }
    if (key == '1'){
      t.type = 1;
@@ -68,7 +68,7 @@ void setup(){
   doneWithTrack = false;
   started = false;
   stopped = false;
-  restart = false;
+  //restart = false;
   clear = false;
   game = new LineRiderGame(100, 100);
 }
@@ -77,7 +77,7 @@ void draw(){
   background(255);
   game.guy.display();
  // t.display();
-  if (doneWithTrack && !stopped && !restart && !clear){
+  if (doneWithTrack && !stopped && !clear){
     if (!started){
        game.guy.timeCounter = 0;
        started = true;

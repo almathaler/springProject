@@ -87,15 +87,17 @@ class Track{
          //for testing
          ellipseMode(CENTER);
          fill(0, 0, 255);
-         ellipse(track.get(i), track.get(i+1), 20, 20);
+         ellipse(track.get(i), track.get(i+1), 10, 10);
          textSize(20);
          text("point 2", track.get(i+2), track.get(i+3));
-         ellipse(track.get(i+2), track.get(i+3), 20, 20);
+         ellipse(track.get(i+2), track.get(i+3), 10, 10);
          fill(255, 0, 0);
          textSize(32);
          float theta = atan((track.get(i+3)-track.get(i+1)) / (track.get(i+2)-track.get(i)));
          String s = theta + "";
+         String f = "force: " + (sin(theta) * 50 * 20);
          text(s, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0); //put the slope at the midpoint
+         text(f, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0 - 30);
         }
       }
      strokeWeight(1); //so balll isn't heavy
