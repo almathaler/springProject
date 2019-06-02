@@ -3,7 +3,7 @@ class Rider{
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x = 100; //position
   float y = 100;
-  int translateMode = 0; //decides where the rider is drawn from. will usually be 0 (for x and y), but will change sometimes for hitBox integration
+  int translateMode = 1; //decides where the rider is drawn from. will usually be 0 (for x and y), but will change sometimes for hitBox integration
   //float hx1, hx2, hx3, hx4 , hy1, hy2, hy3, hy4; //will be used for hitbox for the rider
   float[][] hitBox = {{x - 50, y}, {x - 50, y - 12.5}, {x, y - 25}, {x + 12.5, y - 12.5}}; //bottom back corner, top back corner, top, front and then x, y is the final;//hitBox for rider to detect when it is touching something
   float vel, velo;
@@ -23,12 +23,14 @@ class Rider{
    this.t = t; //the track
    velo = 0.0;
    vel = 0.0;
+   direction = 0.0;
    //hitBox = {[x - 50, y], [x - 50, y - 12.5], [x, y - 25], [x + 12.5, y - 12.5]}; //bottom back corner, top back corner, top, front and then x, y is the final
   }
 
   void fall(){
    if (!onTrack){
      if (!haveFallen){
+       direction = PI;
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
        fallingVelX = vel * cos(direction);
@@ -37,12 +39,15 @@ class Rider{
      
      //adjustHitBox();
       
-    direction = PI;
     fallingVelY += (gravityVal) * (1.0 / 60.0); //increase Y
     trackOn = checkIfOnTrack();
    }
    haveFallen = true;
   }
+  
+  
+  
+  
   //
   //made this a boolean so that it can end after fall() if fall() is called
   boolean affectVelocities(){
@@ -98,8 +103,8 @@ class Rider{
     }
     if (onTrack){
       affectVelocities();
-    }else{
-      fall();
+    } else {
+       fall(); 
     }
     
     if (haveFallen){
@@ -132,11 +137,12 @@ class Rider{
   //
   //
   void display(){
+    direction = calcTheta(checkIfOnTrack());
     ellipseMode(CENTER);
     for (int i = 0; i < hitBox.length; i++){
        ellipse(hitBox[i][0], hitBox[i][1], 2, 2); 
     }
-    if (trackOn == -1){
+    if (checkIfOnTrack() == -1){
        onTrack = false; 
     } else {
        onTrack = true; 
@@ -157,28 +163,36 @@ class Rider{
        theta = calcTheta(trackOn);
        //rotate(calcTheta(trackOn));
      }
-    pushMatrix();
+    //pushMatrix();
     if (translateMode == 0){
+      pushMatrix();
       translate(x, y);
-      rotate(theta);
+      if (haveFallen){
+        rotate(PI - direction);
+      } else {
+        rotate(direction); 
+      }
       rect(0-50, -12.5, 50, 12.5);
       ellipse(-wid/2, -hei, wid/2, 0);
+      popMatrix();
       //rotate(calcTheta(trackOn));
      
      //translate(-x, -y);
      //rotate(-calcTheta(trackOn));
     } else if (translateMode == 1){
-      translate(hitBox[0][0], hitBox[0][1]);
-      rotate(theta);
-      rect(0, -12.5, 50, 12.5);
+      
       x = hitBox[0][0] + 50 * cos(direction);
       y = hitBox[0][1] + 50 * sin(direction);
       adjustHitBox();
-      translate(x, y);
-      ellipse(-wid/2, -hei, wid/2, 0);
-      translateMode = 0;
+      pushMatrix();
+      translate(hitBox[0][0], hitBox[0][1]);
+      rotate(direction); 
+      rect(0, -12.5, 50, 12.5);
+      ellipse(50-wid/2, -hei, 50 + wid/2, 0);
+      //translateMode = 0;
+      popMatrix();
     }
-    popMatrix();
+    //popMatrix();
       
     /*
     ellipseMode(CORNERS); //so now, make upper left corner and bottom right as x, y -- that's like where the front wheel will be
@@ -207,12 +221,13 @@ class Rider{
        float hy2 = hitBox[i + 1][1];
        float hSlope = (hy1 - hy2) / (hx1 - hx2);*/
        if (((x1 <= hx1 && x2 >= hx1) || (x1 >= hx1 && x2 <= hx1)) && ((y1 <= hy1 && y2 >= hy1) || (y1 >= hy1 & y2 <= hy1))){
-         if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 10)){
+         if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 3)){
            onTrack = true;
            indicies.add(i);
            if (j == 1){
               translateMode = 1; 
            }
+           //return i;
         }
       }
      }
@@ -221,13 +236,12 @@ class Rider{
       if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10)){
          onTrack = true;
          indicies.add(i);
+         //return i;
       }
     }
-    /*
-    if (indicies.size() == 2){
-      return indicies.get(1);
-    } else */if (indicies.size() != 0){
-     return indicies.get(0); 
+    
+    if (indicies.size() != 0){
+     return indicies.get(indicies.size() - 1); 
     }
   }
   
