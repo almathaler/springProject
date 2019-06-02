@@ -1,5 +1,6 @@
 class Rider{
-  int timeCounter = 0;//updated every time draw is called, adds one every second
+  //int timeCounter = 0;//updated every time draw is called, adds one every second
+  float startTime = 0;
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x, y; //position
   float vel, velo;
@@ -19,6 +20,7 @@ class Rider{
   Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
    this.gravityVal = gravityVal;
+   //startTime = millis() / 1000.0; //time at creation
    this.x = x;
    this.y = y;
    this.t = t; //the track
@@ -29,13 +31,13 @@ class Rider{
   void fall(){
    if (!onTrack){
      if (!haveFallen){
-       timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
+       startTime = millis() / 1000.0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
        fallingVelX = vel * cos(direction);
        fallingVelY = vel * sin(direction); //don't use vel, use these falling ones
      }
     direction = PI / 2.0;
-    fallingVelY += (gravityVal) * (1.0 / 60.0); //increase Y
+    fallingVelY += (gravityVal) * (millis() / 1000.0 - startTime); //increase Y
     trackOn = checkIfOnTrack();
    }
    haveFallen = true;
@@ -54,7 +56,7 @@ class Rider{
     if (theta != direction){
       System.out.println("trackOn changed, now it is: " + trackOn + ", at time: " + millis());
       direction = theta;
-      timeCounter = 0;
+      startTime = millis() / 1000.0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
         velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
@@ -68,12 +70,12 @@ class Rider{
 
     //testing
     //
-    if (timeCounter % 60 == 0 || 
-        timeCounter % 60 == 10 ||
-        timeCounter % 60 == 20 ||
-        timeCounter % 60 == 30 ||
-        timeCounter % 60 == 40 ||
-        timeCounter % 60 == 50){
+    if ((millis()/1000.0 - startTime) % 60 == 0 || 
+        (millis()/1000.0 - startTime) % 60 == 10 ||
+        (millis()/1000.0 - startTime) % 60 == 20 ||
+        (millis()/1000.0 - startTime) % 60 == 30 ||
+        (millis()/1000.0 - startTime) % 60 == 40 ||
+        (millis()/1000.0 - startTime) % 60 == 50){
       forceApplied = force;
       frictionApplied = friction;
     }
@@ -86,9 +88,9 @@ class Rider{
     }
     
     if (vel >= 0){
-      vel = velo + force / mass * timeCounter/6.0;
+      vel = velo + force / mass * (millis()/1000.0 - startTime);
     }if (vel < 0){
-      vel = velo - force / mass * timeCounter/6.0;
+      vel = velo - force / mass * (millis()/1000.0 - startTime);
     }
     
     haveFallen = false;
@@ -113,11 +115,11 @@ class Rider{
       y += fallingVelY * (1.0 / 120.0);
     }else{
       //are these ok timings? should update proportional to current frame rate
-      x += vel * cos(direction) * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
+      x += vel * cos(direction) * (millis()/1000.0 - startTime);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
-      y += vel *  sin(direction) * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
+      y += vel *  sin(direction) * (millis()/1000.0 - startTime);// * (System.currentTimeMillis() - startTimeTheta);
     }
-    timeCounter++; //make this zero every time direction changes
+    //timeCounter++; //make this zero every time direction changes
   }
   //
   //
@@ -133,12 +135,12 @@ class Rider{
     float hei = mass;
     ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
     
-    if (timeCounter % 60 == 0 || 
-        timeCounter % 60 == 10 ||
-        timeCounter % 60 == 20 ||
-        timeCounter % 60 == 30 ||
-        timeCounter % 60 == 40 ||
-        timeCounter % 60 == 50){
+    if ((millis()/1000.0 - startTime) % 60 == 0 || 
+       (millis()/1000.0 - startTime) % 60 == 10 ||
+        (millis()/1000.0 - startTime) % 60 == 20 ||
+        (millis()/1000.0 - startTime) % 60 == 30 ||
+        (millis()/1000.0 - startTime) % 60 == 40 ||
+        (millis()/1000.0 - startTime) % 60 == 50){
       capturedVel = vel;
       capturedDirection = direction;
     }

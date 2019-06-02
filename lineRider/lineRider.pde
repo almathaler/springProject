@@ -4,6 +4,7 @@
 //LineRiderGame game;
 Rider guy;
 Vehicle bike; 
+float addToStartTime = 0.0;
 Track t = new Track();
 Boolean doneWithTrack = false;
 Boolean started = false;
@@ -26,7 +27,7 @@ class LineRiderGame{
     //assuming gravity will be 9.81
     //should this be calculated from the first platform or from the ground?
     //float GPE = 9.81 * 50.0 * (height - startY); 
-    guy = new Rider(50, 20, startX, startY, 0.0, 0.0, t);
+    guy = new Rider(50, 1, startX, startY, 0.0, 0.0, t);
   }
   void display(){
     time = "" + (millis() /1000.0) ;
@@ -43,9 +44,12 @@ void keyPressed(){
    }
    if (key == 's'){
     stopped = true; 
+    addToStartTime = millis() / 1000.0;
    }
    if (key == 'e'){
     stopped = false; 
+    addToStartTime = millis()/1000.0 - addToStartTime; //add the time stopped to start time so ball doesn't suddenly roll so fast
+    game.guy.startTime += addToStartTime;
    }
    if (key == 'q'){ //put at top of game
     //restart = false; 
@@ -85,7 +89,7 @@ void draw(){
  // t.display();
   if (doneWithTrack && !stopped && !clear){
     if (!started){
-       game.guy.timeCounter = 0;
+       game.guy.startTime = millis() / 1000.0;
        started = true;
     }
     game.guy.move();
