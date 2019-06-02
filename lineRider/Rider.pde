@@ -47,13 +47,13 @@ class Rider{
     //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
     trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
     if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
-      System.out.println("direction was: " + direction + ", now no longer on track");
+      //System.out.println("direction was: " + direction + ", now no longer on track");
       return false;
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
    float theta = calcTheta(trackOn);
     if (theta != direction){
-      System.out.println("trackOn changed, now it is: " + trackOn + ", at time: " + millis());
+      //System.out.println("trackOn changed, now it is: " + trackOn + ", at time: " + millis());
       direction = theta;
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
@@ -123,13 +123,24 @@ class Rider{
       if (trackOn < (t.track.size() -4)){
         float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
         float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
+        //this if statement ensures won't happen when it is ahead ofof the track, only if past in the respective direction
         if (x != xConnected &&
             y != yConnected &&
-            Math.abs(y - yConnected) < 5 &&
-            Math.abs(x - xConnected) < 5){ //if they're not the same but they are close 
-            System.out.println("\n" + "NEW PART" + "\n x: ");
+            ((direction > 0 && vel < 0 && (x - xConnected) < 0 && (x-xConnected)>-5 && (y - yConnected) < 0 && (y-yConnected)>-5) ||
+             (direction < 0 && vel > 0 && (x - xConnected) > 0 && (x-xConnected)<5 && (y-yConnected) < 0 && (y-yConnected) > -5) ||
+             (direction > 0 && vel > 0 && (x-xConnected)>0 && (x-xConnected)<5 && (y-yConnected)>0 && (y-yConnected)<5) ||
+             (direction < 0 && vel < 0 && (x-xConnected)<0 && (x-xConnected)>-5 && (y-yConnected)>0 && (y-yConnected)<5)
+            )){ //if they're not the same but they are close 
+            System.out.println("\n" + "NEW PART" + "\n");
             float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
             float oldY = y - vel * sin(direction) * (1.0/6.0); //same^
+            System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+            //for testing
+            float endPointX = t.track.get(trackOn+2);
+            float endPointY = t.track.get(trackOn+3);
+            System.out.println("the endpoint was: " + endPointX +", " + endPointY);
+            System.out.println("the x and y values are: " + x + ", " + y);
+            //
             double dTotal = vel * (1.0/framer); // d = vt //like polar coordinates. j move the player to where it should be
                                               //on the other segment. hacky cuz it still uses the vel from the previous segment
             double dToEnd = Math.sqrt(pow((oldX-t.track.get(trackOn+2)), 2) + pow((oldY-t.track.get(trackOn+3)), 2)); //dostance formula
@@ -194,12 +205,12 @@ class Rider{
          return i;
       }else{
        if (!haveFallen){
-        System.out.println("rider at: " + x + ", " + y + "is not on the line equation");
+        //System.out.println("rider at: " + x + ", " + y + "is not on the line equation");
        }
       }
      }else{
        if (!haveFallen){
-        System.out.println("rider at: " + x + ", " + y + "is not between the points of this segment: " + x1 + ", " + y1 + " , " + x2 + ", " + y2);
+        //System.out.println("rider at: " + x + ", " + y + "is not between the points of this segment: " + x1 + ", " + y1 + " , " + x2 + ", " + y2);
        }
      }
      checking = i;
@@ -211,8 +222,8 @@ class Rider{
     //}
     onTrack = false;
     if (!haveFallen){
-      System.out.println("at: " + millis() + "no longer on track");
-      System.out.println("checked all segments up to and including: " + checking);
+      //System.out.println("at: " + millis() + "no longer on track");
+      //System.out.println("checked all segments up to and including: " + checking);
     }
     
     return -1;

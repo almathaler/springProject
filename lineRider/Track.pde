@@ -66,6 +66,7 @@ class Track{
    }
    //builds the connections() array
    boolean finalizeConnections(){
+    connections.clear(); //if like stopped
     for (int i = 0; i<track.size()-3; i+=4){
       isConnected(i);
     }

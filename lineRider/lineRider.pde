@@ -46,6 +46,7 @@ void keyPressed(){
     stopped = true; 
    }
    if (key == 'e'){
+    t.finalizeConnections();
     stopped = false; 
    }
    if (key == 'q'){ //put at top of game
