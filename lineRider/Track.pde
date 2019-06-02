@@ -7,6 +7,7 @@ class Track{
    ArrayList<Integer> types = new ArrayList<Integer>(); //will contain the types of the corresponding sections
                                                         //indexing: i of types = i*4 of track
    ArrayList<Integer> connections = new ArrayList<Integer>();
+   ArrayList<Integer> backConnections = new ArrayList<Integer>();
    //will have all the connections between segments. will have them by segments number 0, 4, 8 
    
    //Track will be an arraylist of floats ordered {(x1),(y1), (x2),(y2)...}
@@ -66,10 +67,16 @@ class Track{
    //builds the connections() array
    boolean finalizeConnections(){
     connections.clear(); //if like stopped
+    backConnections.clear();
+    for (int k = 0; k<track.size() - 3; k+=4){
+      backConnections.add(-1); //make everything in backConnections -1 so that if a certain segment isn't connected from the back,
+                               //backConnections jsut doesn't have to be modified
+    }
     for (int i = 0; i<track.size()-3; i+=4){
       isConnected(i);
     }
     System.out.println("connections: " + connections);
+    System.out.println("backConnections : " + backConnections);
     return true;
    }
    
@@ -84,6 +91,7 @@ class Track{
         for (int k = 4; k < (track.size() - (i+3)); k +=4){ //go thru every set of points after this one, k is what you add to i
           if (track.get(i + 2) == track.get(i + k) && track.get(i + 3) == track.get(i + (k+1))){//if connected at the front and i != 0
             connections.add(i/4, (i+k)); //add to the connections list at this segment's spot the segment that it si connected to
+            backConnections.set((i+k)/4, i); //and then add backConnections so that it registers that (i+k) is connected to i from the back
             return true; 
           }
         }
