@@ -33,8 +33,8 @@ class Rider{
        //direction = PI;
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
-       fallingVelX = vel * cos(direction);
-       fallingVelY = vel * sin(direction); //don't use vel, use these falling ones
+       fallingVelX = vel * cos(direction) * timeCounter / 60;
+       fallingVelY = vel * sin(direction) * timeCounter / 60; //don't use vel, use these falling ones
      }
      
      //adjustHitBox();
@@ -176,6 +176,8 @@ class Rider{
       rect(0-50, -12.5, 50, 12.5);
       ellipse(-wid/2, -hei, wid/2, 0);
       fill(255, 255, 255);
+      stroke(0, 0, 0);
+      strokeWeight(3);
       line(0, 0, -25, -12.5);
       line(-25, -12.5, -25, -25);
       line(-25, -25, 0, -25);
@@ -196,6 +198,9 @@ class Rider{
       rect(0-50, -12.5, 50, 12.5);
       ellipse(-wid/2, -hei, wid/2, 0);
       fill(255, 255, 255);
+      
+      stroke(0, 0, 0);
+      strokeWeight(3);
       line(0, 0, -25, -12.5);
       line(-25, -12.5, -25, -25);
       line(-25, -25, 0, -25);
