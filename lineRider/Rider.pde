@@ -1,4 +1,5 @@
 class Rider{
+  boolean bobble;
   int timeCounter = 0;//updated every time draw is called, adds one every second
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x = 100; //position
@@ -13,6 +14,9 @@ class Rider{
   boolean haveFallen;
   int trackOn = -1;
   float theta = 0.0;
+  float riderAngle = 0;
+  float increment = 0.0001 * vel;
+  int counter;
   Track t;
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
@@ -33,8 +37,8 @@ class Rider{
        //direction = PI;
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
-       fallingVelX = vel * cos(direction) * timeCounter / 60;
-       fallingVelY = vel * sin(direction) * timeCounter / 60; //don't use vel, use these falling ones
+       fallingVelX = vel * cos(direction) * timeCounter / 6;
+       fallingVelY = vel * sin(direction) * timeCounter / 6; //don't use vel, use these falling ones
      }
      
      //adjustHitBox();
@@ -58,19 +62,6 @@ class Rider{
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
     if (calcTheta(trackOn) != direction){
-      /*
-      float diffTheta = calcTheta(trackOn);
-      //updating points of hitBox as this is the only part where it does not change w x and y
-      //each must be adjusted according to its own specific equation/position
-      hitBox[0][0] = x - (50 *cos(diffTheta));
-      hitBox[0][1] = y - (50 * sin(diffTheta));
-      hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
-      hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
-      hitBox[2][0] = x + 25 * sin(diffTheta);
-      hitBox[2][1] = y - 25 * cos(diffTheta);
-      hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
-      hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
-      */
       
       direction = calcTheta(trackOn);
       adjustHitBox();
@@ -78,6 +69,7 @@ class Rider{
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
         velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
+        bobbleRider();
       }
     }
     //NOTE: sin(theta) will be negative if this slope is downwards
@@ -139,6 +131,9 @@ class Rider{
   //
   void display(){
     direction = calcTheta(checkIfOnTrack());
+    if (bobble){
+       bobbleRider(); 
+    }
     ellipseMode(CENTER);
     for (int i = 0; i < hitBox.length; i++){
        ellipse(hitBox[i][0], hitBox[i][1], 2, 2); 
@@ -166,7 +161,9 @@ class Rider{
      }
     //pushMatrix();
     if (translateMode == 0){
+      
       pushMatrix();
+      
       translate(x, y);
       //if (haveFallen){
       //  rotate(PI - direction);
@@ -178,10 +175,19 @@ class Rider{
       fill(255, 255, 255);
       stroke(0, 0, 0);
       strokeWeight(3);
+      
+      
+      popMatrix();
+      
+      pushMatrix();
+      
+      translate(x, y);
+      rotate(riderAngle);
       line(0, 0, -25, -12.5);
       line(-25, -12.5, -25, -25);
-      line(-25, -25, 0, -25);
+      line(-25, -22.5, 0, -25);
       ellipse(-30, -35, -20, -25);
+      
       popMatrix();
       //rotate(calcTheta(trackOn));
      
@@ -201,11 +207,21 @@ class Rider{
       
       stroke(0, 0, 0);
       strokeWeight(3);
+     
+      
+      popMatrix();
+      
+      pushMatrix();
+      
+      translate(x, y);
+      rotate(riderAngle);
       line(0, 0, -25, -12.5);
       line(-25, -12.5, -25, -25);
-      line(-25, -25, 0, -25);
+      line(-25, -22.5, 0, -25);
       ellipse(-30, -35, -20, -25);
+      
       popMatrix();
+      
     }
     //popMatrix();
       
@@ -242,18 +258,22 @@ class Rider{
            if (j == 1){
               translateMode = 1; 
            }
+           if (j == 3){
+              translateMode = 1; 
+           }
            //return i;
         }
       }
      }
      
      if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10)){
+      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 3)){
          onTrack = true;
          indicies.add(i);
          //return i;
       }
     }
+    
     
     if (indicies.size() != 0){
      return indicies.get(indicies.size() - 1); 
@@ -281,5 +301,22 @@ class Rider{
       hitBox[2][1] = y - 25 * cos(diffTheta);
       hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
       hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
+ }
+ 
+ void bobbleRider(){
+     bobble = true;
+     if (riderAngle >= radians(30)){
+         increment = -vel * 0.001;
+         counter++;
+     } else if (riderAngle <= radians(-30)){
+         increment = vel * 0.001;
+         counter++;
+     }
+     if (Math.abs(riderAngle) < 0.1 && counter == 2){
+       riderAngle = 0;
+       bobble = false;
+       return;
+     }
+     riderAngle += increment;
  }
 }
