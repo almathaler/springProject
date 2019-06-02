@@ -43,7 +43,6 @@ void setup(){
 
 void draw(){
   background(255);
-  game.guy.display();
  // t.display();
   if (doneWithTrack){
     if (!started){
@@ -53,6 +52,7 @@ void draw(){
     game.guy.move();
   } 
     t.display();
+    game.guy.display();
 }
 
 
