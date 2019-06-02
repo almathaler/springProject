@@ -166,14 +166,19 @@ class Rider{
             System.out.println("the connnection was: " + xConnected +", " + yConnected);
             System.out.println("the x and y values are: " + x + ", " + y);
             //
-            double dTotal = vel * (1.0/framer);
+            double dTotal = -1 * vel * (1.0/framer);
+            System.out.println("dTotal: " + dTotal);
             double dToConnection = Math.sqrt(pow(oldX - xConnected, 2) + pow(oldY - yConnected, 2));//
+            System.out.println("dToConnection: " + dToConnection);
             double dNextSeg = dTotal - dToConnection;
+            System.out.println("dNextSeg: " + dNextSeg);
             int nextSeg = t.backConnections.get(trackOn/4);
+            System.out.println("next seg: " + nextSeg);
             float directionNext = calcTheta(nextSeg);
+            System.out.println("directionNext: " + directionNext);
             //should be a minus bc you are moving back
-            x = xConnected; //-(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
-            y = yConnected; //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
+            x = xConnected - (float) dNextSeg*cos(directionNext); //-(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
+            y = yConnected - (float) dNextSeg*sin(directionNext); //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
             System.out.println("new x and y: " + x + ", " + y);
           }
         }
@@ -223,7 +228,7 @@ class Rider{
          (xTry - x2) > -1 && (xTry - x1) < 1)&&
         ((yTry - y1) > -1 && (yTry - y2) < 1 ||
          (yTry - y2) > -1 && (yTry - y1) < 1)){
-      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 20){
+      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 25){
         return true;
       }     
     }
