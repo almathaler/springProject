@@ -30,7 +30,7 @@ class Rider{
   void fall(){
    if (!onTrack){
      if (!haveFallen){
-       direction = PI;
+       //direction = PI;
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
        fallingVelX = vel * cos(direction);
@@ -41,6 +41,7 @@ class Rider{
       
     fallingVelY += (gravityVal) * (1.0 / 60.0); //increase Y
     trackOn = checkIfOnTrack();
+    direction = PI;
    }
    haveFallen = true;
   }
@@ -167,13 +168,18 @@ class Rider{
     if (translateMode == 0){
       pushMatrix();
       translate(x, y);
-      if (haveFallen){
-        rotate(PI - direction);
-      } else {
+      //if (haveFallen){
+      //  rotate(PI - direction);
+      //} else {
         rotate(direction); 
-      }
+      //}
       rect(0-50, -12.5, 50, 12.5);
       ellipse(-wid/2, -hei, wid/2, 0);
+      fill(255, 255, 255);
+      line(0, 0, -25, -12.5);
+      line(-25, -12.5, -25, -25);
+      line(-25, -25, 0, -25);
+      ellipse(-30, -35, -20, -25);
       popMatrix();
       //rotate(calcTheta(trackOn));
      
@@ -185,11 +191,15 @@ class Rider{
       y = hitBox[0][1] + 50 * sin(direction);
       adjustHitBox();
       pushMatrix();
-      translate(hitBox[0][0], hitBox[0][1]);
+      translate(x, y);
       rotate(direction); 
-      rect(0, -12.5, 50, 12.5);
-      ellipse(50-wid/2, -hei, 50 + wid/2, 0);
-      //translateMode = 0;
+      rect(0-50, -12.5, 50, 12.5);
+      ellipse(-wid/2, -hei, wid/2, 0);
+      fill(255, 255, 255);
+      line(0, 0, -25, -12.5);
+      line(-25, -12.5, -25, -25);
+      line(-25, -25, 0, -25);
+      ellipse(-30, -35, -20, -25);
       popMatrix();
     }
     //popMatrix();
