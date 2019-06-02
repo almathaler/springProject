@@ -128,6 +128,7 @@ class Rider{
           System.out.println("going forwards, falling when it hsouldn't be");
           float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
           float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
+          System.out.println("X and Y conn: " + xConnected + ", " + yConnected);
           float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
           float oldY = y - vel * sin(direction) * (1.0/ framer); //same^
           //float endPointX = t.track.get(trackOn+2); //these two should be the same as xConnected and yConnected
@@ -228,7 +229,7 @@ class Rider{
          (xTry - x2) > -1 && (xTry - x1) < 1)&&
         ((yTry - y1) > -1 && (yTry - y2) < 1 ||
          (yTry - y2) > -1 && (yTry - y1) < 1)){
-      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 25){
+      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 15){
         return true;
       }     
     }
