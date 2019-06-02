@@ -86,14 +86,12 @@ class Rider{
     }else{ //here the ball must be rolling with the force, so you subtract friction
       force-=friction; //vice versa
     }
-    
-    if (vel >= 0){
-      vel = velo + force / mass * timeCounter/6.0;
-    }if (vel < 0 && force > 0){
-      vel = velo - force / mass * timeCounter/6.0;
-    }else if (vel < 0 && force <= 0){
-      vel = velo + force / mass * timeCounter/6.0;
-    }
+    vel = velo + force / mass * timeCounter/6.0;
+    //if (vel >= 0 || vel < 0 && force <= 0){
+    //  vel = velo + force / mass * timeCounter/6.0;
+    //}else if (vel < 0 && force > 0){
+    //  vel = velo - force / mass * timeCounter/6.0;
+    //}
     //here deal w player moving too quickly it can't register hitting another line
 
     haveFallen = false;
@@ -123,24 +121,19 @@ class Rider{
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / framer);// * (System.currentTimeMillis() - startTimeTheta);
       //this part is supposed to fix when the player passes the connected segment
-      if (trackOn < (t.track.size() -4)){
+      if (t.connections.get(trackOn/4) != -1){
         float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
         float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
+        float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
+        float oldY = y - vel * sin(direction) * (1.0/6.0); //same^
+        float endPointX = t.track.get(trackOn+2); //these two should be the same as xConnected and yConnected
+        float endPointY = t.track.get(trackOn+3);
+        //modify if statement to check if endPoints are between x and old X
         //this if statement ensures won't happen when it is ahead ofof the track, only if past in the respective direction
-        if (x != xConnected &&
-            y != yConnected &&
-            ((direction > 0 && vel < 0 && (x - xConnected) < 0 && (x-xConnected)>-7 && (y - yConnected) < 0 && (y-yConnected)>-7) ||
-             (direction < 0 && vel > 0 && (x - xConnected) > 0 && (x-xConnected)<7 && (y-yConnected) < 0 && (y-yConnected) > -7) ||
-             (direction > 0 && vel > 0 && (x-xConnected)>0 && (x-xConnected)<7 && (y-yConnected)>0 && (y-yConnected)<7) ||
-             (direction < 0 && vel < 0 && (x-xConnected)<0 && (x-xConnected)>-7 && (y-yConnected)>0 && (y-yConnected)<7)
-            )){ //if they're not the same but they are close 
+        if (onLine(oldX, oldY, x, y, xConnected, yConnected)){ //if they're not the same but they are close 
             System.out.println("\n" + "NEW PART" + "\n");
-            float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
-            float oldY = y - vel * sin(direction) * (1.0/6.0); //same^
             System.out.println("oldX and oldY: " + oldX + ", " + oldY);
             //for testing
-            float endPointX = t.track.get(trackOn+2);
-            float endPointY = t.track.get(trackOn+3);
             System.out.println("the endpoint was: " + endPointX +", " + endPointY);
             System.out.println("the x and y values are: " + x + ", " + y);
             //
@@ -189,6 +182,20 @@ class Rider{
     String f = "force: " + forceApplied + "friction: " + frictionApplied;
     text(f, x, y-hei/2.0 - 20);
    
+  }
+  //
+  //just like checIfOnTrack, but will be used to see if the endPoint that was missed was between xOrig and xCurrent
+  boolean onLine(float x1, float y1, float x2, float y2, float xTry, float yTry){
+    float slope = (y2 - y1)/(x2-x1);
+    if (((xTry - x1) > -1 && (xTry - x2) < 1 ||
+         (xTry - x2) > -1 && (xTry - x1) < 1)&&
+        ((yTry - y1) > -1 && (yTry - y2) < 1 ||
+         (yTry - y2) > -1 && (yTry - y1) < 1)){
+      if (Math.abs((y1-yTry) - slope*(x2-x1)) < 5){
+        return true;
+      }     
+    }
+    return false;
   }
   // return index, also affect onTrack boolean
   //
