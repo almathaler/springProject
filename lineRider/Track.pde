@@ -8,15 +8,15 @@ class Track{
                                                         //indexing: i of types = i*4 of track
    ArrayList<Integer> connections = new ArrayList<Integer>();
    ArrayList<Integer> backConnections = new ArrayList<Integer>();
-   //will have all the connections between segments. will have them by segments number 0, 4, 8 
-   
+   //will have all the connections between segments. will have them by segments number 0, 4, 8
+
    //Track will be an arraylist of floats ordered {(x1),(y1), (x2),(y2)...}
    //if one point is equal to the last, then it is connected
-   
+
    public Track(){//for testing purposes
       track = new ArrayList<Float>();
    }
-   
+
    public void add(Float n, Float m){
      if (track.size() % 4 == 0){ //if you are about to start a new segment
        types.add(type); //take down the type of that segment
@@ -35,8 +35,8 @@ class Track{
        track.add(n);
        track.add(m);
      }
-     
-     
+
+
    }
    //sees if the two points of a line are in order of closest to origin, farthest. If not, reorders them
    void checkOrder(int i){
@@ -52,7 +52,7 @@ class Track{
         //if point2 is closer to origin, make that point1 and the other point2
     }
    }
-   
+
    public float getMu(int type){
      switch(type){
        case 1:
@@ -79,27 +79,27 @@ class Track{
     System.out.println("backConnections : " + backConnections);
     return true;
    }
-   
+
    public boolean isConnected(int i){ // the purpose of this method is to take the index of the first value for a piece of the track and determine if it is connected to another part
       if (i < 0){
         return false;
       }
       //didn't need other if, if i = 0 this will still work
      if (track.size() > i + 4){ //only checks the pieces added after it
-         //if they are the same points, which will happen if user 
+         //if they are the same points, which will happen if user
          //chose two points within 10px of each other
         for (int k = 4; k < (track.size() - (i+3)); k +=4){ //go thru every set of points after this one, k is what you add to i
           if (track.get(i + 2) == track.get(i + k) && track.get(i + 3) == track.get(i + (k+1))){//if connected at the front and i != 0
             connections.add(i/4, (i+k)); //add to the connections list at this segment's spot the segment that it si connected to
             backConnections.set((i+k)/4, i); //and then add backConnections so that it registers that (i+k) is connected to i from the back
-            return true; 
+            return true;
           }
         }
       }
         /*
         if (i >= 4){
             if (Math.abs(track.get(i) - track.get(i - 2)) <= 10 && Math.abs(track.get(i + 1) - track.get(i - 1)) <= 10){//if connected at the back? maybe this is unnecessary
-               return true; 
+               return true;
             }
         }
         */
@@ -108,13 +108,13 @@ class Track{
      connections.add(i/4, -1); //make it false
      return false;
    }
-  
-    
+
+
     public void display(){
       strokeWeight(4);
       for (int i = 0; i < track.size(); i += 4){
         switch(types.get(i/4)){ //get the corresponding color
-           case 1: 
+           case 1:
              stroke(0, 0, 0); //black
              break;
            case 2:
@@ -130,7 +130,7 @@ class Track{
           //popMatrix();
         } else
         if (i < track.size() - 3){
-         line(track.get(i), track.get(i + 1), track.get(i + 2), track.get(i + 3)); 
+         line(track.get(i), track.get(i + 1), track.get(i + 2), track.get(i + 3));
          //for testing
          ellipseMode(CENTER);
          fill(0, 0, 255);
@@ -153,5 +153,5 @@ class Track{
      strokeWeight(1); //so balll isn't heavy
      stroke(0, 0, 0); //set back to black
      //System.out.println("types: " + types);
-    }   
+    }
 }
