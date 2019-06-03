@@ -44,7 +44,7 @@ class Rider{
        fallingVelX = vel * cos(direction) * timeCounter / 60;
        fallingVelY = vel * sin(direction) * timeCounter / 60; //don't use vel, use these falling ones
      }
-    direction = PI / 2.0;
+    //direction = PI / 2.0;
     fallingVelY += (gravityVal) * (1.0 / framer); //increase Y
     trackOn = checkIfOnTrack();
     direction = PI;
@@ -161,6 +161,7 @@ class Rider{
       x += vel * cos(direction) * (1.0 / framer);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / framer);// * (System.currentTimeMillis() - startTimeTheta);
+      adjustHitBox();
       //this part is supposed to fix when the player passes the connected segment
       //it's ok to call checkIfOnTrack() bc that doesn't modify trackOn just boolean onTrack
       if (checkIfOnTrack() == -1 && trackOn != -1){ //new x and y takes the player off the track, check if that was the right thing
@@ -188,9 +189,12 @@ class Rider{
               double dNextSeg = dTotal - dToEnd;
               int nextSeg = t.connections.get(trackOn/4);
               float directionNext = calcTheta(nextSeg); //calculate the next segment's direction
-              x = xConnected + (float) dNextSeg * cos(directionNext); //put it on the other track
-              y = yConnected + (float) dNextSeg * sin(directionNext);
+              direction = directionNext;
+              //x = xConnected + (float) dNextSeg * cos(directionNext); //put it on the other track
+              //y = yConnected + (float) dNextSeg * sin(directionNext);
+              translateMode = 1;
               System.out.println("new x and y: " + x + ", " + y);
+              adjustHitBox();
          }
         }else if (vel < 0 && t.backConnections.get(trackOn/4) != -1){
           System.out.println("going backwards, falling when it shouldn't be");
@@ -217,8 +221,11 @@ class Rider{
             float directionNext = calcTheta(nextSeg);
             System.out.println("directionNext: " + directionNext);
             //should be a minus bc you are moving back
-            x = xConnected - (float) dNextSeg*cos(directionNext); //-(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
-            y = yConnected - (float) dNextSeg*sin(directionNext); //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
+            //x = xConnected - (float) dNextSeg*cos(directionNext); //-(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
+            //y = yConnected - (float) dNextSeg*sin(directionNext); //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
+            direction = directionNext;
+            translateMode = 0;
+            adjustHitBox();
             System.out.println("new x and y: " + x + ", " + y);
           }
         }
@@ -367,8 +374,11 @@ class Rider{
          if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 3)){
            onTrack = true;
            indicies.add(i);
-           if (j == 1){
+           if (j == 0){
               translateMode = 1; 
+           }
+           if (j == 3){
+              translateMode = 0; 
            }
            //return i;
         }
