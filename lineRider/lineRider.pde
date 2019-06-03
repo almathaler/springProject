@@ -42,6 +42,14 @@ void keyPressed(){
         System.out.println();
      }
    }
+   if (key == BACKSPACE || key == DELETE){
+       if (!doneWithTrack){
+         t.track.remove(t.track.size()-1);
+         t.track.remove(t.track.size()-1);
+         t.track.remove(t.track.size()-1);
+         t.track.remove(t.track.size()-1); //remove the last four points
+       }
+     }
    if (key == 's'){
     stopped = true; 
    }
@@ -82,10 +90,6 @@ void setup(){
 
 void draw(){
   background(255);
-<<<<<<< HEAD
-  
-=======
->>>>>>> addingVehicle
  // t.display();
   if (doneWithTrack && !stopped && !clear){
     if (!started){

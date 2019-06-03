@@ -135,19 +135,19 @@ class Track{
          ellipseMode(CENTER);
          fill(0, 0, 255);
          ellipse(track.get(i), track.get(i+1), 10, 10);
-         textSize(20);
-         String point1 = "" + track.get(i) + ", " + track.get(i+1);
-         String point2 = "" + track.get(i+2) + ", " + track.get(i+3);
-         text(point2, track.get(i+2), track.get(i+3));
-         text(point1, track.get(i), track.get(i+1));
+         //textSize(20);
+         //String point1 = "" + track.get(i) + ", " + track.get(i+1);
+         //String point2 = "" + track.get(i+2) + ", " + track.get(i+3);
+         //text(point2, track.get(i+2), track.get(i+3));
+         //text(point1, track.get(i), track.get(i+1));
          ellipse(track.get(i+2), track.get(i+3), 10, 10);
          fill(255, 0, 0);
-         textSize(32);
-         float theta = atan((track.get(i+3)-track.get(i+1)) / (track.get(i+2)-track.get(i)));
-         String s = theta + "";
-         String f = "force: " + (sin(theta) * 50 * 20);
-         text(s, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0); //put the slope at the midpoint
-         text(f, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0 - 30);
+         //textSize(32);
+         //float theta = atan((track.get(i+3)-track.get(i+1)) / (track.get(i+2)-track.get(i)));
+         //String s = theta + "";
+         //String f = "force: " + (sin(theta) * 50 * 20);
+         //text(s, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0); //put the slope at the midpoint
+         //text(f, (track.get(i+2)+track.get(i))/2.0 +15 , (track.get(i+3)+track.get(i+1))/2.0 - 30);
         }
       }
      strokeWeight(1); //so balll isn't heavy

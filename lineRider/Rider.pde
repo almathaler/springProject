@@ -392,15 +392,12 @@ class Rider{
         //System.out.println("rider at: " + x + ", " + y + "is not between the points of this segment: " + x1 + ", " + y1 + " , " + x2 + ", " + y2);
        }
      }
-     checking = i;
+
     }
     
     if (indicies.size() != 0){
      return indicies.get(indicies.size() - 1); 
     }
-  }
-  
- 
     //if the above fails but there still is a piece connected ... buggy
     //if (t.isConnected(trackOn)){ //if the piece the rider is on rn has another next to it
     //  onTrack = true;
@@ -410,6 +407,10 @@ class Rider{
     
     return -1;
  }
+ 
+  
+ 
+    
  
   //check if distance between line and center is within 5 pixels of radius of circle  
  int checkIfIntersecting(){
@@ -433,8 +434,8 @@ class Rider{
      }
    }
    return -1;
-   }
-  }
+ }
+  
   void adjustHitBox(){
        float diffTheta = direction; 
        hitBox[0][0] = x - (50 *cos(diffTheta));
@@ -446,6 +447,4 @@ class Rider{
        hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
        hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
   }
- }
- }
 }
