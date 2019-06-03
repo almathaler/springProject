@@ -192,6 +192,8 @@ class Rider{
               direction = directionNext;
               //x = xConnected + (float) dNextSeg * cos(directionNext); //put it on the other track
               //y = yConnected + (float) dNextSeg * sin(directionNext);
+              x = hitBox[0][0] + 50 * cos(direction);
+              y = hitBox[0][1] + 50 * sin(direction);
               translateMode = 1;
               System.out.println("new x and y: " + x + ", " + y);
               adjustHitBox();
@@ -225,6 +227,8 @@ class Rider{
             //y = yConnected - (float) dNextSeg*sin(directionNext); //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
             direction = directionNext;
             translateMode = 0;
+            x = hitBox[0][0] + 50 * cos(direction);
+            y = hitBox[0][1] + 50 * sin(direction);
             adjustHitBox();
             System.out.println("new x and y: " + x + ", " + y);
           }
@@ -373,12 +377,18 @@ class Rider{
        if (((x1 <= hx1 && x2 >= hx1) || (x1 >= hx1 && x2 <= hx1)) && ((y1 <= hy1 && y2 >= hy1) || (y1 >= hy1 & y2 <= hy1))){
          if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 3)){
            onTrack = true;
-           indicies.add(i);
-           if (j == 0){
+           //indicies.add(i);
+           if (!(direction < 0)){
+             if (j == 0 && !(indicies.contains(i))){
               translateMode = 1; 
+              indicies.add(i);
+             } else if (j != 0){
+               indicies.add(i); 
+             }
            }
            if (j == 3){
               translateMode = 0; 
+              indicies.add(i);
            }
            //return i;
         }
@@ -391,6 +401,7 @@ class Rider{
            (y - y2) > -1 && (y - y1) < 1)){ 
        if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
          onTrack = true;
+         translateMode = 0;
          //if it's at the endpoint of this segment, return index of the connected segment
          if (Math.abs(x-x2) < 1 && Math.abs(y - y2) < 1){
            return t.connections.get(i/4); //return 
