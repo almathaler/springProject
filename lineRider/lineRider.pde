@@ -83,8 +83,7 @@ void setup(){
 void draw(){
   background(255);
 <<<<<<< HEAD
-  game.display();
-  game.guy.display();
+  
 =======
 >>>>>>> addingVehicle
  // t.display();
@@ -113,11 +112,8 @@ void draw(){
   }
   */ //testing
     t.display();
-<<<<<<< HEAD
-    
-=======
+    game.display();
     game.guy.display();
->>>>>>> addingVehicle
 }
 
 

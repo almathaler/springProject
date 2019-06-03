@@ -13,16 +13,13 @@ class Rider{
   float direction;
   boolean haveFallen;
   int trackOn = -1;
-<<<<<<< HEAD
   //for testing
   float capturedVel = 0.0;
   float capturedDirection = 0.0;
   float forceApplied = 0.0;
   float frictionApplied = 0.0;
   //
-=======
-  float theta = 0.0;
->>>>>>> addingVehicle
+  float theta = 0.0; //kept in merge, might not be needed
   Track t;
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
@@ -40,26 +37,15 @@ class Rider{
   void fall(){
    if (!onTrack){
      if (!haveFallen){
-<<<<<<< HEAD
        System.out.println("\n FALLING \n");
        System.out.println("began falling at: " + x + ", " + y);
-=======
-       //direction = PI;
->>>>>>> addingVehicle
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
        fallingVelX = vel * cos(direction) * timeCounter / 60;
        fallingVelY = vel * sin(direction) * timeCounter / 60; //don't use vel, use these falling ones
      }
-<<<<<<< HEAD
     direction = PI / 2.0;
     fallingVelY += (gravityVal) * (1.0 / framer); //increase Y
-=======
-     
-     //adjustHitBox();
-      
-    fallingVelY += (gravityVal) * (1.0 / 60.0); //increase Y
->>>>>>> addingVehicle
     trackOn = checkIfOnTrack();
     direction = PI;
    }
@@ -79,12 +65,6 @@ class Rider{
       return false;
     }
    //calculate the slope, and if it's not the same as you've been on, change and take a new time
-<<<<<<< HEAD
-   float theta = calcTheta(trackOn);
-    if (theta != direction){
-      //System.out.println("trackOn changed, now it is: " + trackOn + ", at time: " + millis());
-      direction = theta;
-=======
     if (calcTheta(trackOn) != direction){
       /*
       float diffTheta = calcTheta(trackOn);
@@ -102,7 +82,6 @@ class Rider{
       
       direction = calcTheta(trackOn);
       adjustHitBox();
->>>>>>> addingVehicle
       timeCounter = 0;
       velo = vel; //make the last velocity of the old slope the one we are working off of now
       if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
@@ -146,19 +125,12 @@ class Rider{
   }
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
-<<<<<<< HEAD
-    Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
-    Float theta = atan(slope);
-     //moved the mismatched points to the track class
-    return theta;
-=======
     if (i + 3 < t.track.size() && i != -1){
        Float slope = (t.track.get(i + 3) - t.track.get(i + 1)) / (t.track.get(i + 2) - t.track.get(i)); //
       Float theta = atan(slope);
       return theta;
     }
     return 0.0;
->>>>>>> addingVehicle
   }
 
   void move(){
@@ -169,12 +141,8 @@ class Rider{
     }
     
     if (haveFallen){
-<<<<<<< HEAD
       x += fallingVelX * (1.0 / framer); //changed the fram rate for testing to slow donw
       y += fallingVelY * (1.0 / framer);
-=======
-      x += fallingVelX * (1.0 / 60.0);
-      y += fallingVelY * (1.0 / 60.0);
       
       
       for (int i = 0; i < hitBox.length; i++){
@@ -182,11 +150,14 @@ class Rider{
          hitBox[i][1] += fallingVelY * (1.0 / 60.0);
       }
       
->>>>>>> addingVehicle
     }else{
       
       //are these ok timings? should update proportional to current frame rate
-<<<<<<< HEAD
+      for (int i = 0; i < hitBox.length; i++){// updating the hitbox coordinates with 
+        hitBox[i][0] += vel * cos(direction) * (1.0 / framer);
+        hitBox[i][1] += vel *  sin(direction) * (1.0 / framer);
+      }
+      //EXPERIMENTAL
       x += vel * cos(direction) * (1.0 / framer);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / framer);// * (System.currentTimeMillis() - startTimeTheta);
@@ -253,20 +224,6 @@ class Rider{
         }
       }
       checkIfOnTrack(); //
-=======
-      
-      x += vel * cos(direction) * (1.0 / 60.0);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
-                          //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
-      y += vel *  sin(direction) * (1.0 / 60.0);// * (System.currentTimeMillis() - startTimeTheta);
-      
-      
-      for (int i = 0; i < hitBox.length; i++){// updating the hitbox coordinates with 
-        hitBox[i][0] += vel * cos(direction) * (1.0 / 60.0);
-        hitBox[i][1] += vel *  sin(direction) * (1.0 / 60.0);
-      }
-      
-      
->>>>>>> addingVehicle
     }
     timeCounter++; //make this zero every time direction changes
   }
@@ -350,9 +307,7 @@ class Rider{
     ellipseMode(CORNERS); //so now, make upper left corner and bottom right as x, y -- that's like where the front wheel will be
     float wid = mass;
     float hei = mass;
-    ellipse(x-wid/2, y-hei, x+wid/2, y); //so that the bottom point of the ellipse is what is touching the line
-<<<<<<< HEAD
-    
+    ellipse(x-wid/2, y-hei, x+wid/2, y);
     if (timeCounter % 60 == 0 || 
         timeCounter % 60 == 10 ||
         timeCounter % 60 == 20 ||
@@ -368,8 +323,11 @@ class Rider{
     text(s, x, y-hei/2.0);
     String f = "force: " + forceApplied + "friction: " + frictionApplied;
     text(f, x, y-hei/2.0 - 20);
+    */
    
-  }
+  } //so that the bottom point of the ellipse is what is touching the line
+    
+    
   //
   //just like checIfOnTrack, but will be used to see if the endPoint that was missed was between xOrig and xCurrent
   boolean onLine(float x1, float y1, float x2, float y2, float xTry, float yTry){
@@ -385,46 +343,18 @@ class Rider{
       }     
     //}
     return false;
-=======
-    */
->>>>>>> addingVehicle
   }
   // return index, also affect onTrack boolean
   //
   int checkIfOnTrack(){
-<<<<<<< HEAD
-    int checking = 0;
-=======
     ArrayList<Integer> indicies = new ArrayList<Integer>();
 
->>>>>>> addingVehicle
     for (int i = 0; i<t.track.size() - 3; i+= 4){
      Float x1 = t.track.get(i);
      Float y1 = t.track.get(i+1);
      Float x2 = t.track.get(i+2);
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
-<<<<<<< HEAD
-     //because of the checkOrder() method in track, point2 will always be farther from origin than point1
-     //(y1 <= y && y2 >= y)
-     // add little buffers
-     //if (((x1 <= (x-1) && x2 >= (x+1)) || (x2<=(x-1) && x1>= (x+1))) && ((y1<=(y-1) && y2>=(y+1))||(y2<=(y-1) && y1>=(y+1)))){
-     if ( ((x - x1) > -1 && (x - x2) < 1 ||
-           (x - x2) > -1 && (x - x1) < 1)&&
-           ((y - y1) > -1 && (y - y2) < 1 ||
-           (y - y2) > -1 && (y - y1) < 1)){ 
-       if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
-         onTrack = true;
-         //if it's at the endpoint of this segment, return index of the connected segment
-         if (Math.abs(x-x2) < 1 && Math.abs(y - y2) < 1){
-           return t.connections.get(i/4); //return 
-         }
-         return i;
-      }else{
-       if (!haveFallen){
-        //System.out.println("rider at: " + x + ", " + y + "is not on the line equation");
-       }
-=======
      
      
      for (int j = 0; j < hitBox.length; j++){
@@ -445,12 +375,17 @@ class Rider{
       }
      }
      
-     if (((x1 <= x && x2 >= x) || (x1 >= x && x2 <= x)) && ((y1 <= y && y2 >= y) || (y1 >= y & y2 <= y))){
-      if ((Math.abs((y1 - y) - (slope * (x1 - x))) < 10)){
+     if ( ((x - x1) > -1 && (x - x2) < 1 ||
+           (x - x2) > -1 && (x - x1) < 1)&&
+           ((y - y1) > -1 && (y - y2) < 1 ||
+           (y - y2) > -1 && (y - y1) < 1)){ 
+       if (Math.abs((y1 - y) - (slope * (x1 - x))) < 5){
          onTrack = true;
-         indicies.add(i);
-         //return i;
->>>>>>> addingVehicle
+         //if it's at the endpoint of this segment, return index of the connected segment
+         if (Math.abs(x-x2) < 1 && Math.abs(y - y2) < 1){
+           return t.connections.get(i/4); //return 
+         }
+         return i;
       }
      }else{
        if (!haveFallen){
@@ -459,8 +394,6 @@ class Rider{
      }
      checking = i;
     }
-<<<<<<< HEAD
-=======
     
     if (indicies.size() != 0){
      return indicies.get(indicies.size() - 1); 
@@ -468,25 +401,16 @@ class Rider{
   }
   
  
->>>>>>> addingVehicle
     //if the above fails but there still is a piece connected ... buggy
     //if (t.isConnected(trackOn)){ //if the piece the rider is on rn has another next to it
     //  onTrack = true;
     //  return (trackOn + 4);
     //}
     onTrack = false;
-<<<<<<< HEAD
-    if (!haveFallen){
-      //System.out.println("at: " + millis() + "no longer on track");
-      //System.out.println("checked all segments up to and including: " + checking);
-    }
-=======
->>>>>>> addingVehicle
     
     return -1;
  }
  
-<<<<<<< HEAD
   //check if distance between line and center is within 5 pixels of radius of circle  
  int checkIfIntersecting(){
    for (int i = 0; i<t.track.size()-3; i+=4){
@@ -509,17 +433,19 @@ class Rider{
      }
    }
    return -1;
-=======
- void adjustHitBox(){
-      float diffTheta = direction; 
-      hitBox[0][0] = x - (50 *cos(diffTheta));
-      hitBox[0][1] = y - (50 * sin(diffTheta));
-      hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
-      hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
-      hitBox[2][0] = x + 25 * sin(diffTheta);
-      hitBox[2][1] = y - 25 * cos(diffTheta);
-      hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
-      hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
->>>>>>> addingVehicle
+   }
+  }
+  void adjustHitBox(){
+       float diffTheta = direction; 
+       hitBox[0][0] = x - (50 *cos(diffTheta));
+       hitBox[0][1] = y - (50 * sin(diffTheta));
+       hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
+       hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
+       hitBox[2][0] = x + 25 * sin(diffTheta);
+       hitBox[2][1] = y - 25 * cos(diffTheta);
+       hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
+       hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
+  }
+ }
  }
 }
