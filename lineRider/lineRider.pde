@@ -161,7 +161,7 @@ void mouseClicked(){
  if (exitTitle){      
    if (!doneWithTrack || stopped){
      t.add(mouseX + 0.0, mouseY + 0.0);          
-     t.add(mouseX + 0.0, mouseY + 0.0); 
+     //t.add(mouseX + 0.0, mouseY + 0.0); 
     }
   }else{ 
    if(mouseX < 750 && mouseX > 450 && mouseY < 700 && mouseY > 500){
@@ -170,6 +170,7 @@ void mouseClicked(){
   } 
 }  
 
+//not ours, from a processing example
 void star(float x, float y, float radius1, float radius2, int npoints) {
     float angle = TWO_PI / npoints;
     float halfAngle = angle/2.0;

@@ -12,8 +12,7 @@ class Rider{
   //for testing
   float capturedVel = 0.0;
   float capturedDirection = 0.0;
-  float forceApplied = 0.0;
-  float frictionApplied = 0.0;
+  
   //
   Track t;
   //added track field to rider so it can check whether or not it's on
@@ -69,19 +68,6 @@ class Rider{
     //take into account friction
     Float friction = mass * gravityVal * cos(theta) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
 
-    //testing
-    //
-    if (timeCounter % 60 == 0 || 
-        timeCounter % 60 == 10 ||
-        timeCounter % 60 == 20 ||
-        timeCounter % 60 == 30 ||
-        timeCounter % 60 == 40 ||
-        timeCounter % 60 == 50){
-      forceApplied = force;
-      frictionApplied = friction;
-    }
-    //
-    //
     if (vel < 0 && direction == theta){ //if ball is rolling against the force 
       force+=friction; //if it's downwards force, friction is upwards
     }else{ //here the ball must be rolling with the force, so you subtract friction
@@ -226,14 +212,14 @@ class Rider{
     float slope = (y2 - y1)/(x2-x1);
     //experimentally, get rid of the first if and j depend on 
     //implied precondition that this is only called when the player starts falling near the connection
-   // if (((xTry - x1) > -1 && (xTry - x2) < 1 ||
-   //      (xTry - x2) > -1 && (xTry - x1) < 1)&&
-   //     ((yTry - y1) > -1 && (yTry - y2) < 1 ||
-   //      (yTry - y2) > -1 && (yTry - y1) < 1)){
+   if (((xTry - x1) > -1 && (xTry - x2) < 1 ||
+         (xTry - x2) > -1 && (xTry - x1) < 1)&&
+        ((yTry - y1) > -1 && (yTry - y2) < 1 ||
+         (yTry - y2) > -1 && (yTry - y1) < 1)){
       if (Math.abs((y1-yTry) - slope*(x1-xTry)) < 15){
         return true;
       }     
-    //}
+    }
     return false;
   }
   // return index, also affect onTrack boolean

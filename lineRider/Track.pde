@@ -84,6 +84,9 @@ class Track{
       if (i < 0){
         return false;
       }
+      float forCheckX = -1;
+      float forCheckY = -1;
+      float faultyI = -1;
       //didn't need other if, if i = 0 this will still work
      if (track.size() > i + 4){ //only checks the pieces added after it
          //if they are the same points, which will happen if user 
@@ -93,6 +96,10 @@ class Track{
             connections.add(i/4, (i+k)); //add to the connections list at this segment's spot the segment that it si connected to
             backConnections.set((i+k)/4, i); //and then add backConnections so that it registers that (i+k) is connected to i from the back
             return true; 
+          }else{
+           forCheckX = t.track.get(i+k);
+           forCheckY = t.track.get(i + k + 1);
+           faultyI = i;
           }
         }
       }
@@ -106,6 +113,7 @@ class Track{
         //have to comment this out, bc game can't consider the last piece connected to another or else the getSlope gives out of bounds since
         //onTrack variable assigned to something out of range
      connections.add(i/4, -1); //make it false
+     System.out.println("in segment " + i + ", appears that " + forCheckX + ", " + forCheckY + " are not the same endpoints as segment " + (i+4));
      return false;
    }
   
@@ -142,7 +150,7 @@ class Track{
          text(point1, track.get(i), track.get(i+1));
          ellipse(track.get(i+2), track.get(i+3), 10, 10);
          fill(255, 0, 0);
-         textSize(32);
+         textSize(20);
          float theta = atan((track.get(i+3)-track.get(i+1)) / (track.get(i+2)-track.get(i)));
          String s = theta + "";
          String f = "force: " + (sin(theta) * 50 * 20);
