@@ -114,12 +114,13 @@ class Rider{
       }
       //
       //
+      float forceWithoutFriction = force;
       if (vel < 0 && direction == theta){ //if ball is rolling against the force 
         force+=friction; //if it's downwards force, friction is upwards
       }else{ //here the ball must be rolling with the force, so you subtract friction
         force-=friction; //vice versa
       }
-      if (velo + force/mass * timeCounter/6.0 <= 0 && velo + forceApplied/mass * timeCounter/6.0 > 0){
+      if (velo + force/mass * timeCounter/6.0 <= 0 && velo + forceWithoutFriction/mass * timeCounter/6.0 > 0){
         stopped = true;
         System.out.println("made stopped true");
         vel = 0;//
