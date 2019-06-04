@@ -3,6 +3,7 @@
 //fields
 //LineRiderGame game;
 PFont font;
+boolean wonGame;
 PImage openingImage;
 Rider guy;
 Vehicle bike; 
@@ -115,6 +116,22 @@ void setup(){
 void draw(){
   background(255);
  // t.display();
+  levelCompleted();
+  if (wonGame){
+  pushMatrix();
+   translate(600, 400);
+   fill(226, 170, 234);
+   //rect(0, 0, 300, 80, 10, 10, 10, 10);
+   fill(5, 5, 5);
+   //textSize(32);
+   textFont(font, 32);
+   text("You Won!", 11, 50);
+   popMatrix();
+   //make the border
+   fill(226, 170, 234);
+   rect(10, 10, 1180, 20);
+   rect(10, 770, 1180, 20);
+  } else {
   if (doneWithTrack && !stopped && !clear){
     if (!started){
        game.guy.timeCounter = 0;
@@ -145,6 +162,8 @@ void draw(){
    
    //put lineRider
    image(openingImage, 300, 200);
+  }
+  //levelCompleted();
   }
     
 }
@@ -177,4 +196,20 @@ void star(float x, float y, float radius1, float radius2, int npoints) {
       vertex(sx, sy);
     }
     endShape(CLOSE);
-} 
+}
+
+void levelCompleted(){
+   if (pow(game.guy.x - levels[currentLevel][2], 2) + pow(game.guy.y - levels[currentLevel][3], 2) - 4900 < 10){
+     if (currentLevel == levels.length - 1){
+         endScreen();
+     } else {
+      currentLevel++;
+      setup();
+      System.out.println("" + currentLevel);
+     }
+   }
+}
+
+void endScreen(){
+  wonGame = true;
+}
