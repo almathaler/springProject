@@ -67,6 +67,7 @@ class Rider{
        //System.out.println("fallingVelX: " + fallingVelX + ", fallingVelY: " + fallingVelY);
      }
     //direction = PI / 2.0;
+    adjustHitBox();
     fallingVelY += (gravityVal) * (6 * 1.0 / framer); //increase Y
     trackOn = checkIfOnTrack();
     direction = PI / 2.0; //pi/2.0 is down
