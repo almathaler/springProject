@@ -21,6 +21,8 @@ class Rider{
   float frictionApplied = 0.0;
   //
   float theta = 0.0; //kept in merge, might not be needed
+  int previousTrack = 0;
+  boolean switchedToUpward;
   Track t;
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
@@ -61,6 +63,9 @@ class Rider{
   boolean affectVelocities(){
     if (!stopped){
       //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
+      if (trackOn != checkIfOnTrack()){
+         previousTrack = trackOn; 
+      }
       trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
       if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
         //System.out.println("direction was: " + direction + ", now no longer on track");
@@ -86,9 +91,9 @@ class Rider{
         adjustHitBox();
         timeCounter = 0;
         velo = vel; //make the last velocity of the old slope the one we are working off of now
-        if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
-          velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
-        }
+        //if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
+          //velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
+        //}
       }
       //NOTE: sin(theta) will be negative if this slope is downwards
       Float force = mass * gravityVal * sin(theta); //NOTE: bc of weird coords, theta is (+) for downhills
@@ -119,7 +124,7 @@ class Rider{
         System.out.println("made stopped true");
         vel = 0.0;
       }else{
-        vel = velo + force / mass * timeCounter/6.0;
+        vel = velo + force / mass * timeCounter / 6.0;
       }
       //if (vel >= 0 || vel < 0 && force <= 0){
       //  vel = velo + force / mass * timeCounter/6.0;
@@ -377,33 +382,48 @@ class Rider{
      Float y2 = t.track.get(i+3);
      Float slope = (y2-y1)/(x2-x1);
      
+     float pslope;
      
-     for (int j = 0; j < hitBox.length; j++){
-       float hx1 = hitBox[j][0];
-       float hy1 = hitBox[j][1];/*
-       float hx2 = hitBox[i + 1][0];
-       float hy2 = hitBox[i + 1][1];
-       float hSlope = (hy1 - hy2) / (hx1 - hx2);*/
-       if (((x1 <= hx1 && x2 >= hx1) || (x1 >= hx1 && x2 <= hx1)) && ((y1 <= hy1 && y2 >= hy1) || (y1 >= hy1 & y2 <= hy1))){
-         if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 3)){
-           onTrack = true;
-           //indicies.add(i);
-           if (!(direction < 0)){
-             if (j == 0 && !(indicies.contains(i))){
-              translateMode = 1; 
-              indicies.add(i);
-             } else if (j != 0){
-               indicies.add(i); 
-             }
-           }
-           if (j == 3){
-              translateMode = 0; 
-              indicies.add(i);
-           }
-           //return i;
-        }
-      }
+     if (previousTrack != -1){
+       float px1 = t.track.get(previousTrack);
+       float py1 = t.track.get(previousTrack + 1);
+       float px2 = t.track.get(previousTrack + 2);
+       float py2 = t.track.get(previousTrack + 3);
+       pslope = (py2 - py1) / (px2 - px1);
+     } else {
+       pslope = -1;
      }
+     
+       if (!(slope <= 0 && pslope > 0)){
+     
+         for (int j = 0; j < hitBox.length; j++){
+           float hx1 = hitBox[j][0];
+           float hy1 = hitBox[j][1];
+           //float hx2 = hitBox[i + 1][0];
+           //float hy2 = hitBox[i + 1][1];
+           //float hSlope = (hy1 - hy2) / (hx1 - hx2);
+           if (((x1 <= hx1 && x2 >= hx1) || (x1 >= hx1 && x2 <= hx1)) && ((y1 <= hy1 && y2 >= hy1) || (y1 >= hy1 & y2 <= hy1))){
+              if ((Math.abs((y1 - hy1) - (slope * (x1 - hx1))) < 3)){
+               onTrack = true;
+               //indicies.add(i);
+               if (!(direction < 0)){
+                 if (j == 0 && !(indicies.contains(i))){
+                  translateMode = 1; 
+                  indicies.add(i);
+                 } else if (j != 0){
+                   indicies.add(i); 
+                 }
+               }
+               if (j == 3){
+                  translateMode = 0; 
+                  indicies.add(i);
+               }
+                //return i;
+            }
+          }
+         }
+        }
+     
      
      if ( ((x - x1) > -1 && (x - x2) < 1 ||
            (x - x2) > -1 && (x - x1) < 1)&&
