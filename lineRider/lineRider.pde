@@ -21,7 +21,10 @@ int[][] levels = { // 4 levels (can be changed ofc) each stores an startX, start
                   {100, 100, 1100, 700},
                   {1100, 100, 100, 700},
                   {600, 100, 100, 700},
-                  {100, 300, 1100, 300}
+                  {100, 300, 1100, 400},
+                  {500, 500, 500, 700},
+                  {300, 200, 1000, 750},
+                  {1100, 500, 100, 750},
 };
 class LineRiderGame{
   Rider guy;
@@ -74,6 +77,9 @@ void keyPressed(){
          t.track.remove(t.track.size()-1); //remove the last four points
        }
      }
+   //if (key == 'w'){
+   // wonGame = true; 
+  // }
    if (key == 's'){
     stopped = true; 
    }
@@ -145,7 +151,7 @@ void draw(){
      fill(5, 5, 5);
      //textSize(32);
      textFont(font, 32);
-     text("You Won!", 11, 50);
+     text("You Won!", -85, 0);
      popMatrix();
      //make the border
      fill(226, 170, 234);
