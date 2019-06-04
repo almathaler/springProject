@@ -10,7 +10,13 @@ Click once for the first point; then click again for the second.
 Press shift to start, s to stop, e to continue and q to restart. 
 You can delete sections of the track if you are in drawing mode (when s is pressed or shift 
 not yet pressed) by pressing BACKSPACE or DELETE.
-Enjoy watching the rider glide down your slopes! But make sure to add no loops :/
+You can press 1, 2 or 3 before you draw a line to decide its type.
+They are in ascending order for friction and descending order for strength of impact.
+If you fall from too high or off the screen, you will die.
+Enjoy watching the rider glide down your slopes! Try to make it to the star and progress, but make sure to add no loops :/
+Also a few bug notes:
+when the player falls onto a / slope, it will bug out and look like the game crashed. It just takes a long time for the vehicle to latch on to the slope, takes a second or two
+Sometimes the player will fall through the lines
 # DEV LOG
 ## May 17
 ### Alma
