@@ -161,7 +161,6 @@ class Rider{
     if (haveFallen){
       x += fallingVelX * (1.0 / framer); //changed the fram rate for testing to slow donw
       y += fallingVelY * (1.0 / framer);
-      System.out.println("falling, now x and y: " + x + ", " + y);
       
       
       for (int i = 0; i < hitBox.length; i++){
@@ -186,7 +185,7 @@ class Rider{
       //it's ok to call checkIfOnTrack() bc that doesn't modify trackOn just boolean onTrack
       if (checkIfOnTrack() == -1 && trackOn != -1){ //new x and y takes the player off the track, check if that was the right thing
         if (vel > 0 && t.connections.get(trackOn/4) != -1){ //if it is -1 then it should be falling
-          //System.out.println("\n going forwards, falling when it hsouldn't be");
+          System.out.println("\n going forwards, falling when it hsouldn't be");
           float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
           float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
           //System.out.println("X and Y conn: " + xConnected + ", " + yConnected);
@@ -196,11 +195,11 @@ class Rider{
           //modify if statement to check if endPoints are between x and old X
           //this if statement ensures won't happen when it is ahead ofof the track, only if past in the respective direction
           if (onLine(oldX, oldY, x, y, xConnected, yConnected)){ //if they're not the same but they are close 
-              //System.out.println("\n" + "NEW PART" + "\n");
-              //System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+              System.out.println("\n" + "NEW PART" + "\n");
+              System.out.println("oldX and oldY: " + oldX + ", " + oldY);
               //for testing
-              //System.out.println("the connection was: " + xConnected +", " + yConnected);
-              //System.out.println("the x and y values are: " + x + ", " + y);
+              System.out.println("the connection was: " + xConnected +", " + yConnected);
+              System.out.println("the x and y values are: " + x + ", " + y);
               //
               double dTotal = vel * (1.0/framer); // d = vt //like polar coordinates. j move the player to where it should be
                                                 //on the other segment. hacky cuz it still uses the vel from the previous segment
@@ -212,30 +211,36 @@ class Rider{
               direction = directionNext;
               //x = xConnected + (float) dNextSeg * cos(directionNext); //put it on the other track
               //y = yConnected + (float) dNextSeg * sin(directionNext);
-              x = hitBox[0][0] + 50 * cos(direction);
-              y = hitBox[0][1] + 50 * sin(direction);
+              //for below, used to be 50 instead of dNextSeg
+              x = xConnected;
+              y = yConnected;
+              //make space for the vehicle
+              x += 50 * cos(direction);
+              y += 50 * sin(direction);
+              //x = hitBox[0][0] + 50 * cos(direction);
+              //y = hitBox[0][1] + 50 * sin(direction);
               translateMode = 1;
               //System.out.println("new x and y: " + x + ", " + y);
               adjustHitBox();
          }
         }else if (vel < 0 && t.backConnections.get(trackOn/4) != -1){
-          //System.out.println("going backwards, falling when it shouldn't be");
+          System.out.println("going backwards, falling when it shouldn't be");
           float xConnected = t.track.get(t.backConnections.get(trackOn/4) + 2); //the end points of the piece it is back connected
           float yConnected = t.track.get(t.backConnections.get(trackOn/4) + 3); //to
           float oldX = x - vel * cos(direction) * (1.0 / framer);
           float oldY = y - vel * sin(direction) * (1.0/framer);
           //check if the player passed the connection
           if (onLine(oldX, oldY, x, y, xConnected, yConnected)){
-            //System.out.println("\n" + "NEW PART -- BACKWARDS" + "\n");
-            //System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+            System.out.println("\n" + "NEW PART -- BACKWARDS" + "\n");
+            System.out.println("oldX and oldY: " + oldX + ", " + oldY);
             //for testing
-            //System.out.println("the connnection was: " + xConnected +", " + yConnected);
-            //System.out.println("the x and y values are: " + x + ", " + y);
+            System.out.println("the connnection was: " + xConnected +", " + yConnected);
+            System.out.println("the x and y values are: " + x + ", " + y);
             //
             double dTotal = -1 * vel * (1.0/framer);
             //System.out.println("dTotal: " + dTotal);
             double dToConnection = Math.sqrt(pow(oldX - xConnected, 2) + pow(oldY - yConnected, 2));//
-            //System.out.println("dToConnection: " + dToConnection);
+            //System.out.println("dToConnetion: " + dToConnection);
             double dNextSeg = dTotal - dToConnection;
             //System.out.println("dNextSeg: " + dNextSeg);
             int nextSeg = t.backConnections.get(trackOn/4);
@@ -247,8 +252,13 @@ class Rider{
             //y = yConnected - (float) dNextSeg*sin(directionNext); //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
             direction = directionNext;
             translateMode = 1;
-            x = hitBox[0][0] + 50 * cos(direction);
-            y = hitBox[0][1] + 50 * sin(direction);
+            x = xConnected;
+            y = yConnected;
+            //make space for the vehicle
+            x += 50 * cos(direction);
+            y += 50 * sin(direction);
+            //x = hitBox[0][0] + 50 * cos(direction);
+            //y = hitBox[0][1] + 50 * sin(direction);
             adjustHitBox();
             //System.out.println("new x and y: " + x + ", " + y);
           }
