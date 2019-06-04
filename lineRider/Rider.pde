@@ -4,7 +4,7 @@ class Rider{
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x = 100; //position
   float y = 100;
-  int translateMode = 1; //decides where the rider is drawn from. will usually be 0 (for x and y), but will change sometimes for hitBox integration
+  int translateMode = 0; //decides where the rider is drawn from. will usually be 0 (for x and y), but will change sometimes for hitBox integration
   float[][] hitBox = {{x - 50, y}, {x - 50, y - 12.5}, {x, y - 25}};//, {x + 12.5, y - 12.5}}; //bottom back corner, top back corner, top, front and then x, y is the final;//hitBox for rider to detect when it is touching something
   float vel, velo;
   float framer = 140; //j a variable for framerate, not actual framerate j if you want to slow thigns down
