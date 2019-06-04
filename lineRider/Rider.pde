@@ -50,7 +50,7 @@ class Rider{
    velo = 0.0;
    vel = 0.0;
    direction = 0.0;
-   impactResistance = mass * gravityVal * 2; 
+   impactResistance = mass * gravityVal * 10; 
    //hitBox = {[x - 50, y], [x - 50, y - 12.5], [x, y - 25], [x + 12.5, y - 12.5]}; //bottom back corner, top back corner, top, front and then x, y is the final
   }
 
@@ -103,8 +103,10 @@ class Rider{
           float impact = momentum - t.getCushion(t.types.get(trackOn/4)); //get the impact for that segment
           if (impact > impactResistance){
            //have to write die
+           System.out.println("dying, as impact: " + impact + ", is > than impactResistance: " + impactResistance);
            die();
-           dead = true;
+           //die();
+           //dead = true;
            return false;
           }
           velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
@@ -165,11 +167,13 @@ class Rider{
   }
 
   void move(){
-    if (onTrack){
-      affectVelocities();
-    } else {
-       fall(); 
-    }
+    
+      if (onTrack){
+        affectVelocities();
+      } else {
+         fall(); 
+      }
+    
     
     if (haveFallen){
       x += fallingVelX * (1.0 / framer); //changed the fram rate for testing to slow donw
