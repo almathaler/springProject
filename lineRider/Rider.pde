@@ -5,7 +5,7 @@ class Rider{
   float y = 100;
   int translateMode = 1; //decides where the rider is drawn from. will usually be 0 (for x and y), but will change sometimes for hitBox integration
   //float hx1, hx2, hx3, hx4 , hy1, hy2, hy3, hy4; //will be used for hitbox for the rider
-  float[][] hitBox = {{x - 50, y}, {x - 50, y - 12.5}, {x, y - 25}, {x + 12.5, y - 12.5}}; //bottom back corner, top back corner, top, front and then x, y is the final;//hitBox for rider to detect when it is touching something
+  float[][] hitBox = {{x - 50, y}, {x - 50, y - 12.5}, {x, y - 25}};//, {x + 12.5, y - 12.5}}; //bottom back corner, top back corner, top, front and then x, y is the final;//hitBox for rider to detect when it is touching something
   float vel, velo;
   float framer = 140; //j a variable for framerate, not actual framerate j if you want to slow thigns down
   float fallingVelX, fallingVelY; //only use this for the falls
@@ -91,15 +91,15 @@ class Rider{
         adjustHitBox();
         timeCounter = 0;
         velo = vel; //make the last velocity of the old slope the one we are working off of now
-        //if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
-          //velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
-        //}
+        if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
+          velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
+        }
       }
       //NOTE: sin(theta) will be negative if this slope is downwards
-      Float force = mass * gravityVal * sin(theta); //NOTE: bc of weird coords, theta is (+) for downhills
+      Float force = mass * gravityVal * sin(direction); //NOTE: bc of weird coords, theta is (+) for downhills
       
       //take into account friction
-      Float friction = mass * gravityVal * cos(theta) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
+      Float friction = mass * gravityVal * cos(direction) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
   
       //testing
       //
@@ -122,7 +122,7 @@ class Rider{
       if (velo + force/mass * timeCounter/6.0 <= 0 && velo + forceApplied/mass * timeCounter/6.0 > 0){
         stopped = true;
         System.out.println("made stopped true");
-        vel = 0.0;
+        vel = 0;//
       }else{
         vel = velo + force / mass * timeCounter / 6.0;
       }
@@ -241,7 +241,7 @@ class Rider{
             //x = xConnected - (float) dNextSeg*cos(directionNext); //-(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
             //y = yConnected - (float) dNextSeg*sin(directionNext); //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
             direction = directionNext;
-            translateMode = 0;
+            translateMode = 1;
             x = hitBox[0][0] + 50 * cos(direction);
             y = hitBox[0][1] + 50 * sin(direction);
             adjustHitBox();
@@ -495,8 +495,8 @@ class Rider{
        hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
        hitBox[2][0] = x + 25 * sin(diffTheta);
        hitBox[2][1] = y - 25 * cos(diffTheta);
-       hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
-       hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
+       //hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
+       //hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
   }
   
   //boolean roundCompleted(){
