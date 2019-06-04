@@ -58,9 +58,9 @@ class Track{
        case 1:
          return 0.0;
        case 2:
-         return 0.20;
+         return 0.10;
        case 3:
-         return 0.40;
+         return 0.15;
      }
      return 0.0;
    }

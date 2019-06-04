@@ -91,7 +91,7 @@ void keyPressed(){
    if (key == '2'){
      t.type = 2;
    }
-   if (key == '3'){
+   if (key == '3' ){
      t.type = 3;
    }
 }
