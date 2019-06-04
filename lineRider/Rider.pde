@@ -22,7 +22,7 @@ class Rider{
   float frictionApplied = 0.0;
   //
   float theta = 0.0; //kept in merge, might not be needed
-  int previousTrack = 0;
+  int previousTrack = -1;
   boolean switchedToUpward;
   Track t;
   boolean haveDied;
@@ -284,6 +284,9 @@ class Rider{
       checkIfOnTrack(); //
     }
     timeCounter++; //make this zero every time direction changes
+    if (x > 1200 || x < 0 || y > 800 || y < 0){
+     die(); 
+    }
   }
   
   
