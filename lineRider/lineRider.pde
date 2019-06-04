@@ -46,6 +46,7 @@ class LineRiderGame{
     fill(85, 160, 74);
     text("time: " + time, 1100, 50);
     fill(188, 188, 55);
+    //this is to rotate the star
     pushMatrix();
     translate(levels[currentLevel][2], levels[currentLevel][3]);//moves to the endX and endY of the current level
     rotate(frameCount / -100.0);
@@ -140,7 +141,7 @@ void draw(){
     game.guy.move();
     game.guy.framer = frameRate;
   }
-  if (exitTitle){
+  if (exitTitle){ //if you exited the title by pushing 'click here to play'
     t.display();
     game.display();
     game.guy.display();

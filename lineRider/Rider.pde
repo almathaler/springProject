@@ -42,15 +42,17 @@ class Rider{
      if (!haveFallen){
        System.out.println("\n FALLING \n");
        System.out.println("began falling at: " + x + ", " + y);
+       System.out.println("direction: " + direction);
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
-       fallingVelX = vel * cos(direction) * timeCounter / 60;
-       fallingVelY = vel * sin(direction) * timeCounter / 60; //don't use vel, use these falling ones
+       fallingVelX = vel * cos(direction);
+       fallingVelY = vel * sin(direction); //don't use vel, use these falling ones
+       System.out.println("fallingVelX: " + fallingVelX + ", fallingVelY: " + fallingVelY);
      }
     //direction = PI / 2.0;
     fallingVelY += (gravityVal) * (1.0 / framer); //increase Y
     trackOn = checkIfOnTrack();
-    direction = PI;
+    direction = PI / 2.0; //pi/2.0 is down
    }
    haveFallen = true;
   }
@@ -159,11 +161,12 @@ class Rider{
     if (haveFallen){
       x += fallingVelX * (1.0 / framer); //changed the fram rate for testing to slow donw
       y += fallingVelY * (1.0 / framer);
+      System.out.println("falling, now x and y: " + x + ", " + y);
       
       
       for (int i = 0; i < hitBox.length; i++){
-         hitBox[i][0] += fallingVelX * (1.0 / 60.0);
-         hitBox[i][1] += fallingVelY * (1.0 / 60.0);
+         hitBox[i][0] += fallingVelX * (1.0 / framer);
+         hitBox[i][1] += fallingVelY * (1.0 / framer);
       }
       
     }else{
@@ -178,25 +181,26 @@ class Rider{
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / framer);// * (System.currentTimeMillis() - startTimeTheta);
       adjustHitBox();
+     
       //this part is supposed to fix when the player passes the connected segment
       //it's ok to call checkIfOnTrack() bc that doesn't modify trackOn just boolean onTrack
       if (checkIfOnTrack() == -1 && trackOn != -1){ //new x and y takes the player off the track, check if that was the right thing
         if (vel > 0 && t.connections.get(trackOn/4) != -1){ //if it is -1 then it should be falling
-          System.out.println("\n going forwards, falling when it hsouldn't be");
+          //System.out.println("\n going forwards, falling when it hsouldn't be");
           float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
           float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
-          System.out.println("X and Y conn: " + xConnected + ", " + yConnected);
+          //System.out.println("X and Y conn: " + xConnected + ", " + yConnected);
           float oldX = x - vel * cos(direction) * (1.0 / framer); //what was x before this?
           float oldY = y - vel * sin(direction) * (1.0/ framer); //same^
-          System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+          //System.out.println("oldX and oldY: " + oldX + ", " + oldY);
           //modify if statement to check if endPoints are between x and old X
           //this if statement ensures won't happen when it is ahead ofof the track, only if past in the respective direction
           if (onLine(oldX, oldY, x, y, xConnected, yConnected)){ //if they're not the same but they are close 
-              System.out.println("\n" + "NEW PART" + "\n");
-              System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+              //System.out.println("\n" + "NEW PART" + "\n");
+              //System.out.println("oldX and oldY: " + oldX + ", " + oldY);
               //for testing
-              System.out.println("the connection was: " + xConnected +", " + yConnected);
-              System.out.println("the x and y values are: " + x + ", " + y);
+              //System.out.println("the connection was: " + xConnected +", " + yConnected);
+              //System.out.println("the x and y values are: " + x + ", " + y);
               //
               double dTotal = vel * (1.0/framer); // d = vt //like polar coordinates. j move the player to where it should be
                                                 //on the other segment. hacky cuz it still uses the vel from the previous segment
@@ -211,33 +215,33 @@ class Rider{
               x = hitBox[0][0] + 50 * cos(direction);
               y = hitBox[0][1] + 50 * sin(direction);
               translateMode = 1;
-              System.out.println("new x and y: " + x + ", " + y);
+              //System.out.println("new x and y: " + x + ", " + y);
               adjustHitBox();
          }
         }else if (vel < 0 && t.backConnections.get(trackOn/4) != -1){
-          System.out.println("going backwards, falling when it shouldn't be");
+          //System.out.println("going backwards, falling when it shouldn't be");
           float xConnected = t.track.get(t.backConnections.get(trackOn/4) + 2); //the end points of the piece it is back connected
           float yConnected = t.track.get(t.backConnections.get(trackOn/4) + 3); //to
           float oldX = x - vel * cos(direction) * (1.0 / framer);
           float oldY = y - vel * sin(direction) * (1.0/framer);
           //check if the player passed the connection
           if (onLine(oldX, oldY, x, y, xConnected, yConnected)){
-            System.out.println("\n" + "NEW PART -- BACKWARDS" + "\n");
-            System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+            //System.out.println("\n" + "NEW PART -- BACKWARDS" + "\n");
+            //System.out.println("oldX and oldY: " + oldX + ", " + oldY);
             //for testing
-            System.out.println("the connnection was: " + xConnected +", " + yConnected);
-            System.out.println("the x and y values are: " + x + ", " + y);
+            //System.out.println("the connnection was: " + xConnected +", " + yConnected);
+            //System.out.println("the x and y values are: " + x + ", " + y);
             //
             double dTotal = -1 * vel * (1.0/framer);
-            System.out.println("dTotal: " + dTotal);
+            //System.out.println("dTotal: " + dTotal);
             double dToConnection = Math.sqrt(pow(oldX - xConnected, 2) + pow(oldY - yConnected, 2));//
-            System.out.println("dToConnection: " + dToConnection);
+            //System.out.println("dToConnection: " + dToConnection);
             double dNextSeg = dTotal - dToConnection;
-            System.out.println("dNextSeg: " + dNextSeg);
+            //System.out.println("dNextSeg: " + dNextSeg);
             int nextSeg = t.backConnections.get(trackOn/4);
-            System.out.println("next seg: " + nextSeg);
+            //System.out.println("next seg: " + nextSeg);
             float directionNext = calcTheta(nextSeg);
-            System.out.println("directionNext: " + directionNext);
+            //System.out.println("directionNext: " + directionNext);
             //should be a minus bc you are moving back
             //x = xConnected - (float) dNextSeg*cos(directionNext); //-(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
             //y = yConnected - (float) dNextSeg*sin(directionNext); //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
@@ -246,7 +250,7 @@ class Rider{
             x = hitBox[0][0] + 50 * cos(direction);
             y = hitBox[0][1] + 50 * sin(direction);
             adjustHitBox();
-            System.out.println("new x and y: " + x + ", " + y);
+            //System.out.println("new x and y: " + x + ", " + y);
           }
         }
       }
@@ -259,7 +263,7 @@ class Rider{
   //
   //
   void display(){
-    direction = calcTheta(checkIfOnTrack());
+    //direction = calcTheta(checkIfOnTrack());
     ellipseMode(CENTER);
     for (int i = 0; i < hitBox.length; i++){
        ellipse(hitBox[i][0], hitBox[i][1], 2, 2); 
@@ -328,29 +332,6 @@ class Rider{
       ellipse(-30, -35, -20, -25);
       popMatrix();
     }
-    //popMatrix();
-      
-    /*
-    ellipseMode(CORNERS); //so now, make upper left corner and bottom right as x, y -- that's like where the front wheel will be
-    float wid = mass;
-    float hei = mass;
-    ellipse(x-wid/2, y-hei, x+wid/2, y);
-    if (timeCounter % 60 == 0 || 
-        timeCounter % 60 == 10 ||
-        timeCounter % 60 == 20 ||
-        timeCounter % 60 == 30 ||
-        timeCounter % 60 == 40 ||
-        timeCounter % 60 == 50){
-      capturedVel = vel;
-      capturedDirection = direction;
-    }
-    textSize(20);
-    fill(255, 18, 169);
-    String s = "vel: " + capturedVel + " direction: " + capturedDirection;
-    text(s, x, y-hei/2.0);
-    String f = "force: " + forceApplied + "friction: " + frictionApplied;
-    text(f, x, y-hei/2.0 - 20);
-    */
    
   } //so that the bottom point of the ellipse is what is touching the line
     
