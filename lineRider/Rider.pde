@@ -25,6 +25,21 @@ class Rider{
   int previousTrack = 0;
   boolean switchedToUpward;
   Track t;
+  boolean haveDied;
+  boolean dying;
+  boolean deadScreen;
+  float turning;
+  
+  //will be constant until death. Just distances from x and y
+  float headX = -25;
+  float headY = -25;
+  float handX = 0;
+  float handY = -25;
+  float midX = -25;
+  float midY = - 12.5;
+  float bottomX = 0;
+  float bottomY = 0;
+  
   //added track field to rider so it can check whether or not it's on
   Rider(float mass, float gravityVal, float x, float y, float velX, float velY, Track t){
    this.mass = mass;
@@ -270,6 +285,9 @@ class Rider{
   //
   //
   void display(){
+    if (haveDied){
+       die(); 
+    }
     //direction = calcTheta(checkIfOnTrack());
     ellipseMode(CENTER);
     for (int i = 0; i < hitBox.length; i++){
@@ -310,10 +328,14 @@ class Rider{
       fill(255, 255, 255);
       stroke(0, 0, 0);
       strokeWeight(3);
-      line(0, 0, -25, -12.5);
-      line(-25, -12.5, -25, -25);
-      line(-25, -25, 0, -25);
-      ellipse(-30, -35, -20, -25);
+      if (dying){
+         translate(headX, headY);
+         rotate(turning);
+      }
+      line(bottomX, bottomY, midX, midY);
+      line(midX, midY, headX, headY);
+      line(headX, headY, handX, handY);
+      ellipse(headX - 5, headY - 10, headX + 5, headY);
       popMatrix();
       //rotate(calcTheta(trackOn));
      
@@ -333,10 +355,14 @@ class Rider{
       
       stroke(0, 0, 0);
       strokeWeight(3);
-      line(0, 0, -25, -12.5);
-      line(-25, -12.5, -25, -25);
-      line(-25, -25, 0, -25);
-      ellipse(-30, -35, -20, -25);
+      if (dying){
+         translate(headX, headY);
+         rotate(turning);
+      }
+      line(bottomX, bottomY, midX, midY);
+      line(midX, midY, headX, headY);
+      line(headX, headY, handX, handY);
+      ellipse(headX - 5, headY - 10, headX + 5, headY);
       popMatrix();
     }
    
@@ -488,7 +514,36 @@ class Rider{
        //hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
   }
   
-  //boolean roundCompleted(){
-  //    
-  // }
+  void die(){
+      haveDied = true;
+      if (midX < -12.5){
+         midX += 0.5; 
+         bottomX-= 0.5;
+         headX += 0.5;
+         handX += 0.5;
+         handY -= 0.5;
+         if (bottomX > midX){
+            bottomY += 0.5; 
+         } else {
+            bottomY -= 0.5; 
+         }
+      } else if (bottomY < 12.5){
+         headX += 0.5;
+         headY += 0.5;
+         //midX += 0.5;
+         midY += 0.5;
+         bottomY += 0.5;
+         handX += 0.5;
+         handY += 0.5;
+      } else {
+        dying = true;
+        
+        if (turning < PI / 2){
+          turning += 0.05;
+        } else {
+         deadScreen = true; 
+        }
+      }
+      
+  }
 }

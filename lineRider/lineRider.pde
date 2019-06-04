@@ -118,6 +118,24 @@ void draw(){
   background(255);
  // t.display();
   levelCompleted();
+  
+  if (game.guy.deadScreen == true){
+      pushMatrix();
+     translate(600, 400);
+     fill(226, 170, 234);
+     //rect(0, 0, 300, 80, 10, 10, 10, 10);
+     fill(5, 5, 5);
+     //textSize(32);
+     textFont(font, 32);
+     text("You Died!", 11, 50);
+     translate(600, 550);
+     text("Press Q to try again", 11, 50);
+     popMatrix();
+      //make the border
+     fill(226, 170, 234);
+     rect(10, 10, 1180, 20);
+     rect(10, 770, 1180, 20);
+  }
   if (wonGame){
   pushMatrix();
    translate(600, 400);
