@@ -9,10 +9,12 @@ class Rider{
   float direction;
   boolean haveFallen;
   int trackOn = -1;
+  boolean stopped = false; //for friction
   //for testing
   float capturedVel = 0.0;
   float capturedDirection = 0.0;
-  
+  float forceApplied = 0.0;
+  float frictionApplied = 0.0; 
   //
   Track t;
   //added track field to rider so it can check whether or not it's on
@@ -45,44 +47,65 @@ class Rider{
   //
   //made this a boolean so that it can end after fall() if fall() is called
   boolean affectVelocities(){
-    //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
-    trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
-    if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
-      //System.out.println("direction was: " + direction + ", now no longer on track");
-      return false;
-    }
-   //calculate the slope, and if it's not the same as you've been on, change and take a new time
-   float theta = calcTheta(trackOn);
-    if (theta != direction){
-      //System.out.println("trackOn changed, now it is: " + trackOn + ", at time: " + millis());
-      direction = theta;
-      timeCounter = 0;
-      velo = vel; //make the last velocity of the old slope the one we are working off of now
-      if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
-        velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
+    if (!stopped){
+      //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
+      trackOn = checkIfOnTrack(); //if checkIfOnTrack returns true, precondition for this to be called, no -1
+      if (trackOn == -1){ //check, but why does this return -1 if must be true for affectVel??
+        //System.out.println("direction was: " + direction + ", now no longer on track");
+        return false;
       }
+     //calculate the slope, and if it's not the same as you've been on, change and take a new time
+     float theta = calcTheta(trackOn);
+      if (theta != direction){
+        //System.out.println("trackOn changed, now it is: " + trackOn + ", at time: " + millis());
+        direction = theta;
+        timeCounter = 0;
+        velo = vel; //make the last velocity of the old slope the one we are working off of now
+        if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
+          velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
+        }
+      }
+      //NOTE: sin(theta) will be negative if this slope is downwards
+      Float force = mass * gravityVal * sin(theta); //NOTE: bc of weird coords, theta is (+) for downhills
+      
+      //take into account friction
+      Float friction = mass * gravityVal * cos(theta) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
+  
+    if (timeCounter % 60 == 0 || 
+          timeCounter % 60 == 10 ||        
+          timeCounter % 60 == 20 ||       
+          timeCounter % 60 == 30 ||       
+          timeCounter % 60 == 40 ||   
+          timeCounter % 60 == 50){      
+        forceApplied = force;       
+        frictionApplied = friction;        
+      }      
+  
+  
+      if (vel < 0 && direction == theta){ //if ball is rolling against the force 
+        force+=friction; //if it's downwards force, friction is upwards
+      }else{ //here the ball must be rolling with the force, so you subtract friction
+        force-=friction; //vice versa
+      }
+      //if due to friction the ball has to stop rolling
+      if (velo + force/mass * timeCounter/6.0 <= 0 && velo + forceApplied/mass * timeCounter/6.0 > 0){
+        stopped = true;
+        System.out.println("made stopped true");
+        vel = 0.0;
+      }else{
+        vel = velo + force / mass * timeCounter/6.0;
+      }
+      //if (vel >= 0 || vel < 0 && force <= 0){
+      //  vel = velo + force / mass * timeCounter/6.0;
+      //}else if (vel < 0 && force > 0){
+      //  vel = velo - force / mass * timeCounter/6.0;
+      //}
+      //here deal w player moving too quickly it can't register hitting another line
+  
+      haveFallen = false;
+      return true;
     }
-    //NOTE: sin(theta) will be negative if this slope is downwards
-    Float force = mass * gravityVal * sin(theta); //NOTE: bc of weird coords, theta is (+) for downhills
-    
-    //take into account friction
-    Float friction = mass * gravityVal * cos(theta) * t.getMu(t.types.get(trackOn / 4)); //subtract friction
-
-    if (vel < 0 && direction == theta){ //if ball is rolling against the force 
-      force+=friction; //if it's downwards force, friction is upwards
-    }else{ //here the ball must be rolling with the force, so you subtract friction
-      force-=friction; //vice versa
-    }
-    vel = velo + force / mass * timeCounter/6.0;
-    //if (vel >= 0 || vel < 0 && force <= 0){
-    //  vel = velo + force / mass * timeCounter/6.0;
-    //}else if (vel < 0 && force > 0){
-    //  vel = velo - force / mass * timeCounter/6.0;
-    //}
-    //here deal w player moving too quickly it can't register hitting another line
-
-    haveFallen = false;
-    return true;
+    return false;
   }
   //takes in coord, returns slope AS THETA
   float calcTheta(int i) { //take in the coord of the current line
