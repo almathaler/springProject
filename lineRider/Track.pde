@@ -64,6 +64,25 @@ class Track{
      }
      return 0.0;
    }
+   //this is for impact. if the rider falls too quick, die, but the momentum threshold should
+   //be different for every segment. mv = change in force, which is impulse, so if impulse is higher than
+   //2 times the normal force of the character (since 2 * mass * gravityVal), die.
+   //but different sections will cushion differently. for instance, black should cushion the least: cushion is 0
+   // orange can cushion 10 percent of the fall
+   // red can cushion 20
+   //so impact will be mass * vel - (t.getCushion(t.types.get(i/4)) * mass * vel)
+   //for falls vel is velY
+   public float getCushion(int type){
+    switch(type){
+     case 1:
+       return 0.0;
+     case 2:
+       return 0.1;
+     case 3:
+      return 0.2;
+    }
+    return 0.0;
+   }
    //builds the connections() array
    boolean finalizeConnections(){
     connections.clear(); //if like stopped

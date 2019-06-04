@@ -1,10 +1,10 @@
 class Rider{
+  float impactResistance; //if impace force > impactResistance, die
   int timeCounter = 0;//updated every time draw is called, adds one every second
   float mass, gravityVal; //used to calculate effect on Vs, also if character should die
   float x = 100; //position
   float y = 100;
   int translateMode = 1; //decides where the rider is drawn from. will usually be 0 (for x and y), but will change sometimes for hitBox integration
-  //float hx1, hx2, hx3, hx4 , hy1, hy2, hy3, hy4; //will be used for hitbox for the rider
   float[][] hitBox = {{x - 50, y}, {x - 50, y - 12.5}, {x, y - 25}};//, {x + 12.5, y - 12.5}}; //bottom back corner, top back corner, top, front and then x, y is the final;//hitBox for rider to detect when it is touching something
   float vel, velo;
   float framer = 140; //j a variable for framerate, not actual framerate j if you want to slow thigns down
@@ -14,6 +14,7 @@ class Rider{
   boolean haveFallen;
   int trackOn = -1;
   boolean stopped = false;
+  boolean dead = false; //will become true when die since impact > impactResistance
   //for testing
   float capturedVel = 0.0;
   float capturedDirection = 0.0;
@@ -34,23 +35,24 @@ class Rider{
    velo = 0.0;
    vel = 0.0;
    direction = 0.0;
+   impactResistance = mass * gravityVal * 2; 
    //hitBox = {[x - 50, y], [x - 50, y - 12.5], [x, y - 25], [x + 12.5, y - 12.5]}; //bottom back corner, top back corner, top, front and then x, y is the final
   }
 
   void fall(){
    if (!onTrack){
      if (!haveFallen){
-       System.out.println("\n FALLING \n");
-       System.out.println("began falling at: " + x + ", " + y);
-       System.out.println("direction: " + direction);
+       //System.out.println("\n FALLING \n");
+       //System.out.println("began falling at: " + x + ", " + y);
+       //System.out.println("direction: " + direction);
        timeCounter = 0; //if this is the start of the fall, then restart time so to affect velocity correctly
        //set up a velX that will remain constant
        fallingVelX = vel * cos(direction);
        fallingVelY = vel * sin(direction); //don't use vel, use these falling ones
-       System.out.println("fallingVelX: " + fallingVelX + ", fallingVelY: " + fallingVelY);
+       //System.out.println("fallingVelX: " + fallingVelX + ", fallingVelY: " + fallingVelY);
      }
     //direction = PI / 2.0;
-    fallingVelY += (gravityVal) * (1.0 / framer); //increase Y
+    fallingVelY += (gravityVal) * (6 * 1.0 / framer); //increase Y
     trackOn = checkIfOnTrack();
     direction = PI / 2.0; //pi/2.0 is down
    }
@@ -63,7 +65,7 @@ class Rider{
   //
   //made this a boolean so that it can end after fall() if fall() is called
   boolean affectVelocities(){
-    if (!stopped){
+    if (!stopped && !dead){
       //for friction, mgcos(direction) = fN, * by Mu then subtract this from the force
       if (trackOn != checkIfOnTrack()){
          previousTrack = trackOn; 
@@ -75,25 +77,21 @@ class Rider{
       }
      //calculate the slope, and if it's not the same as you've been on, change and take a new time
       if (calcTheta(trackOn) != direction){
-        /*
-        float diffTheta = calcTheta(trackOn);
-        //updating points of hitBox as this is the only part where it does not change w x and y
-        //each must be adjusted according to its own specific equation/position
-        hitBox[0][0] = x - (50 *cos(diffTheta));
-        hitBox[0][1] = y - (50 * sin(diffTheta));
-        hitBox[1][0] = x - 51.5388 * cos (diffTheta + 0.2449787);
-        hitBox[1][1] = y - 51.388 * sin(diffTheta +  0.2449787);
-        hitBox[2][0] = x + 25 * sin(diffTheta);
-        hitBox[2][1] = y - 25 * cos(diffTheta);
-        hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
-        hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
-        */
-        
         direction = calcTheta(trackOn);
         adjustHitBox();
         timeCounter = 0;
         velo = vel; //make the last velocity of the old slope the one we are working off of now
         if (haveFallen){ //there is an issue w the going up hills, it's that between tracks if have falling velYo will beome zero, so falls too quick?
+          //System.out.println("\n JUST FELL! FALLINGVELY: " + fallingVelY + ", MOMENTUM: " + (fallingVelY * mass));
+          //check the impace
+          float momentum = fallingVelY * mass;
+          float impact = momentum - t.getCushion(t.types.get(trackOn/4)); //get the impact for that segment
+          if (impact > impactResistance){
+           //have to write die
+           die();
+           dead = true;
+           return false;
+          }
           velo = fallingVelX; //if you've fallen, for now assume impact is total and velY is over, only use velX
         }
       }
@@ -175,7 +173,6 @@ class Rider{
         hitBox[i][0] += vel * cos(direction) * (1.0 / framer);
         hitBox[i][1] += vel *  sin(direction) * (1.0 / framer);
       }
-      //EXPERIMENTAL
       x += vel * cos(direction) * (1.0 / framer);//*(System.currentTimeMillis() -  startTimeTheta); //this is compounded bc velocity is subject to a lto of changes. so since there are 60 frames per second
                           //and this method is called every frame in draw(), j add to x distance moved in 1/60 of a sec based on current vel
       y += vel *  sin(direction) * (1.0 / framer);// * (System.currentTimeMillis() - startTimeTheta);
@@ -185,7 +182,7 @@ class Rider{
       //it's ok to call checkIfOnTrack() bc that doesn't modify trackOn just boolean onTrack
       if (checkIfOnTrack() == -1 && trackOn != -1){ //new x and y takes the player off the track, check if that was the right thing
         if (vel > 0 && t.connections.get(trackOn/4) != -1){ //if it is -1 then it should be falling
-          System.out.println("\n going forwards, falling when it hsouldn't be");
+          ///System.out.println("\n going forwards, falling when it hsouldn't be");
           float xConnected = t.track.get(t.connections.get(trackOn/4)); //the x value of what it is connected to
           float yConnected = t.track.get(t.connections.get(trackOn/4) + 1);
           //System.out.println("X and Y conn: " + xConnected + ", " + yConnected);
@@ -195,17 +192,17 @@ class Rider{
           //modify if statement to check if endPoints are between x and old X
           //this if statement ensures won't happen when it is ahead ofof the track, only if past in the respective direction
           if (onLine(oldX, oldY, x, y, xConnected, yConnected)){ //if they're not the same but they are close 
-              System.out.println("\n" + "NEW PART" + "\n");
-              System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+              //System.out.println("\n" + "NEW PART" + "\n");
+              //System.out.println("oldX and oldY: " + oldX + ", " + oldY);
               //for testing
-              System.out.println("the connection was: " + xConnected +", " + yConnected);
-              System.out.println("the x and y values are: " + x + ", " + y);
+              //System.out.println("the connection was: " + xConnected +", " + yConnected);
+              //System.out.println("the x and y values are: " + x + ", " + y);
               //
-              double dTotal = vel * (1.0/framer); // d = vt //like polar coordinates. j move the player to where it should be
+              //double dTotal = vel * (1.0/framer); // d = vt //like polar coordinates. j move the player to where it should be
                                                 //on the other segment. hacky cuz it still uses the vel from the previous segment
-              double dToEnd = Math.sqrt(pow((oldX-xConnected), 2) + pow((oldY-yConnected), 2)); //dostance formula
+              //double dToEnd = Math.sqrt(pow((oldX-xConnected), 2) + pow((oldY-yConnected), 2)); //dostance formula
               //note, top can replace t.track.get w xConnected and yConnected
-              double dNextSeg = dTotal - dToEnd;
+              //double dNextSeg = dTotal - dToEnd;
               int nextSeg = t.connections.get(trackOn/4);
               float directionNext = calcTheta(nextSeg); //calculate the next segment's direction
               direction = directionNext;
@@ -224,24 +221,24 @@ class Rider{
               adjustHitBox();
          }
         }else if (vel < 0 && t.backConnections.get(trackOn/4) != -1){
-          System.out.println("going backwards, falling when it shouldn't be");
+          //System.out.println("going backwards, falling when it shouldn't be");
           float xConnected = t.track.get(t.backConnections.get(trackOn/4) + 2); //the end points of the piece it is back connected
           float yConnected = t.track.get(t.backConnections.get(trackOn/4) + 3); //to
           float oldX = x - vel * cos(direction) * (1.0 / framer);
           float oldY = y - vel * sin(direction) * (1.0/framer);
           //check if the player passed the connection
           if (onLine(oldX, oldY, x, y, xConnected, yConnected)){
-            System.out.println("\n" + "NEW PART -- BACKWARDS" + "\n");
-            System.out.println("oldX and oldY: " + oldX + ", " + oldY);
+            //System.out.println("\n" + "NEW PART -- BACKWARDS" + "\n");
+            //System.out.println("oldX and oldY: " + oldX + ", " + oldY);
             //for testing
-            System.out.println("the connnection was: " + xConnected +", " + yConnected);
-            System.out.println("the x and y values are: " + x + ", " + y);
+            //System.out.println("the connnection was: " + xConnected +", " + yConnected);
+            //System.out.println("the x and y values are: " + x + ", " + y);
             //
-            double dTotal = -1 * vel * (1.0/framer);
+            //double dTotal = -1 * vel * (1.0/framer);
             //System.out.println("dTotal: " + dTotal);
-            double dToConnection = Math.sqrt(pow(oldX - xConnected, 2) + pow(oldY - yConnected, 2));//
+            //double dToConnection = Math.sqrt(pow(oldX - xConnected, 2) + pow(oldY - yConnected, 2));//
             //System.out.println("dToConnetion: " + dToConnection);
-            double dNextSeg = dTotal - dToConnection;
+            //double dNextSeg = dTotal - dToConnection;
             //System.out.println("dNextSeg: " + dNextSeg);
             int nextSeg = t.backConnections.get(trackOn/4);
             //System.out.println("next seg: " + nextSeg);
