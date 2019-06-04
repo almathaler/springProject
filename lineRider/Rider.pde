@@ -468,4 +468,8 @@ class Rider{
        hitBox[3][0] = x + 12.5 * sqrt(2) * cos(diffTheta - radians(45));
        hitBox[3][1] = y + 12.5 * sqrt(2) * sin(diffTheta - radians(45));
   }
+  
+  boolean roundCompleted(){
+      
+  }
 }

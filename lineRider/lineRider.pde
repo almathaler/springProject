@@ -7,6 +7,7 @@ PImage openingImage;
 Rider guy;
 Vehicle bike; 
 Track t = new Track();
+int currentLevel = 0;
 Boolean doneWithTrack = false;
 Boolean started = false;
 Boolean stopped = false;
@@ -14,6 +15,13 @@ Boolean exitTitle = false;
 //Boolean restart = false;
 Boolean clear = false;
 LineRiderGame game = new LineRiderGame(100, 100);
+int[][] levels = { // 4 levels (can be changed ofc) each stores an startX, startY, endX, endY
+                   //index 0 = startX, index 1 = startY, index 2 = endX, index 3 = endY
+                  {100, 100, 1100, 700},
+                  {1100, 100, 100, 700},
+                  {600, 100, 100, 700},
+                  {100, 300, 1100, 300}
+};
 class LineRiderGame{
   Rider guy;
   float startX, startY;
@@ -38,7 +46,7 @@ class LineRiderGame{
     text("time: " + time, 1100, 50);
     fill(188, 188, 55);
     pushMatrix();
-    translate(1100, 700);
+    translate(levels[currentLevel][2], levels[currentLevel][3]);//moves to the endX and endY of the current level
     rotate(frameCount / -100.0);
     star(0, 0, 30, 70, 5); 
     popMatrix();
@@ -99,7 +107,9 @@ void setup(){
   stopped = false;
   //restart = false;
   clear = false;
-  game = new LineRiderGame(100, 100);
+  
+  game = new LineRiderGame(levels[currentLevel][0], levels[currentLevel][1]);
+  
 }
 
 void draw(){
