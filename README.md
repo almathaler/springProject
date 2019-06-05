@@ -4,19 +4,19 @@ Line Rider
 Line Rider game, draw lines and the rider will ride the path. Try to bring the rider into the star to progress to a new screen
 With a new location of the star.
 # HOW TO PLAY
-Playing this game is pretty simple. 
+Playing this game is pretty simple.
 Use your mouse to click to make lines. 
-Click once for the first point; then click again for the second.
-Press shift to start, s to stop, e to continue and q to restart. 
-You can delete sections of the track if you are in drawing mode (when s is pressed or shift 
++ Click once for the first point; then click again for the second.
++ Press SHIFT to start, s to stop, e to continue and q to restart. 
++ You can delete sections of the track if you are in drawing mode (when s is pressed or shift 
 not yet pressed) by pressing BACKSPACE or DELETE.
-You can press 1, 2 or 3 before you draw a line to decide its type.
++ You can press 1, 2 or 3 before you draw a line to decide its type.
 They are in ascending order for friction and descending order for strength of impact.
-If you fall from too high or off the screen, you will die.
++ If you fall from too high or off the screen, you will die.
 Enjoy watching the rider glide down your slopes! Try to make it to the star and progress, but make sure to add no loops :/
 Also a few bug notes:
 when the player falls onto a / slope, it will bug out and look like the game crashed. It just takes a long time for the vehicle to latch on to the slope, takes a second or two
-Sometimes the player will fall through the lines
+Sometimes the player will fall through the lines. Maybe 1/10 of the time.
 # DEV LOG
 ## May 17
 ### Alma
