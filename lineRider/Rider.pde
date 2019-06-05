@@ -140,6 +140,7 @@ class Rider{
       }
       if (velo + force/mass * timeCounter/6.0 <= 0 && velo + forceWithoutFriction/mass * timeCounter/6.0 > 0){
         stopped = true;
+        die();
         System.out.println("made stopped true");
         vel = 0;//
       }else{
@@ -236,7 +237,7 @@ class Rider{
               y += 50 * sin(direction);
               //x = hitBox[0][0] + 50 * cos(direction);
               //y = hitBox[0][1] + 50 * sin(direction);
-              translateMode = 1;
+              translateMode = 0;
               //System.out.println("new x and y: " + x + ", " + y);
               adjustHitBox();
          }
@@ -268,7 +269,7 @@ class Rider{
             //x = xConnected - (float) dNextSeg*cos(directionNext); //-(float) (dNextSeg * cos(directionNext) * vel) / Math.abs(vel);
             //y = yConnected - (float) dNextSeg*sin(directionNext); //+(float) (dNextSeg * sin(directionNext) * vel) / Math.abs(vel);
             direction = directionNext;
-            translateMode = 1;
+            translateMode = 0;
             x = xConnected;
             y = yConnected;
             //make space for the vehicle
@@ -298,9 +299,11 @@ class Rider{
     }
     //direction = calcTheta(checkIfOnTrack());
     ellipseMode(CENTER);
+    /*
     for (int i = 0; i < hitBox.length; i++){
        ellipse(hitBox[i][0], hitBox[i][1], 2, 2); 
     }
+    */
     if (checkIfOnTrack() == -1){
        onTrack = false; 
     } else {
@@ -435,6 +438,7 @@ class Rider{
                   indicies.add(i);
                  } else if (j != 0){
                    indicies.add(i); 
+                   translateMode = 0;
                  }
                }
                if (j == 3){

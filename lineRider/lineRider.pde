@@ -25,6 +25,10 @@ int[][] levels = { // 4 levels (can be changed ofc) each stores an startX, start
                   {500, 500, 500, 700},
                   {300, 200, 1000, 750},
                   {1100, 500, 100, 750},
+                  {1100, 400, 100, 350},
+                  {100, 400, 1000, 300},
+                  {100, 200, 900, 150}
+
 };
 class LineRiderGame{
   Rider guy;
@@ -93,6 +97,10 @@ void keyPressed(){
    }
    if (key == 'c'){ //clear and put at top
     //clear = true; 
+   }
+   if (key == 'n'){
+      currentLevel++;
+      setup();
    }
    if (key == '1'){
      t.type = 1;
@@ -170,6 +178,15 @@ void draw(){
       t.display();
       game.display();
       game.guy.display();
+      pushMatrix();
+      fill(226, 170, 234);
+      translate(50, 5);
+      textFont(font, 20);
+      text("Level: " + currentLevel, 11, 50);
+      translate(100, 0);
+      fill(255, 0, 0);
+      text("Press SHIFT to begin", 11, 50);
+      popMatrix();
     }else{
       //make the button
      pushMatrix();
