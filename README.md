@@ -4,11 +4,11 @@ Line Rider
 Line Rider game, draw lines and the rider will ride the path. Try to bring the rider into the star to progress to a new screen
 With a new location of the star.
 # HOW TO PLAY
-Playing this game is pretty simple. 
-Use your mouse to click to make lines. 
+Playing this game is pretty simple.
+Use your mouse to click to make lines.
 Click once for the first point; then click again for the second.
-Press shift to start, s to stop, e to continue and q to restart. 
-You can delete sections of the track if you are in drawing mode (when s is pressed or shift 
+Press shift to start, s to stop, e to continue and q to restart.
+You can delete sections of the track if you are in drawing mode (when s is pressed or shift
 not yet pressed) by pressing BACKSPACE or DELETE.
 Enjoy watching the rider glide down your slopes! But make sure to add no loops :/
 # DEV LOG
@@ -35,7 +35,7 @@ Enjoy watching the rider glide down your slopes! But make sure to add no loops :
 ## May 22
 + I (Alex) had strep throat and didn't get much done today
 ### Alma
-+ More work on the Rider class, put it in processing and did testing. Found ball will roll 
++ More work on the Rider class, put it in processing and did testing. Found ball will roll
   through slopes if velocity is too fast, found appropriate values for gravity and mass
 
 ## May 23
@@ -43,7 +43,7 @@ Enjoy watching the rider glide down your slopes! But make sure to add no loops :
 + Started integrating the track and the rider in terms of initial movement
 + Began testing rider's movement along the track. As of right now, some of our numbers are off, but we're not far
 ### Alma
-+ Spruced up calctheta, realized that in processing unit circle goes 0 --> pi/2 --> pi clockwise so 
++ Spruced up calctheta, realized that in processing unit circle goes 0 --> pi/2 --> pi clockwise so
   theta value of lines weren't actually wrong
 
 ## May 24
@@ -84,7 +84,8 @@ Enjoy watching the rider glide down your slopes! But make sure to add no loops :
 + added a lot of testing code, like writing current vel on screen and tried out using millis() instead of 1/framer
   found that it was harder to make the transitions between lines smooth. but so far looks quite nicee
 ### alex
-+ Working on adjusting the angle of the vehicle such that it always rests on top of the track it is on.
++ Working on adjusting the angle of the vehicle such that it always rests on top of the track it is on. Right now it still adjusts, but in the
+  wrong way and doesn't properly click onto the track.
 
 ## May 29
 ### alma
@@ -117,7 +118,7 @@ Enjoy watching the rider glide down your slopes! But make sure to add no loops :
 ### Alex
 + hitBox calculations finally perfected. Working on applying the hitBox to movement.
 ### Alma
-+ spent more time fixing the ball's movement, seems like one step back is another step back 
++ spent more time fixing the ball's movement, seems like one step back is another step back
 in an unknown direction. But fixed up the catch in move where the player is suddenly no longer on the track. Took a while because we also were preparing to merge
 ## June 2
 ### Alma and Alex
@@ -126,7 +127,7 @@ in an unknown direction. But fixed up the catch in move where the player is sudd
 ## Alma
 + small things like deleting lines and making the title screen. Whenever either one of us makes a small change, seems like something completely unrelated is screwed so a lot of edits. Also started to search through code to find out why the vehicle falls straight down and not parabolically.
 + added the star goalpost
-## Alex 
+## Alex
 + Rider adjusting to slope kinda doesn't work after the merge, tried to fix that up but proved really difficult
 + added levels
 ## June 4
