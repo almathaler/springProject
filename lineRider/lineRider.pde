@@ -17,14 +17,16 @@ Boolean exitTitle = false;
 Boolean clear = false;
 LineRiderGame game = new LineRiderGame(100, 100);
 int[][] levels = { // 4 levels (can be changed ofc) each stores an startX, startY, endX, endY
-                   //index 0 = startX, index 1 = startY, index 2 = endX, index 3 = endY
-                  {100, 100, 1100, 700},
-                  {1100, 100, 100, 700},
-                  {600, 100, 100, 700},
-                  {100, 300, 1100, 400},
-                  {500, 500, 500, 700},
-                  {300, 200, 1000, 750},
-                  {1100, 500, 100, 750},
+                   //index 0 = startX, index 1 = startY, index 2 = endX, index 3 = endY, index 4 and 5 are size of star
+                  {100, 100, 1100, 700, 30, 70},
+                  {1100, 100, 100, 700, 30, 70},
+                  {600, 100, 100, 700, 30, 70},
+                  {100, 300, 1100, 400, 15, 35},
+                  {500, 500, 500, 700, 15, 35},
+                  {300, 200, 1000, 750, 15, 35},
+                  {1100, 500, 100, 750, 7, 17},
+                  {600, 100, 400, 250, 7, 17},
+                  {400, 400, 150, 500, 7, 17}
 };
 class LineRiderGame{
   Rider guy;
@@ -55,7 +57,7 @@ class LineRiderGame{
     pushMatrix();
     translate(levels[currentLevel][2], levels[currentLevel][3]);//moves to the endX and endY of the current level
     rotate(frameCount / -100.0);
-    star(0, 0, 30, 70, 5); 
+    star(0, 0, levels[currentLevel][4], levels[currentLevel][5], 5); 
     popMatrix();
     
   }
@@ -80,19 +82,16 @@ void keyPressed(){
    //if (key == 'w'){
    // wonGame = true; 
   // }
-   if (key == 's'){
+   if (key == 's' || key == 'S'){
     stopped = true; 
    }
-   if (key == 'e'){
+   if (key == 'e' || key == 'E' ){
     t.finalizeConnections();
     stopped = false; 
    }
-   if (key == 'q'){ //put at top of game
+   if (key == 'q' || key == 'Q'){ //put at top of game
     //restart = false; 
     setup();
-   }
-   if (key == 'c'){ //clear and put at top
-    //clear = true; 
    }
    if (key == '1'){
      t.type = 1;
@@ -225,7 +224,7 @@ void star(float x, float y, float radius1, float radius2, int npoints) {
 }
 
 void levelCompleted(){
-   if (pow(game.guy.x - levels[currentLevel][2], 2) + pow(game.guy.y - levels[currentLevel][3], 2) - 4900 < 10){
+   if (pow(game.guy.x - levels[currentLevel][2], 2) + pow(game.guy.y - levels[currentLevel][3], 2) - pow(levels[currentLevel][5], 2) < 10){
      if (currentLevel == levels.length - 1){
          endScreen();
      } else {
